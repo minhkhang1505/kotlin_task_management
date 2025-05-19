@@ -33,10 +33,10 @@ interface TaskDAO {
     @Query("UPDATE task_collection SET content = :content WHERE id = :collectionId")
     suspend fun updateTaskCollection(collectionId: Int, content: String)
 
-    @Delete
+    @Query("DELETE FROM task WHERE id = :taskId")
     suspend fun deleteTask(taskId: Int)
 
-    @Delete
+    @Query("DELETE FROM task_collection WHERE id = :collectionId")
     suspend fun deleteTaskCollection(collectionId: Int)
 
     @Update
