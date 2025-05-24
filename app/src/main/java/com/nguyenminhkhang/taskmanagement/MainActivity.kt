@@ -6,21 +6,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ModalBottomSheetDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
@@ -34,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel : MainViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("MainViewModel", "onCreate MainViewModel: $mainViewModel")
@@ -42,9 +46,10 @@ class MainActivity : ComponentActivity() {
             TaskManagementTheme {
                 val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle()
                 val taskDelegate = remember { mainViewModel }
+                var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
                 Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
                     CustomFloatActionButton {
-                        Log.d("CustomFloatActionButton", "CustomFloatActionButton clicked")
+                        isShowAddNoteButtonSheet = true
                     }
                 }) { innerPadding ->
                     Column(
@@ -56,6 +61,28 @@ class MainActivity : ComponentActivity() {
                     ) {
                         TopBar()
                         PagerTabLayout( listTabGroup, taskDelegate)
+                    }
+
+                    if(isShowAddNoteButtonSheet) {
+                        var inputTaskContent by remember { mutableStateOf("") }
+
+                        ModalBottomSheet({
+                            isShowAddNoteButtonSheet = false
+                        }) {
+                            Text("Input task Content",
+                                modifier = Modifier.padding(16.dp).fillMaxWidth())
+                            TextField(value=inputTaskContent, onValueChange = { inputTaskContent = it },
+                                modifier = Modifier.padding(16.dp).fillMaxWidth())
+                            Button({
+                                if(inputTaskContent.isNotEmpty()) {
+                                    taskDelegate.addNewTaskToCurrentCollection(inputTaskContent)
+                                    inputTaskContent = ""
+                                }
+                                isShowAddNoteButtonSheet = false
+                            }, modifier =  Modifier.padding(16.dp).fillMaxWidth()) {
+                                Text("Add Task")
+                            }
+                        }
                     }
                 }
             }

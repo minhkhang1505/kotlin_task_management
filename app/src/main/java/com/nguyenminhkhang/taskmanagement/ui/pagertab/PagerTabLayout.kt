@@ -3,11 +3,13 @@ package com.nguyenminhkhang.taskmanagement.ui.pagertab
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import kotlinx.coroutines.launch
@@ -18,6 +20,13 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     val pagerState = rememberPagerState(pageCount = { pageCount })
     pageCount = state.size
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { pagerState.currentPage }
+            .collect { page ->
+                taskDelegate.updateCurrentCollectionIndex(page)
+        }
+    }
 
     AppTabRowLayout(
         selectedTabIndex = pagerState.currentPage,

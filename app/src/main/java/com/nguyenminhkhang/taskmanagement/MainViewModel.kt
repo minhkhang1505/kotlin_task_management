@@ -1,6 +1,5 @@
 package com.nguyenminhkhang.taskmanagement
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
@@ -8,6 +7,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +21,8 @@ class MainViewModel @Inject constructor(
 ) : ViewModel(), TaskDelegate {
     private val _listTabGroup: MutableStateFlow<List<TaskGroupUiState>> = MutableStateFlow(emptyList())
     val listTabGroup = _listTabGroup.asStateFlow()
+
+    private var _currentCollectedCollectionIndex:Int = 0
 
     init {
         _listTabGroup.value = listOf(
@@ -98,9 +100,43 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    override fun addnewTask(collectionId: Long, content: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepo.addTask(content, collectionId)?.let {taskEntity ->
+                val newTaskUiState = taskEntity.toTaskUiState()
+                listTabGroup.value.let {listTabGroup ->
+                    val newTabGroup = listTabGroup.map { tabGroup ->
+                        val newPage = tabGroup.page.copy(
+                            activeTaskList = tabGroup.page.activeTaskList + newTaskUiState,
+                        )
+                        tabGroup.copy(page = newPage)
+                    }
+                    _listTabGroup.value = newTabGroup
+                }
+            }
+        }
+    }
+
+    override fun addNewTaskToCurrentCollection(content: String) {
+        viewModelScope.launch {
+            val currentTab = listTabGroup.value.getOrNull(_currentCollectedCollectionIndex)?.let {
+                currentTab ->
+                val collectionId = currentTab.tab.id
+                addnewTask(collectionId, content)
+            }
+        }
+    }
+
+    override fun updateCurrentCollectionIndex(index: Int) {
+        _currentCollectedCollectionIndex = index
+    }
 }
 
 interface TaskDelegate {
     fun invertTaskFavorite(taskUiState: TaskUiState) : Unit
     fun invertTaskCompleted(taskUiState: TaskUiState) : Unit
+    fun addnewTask(collectionId: Long, content: String) : Unit
+    fun addNewTaskToCurrentCollection(content: String) : Unit
+    fun updateCurrentCollectionIndex(index: Int) : Unit
 }

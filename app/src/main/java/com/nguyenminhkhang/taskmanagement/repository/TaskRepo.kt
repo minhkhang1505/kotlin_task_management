@@ -6,4 +6,5 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 interface TaskRepo {
     suspend fun getTaskCollection(): List<TaskCollection>
     suspend fun getTaskCollectionById(collectionId: Long): List<TaskEntity>
+    suspend fun addTask(content:String, collectionId: Long): TaskEntity?
 }

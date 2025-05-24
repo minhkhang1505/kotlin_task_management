@@ -16,7 +16,7 @@ interface TaskDAO {
     suspend fun insertTaskCollection(taskCollection: TaskCollection)
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTask(task: TaskEntity)
+    suspend fun insertTask(task: TaskEntity) : Long
 
     @Query("SELECT * FROM task_collection")
     suspend fun getAllTaskCollection(): List<TaskCollection>
@@ -44,4 +44,6 @@ interface TaskDAO {
 
     @Update
     suspend fun updateTaskCollection(taskCollection: TaskCollection)
+
+
 }
