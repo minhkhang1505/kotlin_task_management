@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.theme.floataction
+package com.nguyenminhkhang.taskmanagement.ui.floataction
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -18,12 +18,17 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomFloatActionButton(
-    modifier: Modifier,
     clickable: Boolean = true,
     onClick: () -> Unit = {}
 ) {
     Box (
-        modifier = modifier.clickable(clickable) {
+        modifier = Modifier
+            .background(
+                color = Color.Black,
+                shape = RoundedCornerShape(16.dp)
+            )
+            .size(58.dp)
+            .clip(RoundedCornerShape(16.dp)).clickable(clickable) {
             onClick.invoke()
         },
     ) {
