@@ -6,3 +6,10 @@ data class TabUiState(
     val id: Long,
     val title: String
 )
+
+fun TaskCollection.toTabUiState(): TabUiState {
+    return TabUiState(
+        id = this.id ?: 0L,
+        title = this.content
+    )
+}

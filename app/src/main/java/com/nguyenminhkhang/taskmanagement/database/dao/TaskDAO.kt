@@ -13,7 +13,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 interface TaskDAO {
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTaskCollection(taskCollection: TaskCollection)
+    suspend fun insertTaskCollection(taskCollection: TaskCollection) : Long
 
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: TaskEntity) : Long
@@ -44,6 +44,4 @@ interface TaskDAO {
 
     @Update
     suspend fun updateTaskCollection(taskCollection: TaskCollection)
-
-
 }

@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
@@ -7,6 +8,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
@@ -135,12 +137,24 @@ class MainViewModel @Inject constructor(
     override fun updateCurrentCollectionIndex(index: Int) {
         _currentCollectedCollectionIndex = index
     }
+
+    override fun addNewCollection(content: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepo.addNewCollection(content)?.let{ taskCollection ->
+                val tabUiState = taskCollection.toTabUiState()
+                val newTabGroup = TaskGroupUiState(tabUiState, TaskPageUiState(emptyList(), emptyList()))
+                Log.d("PagerTabLayout", " in viewmodel addNewCollection: ${newTabGroup.tab.id}")
+                _listTabGroup.value += newTabGroup
+            }
+        }
+    }
 }
 
 interface TaskDelegate {
-    fun invertTaskFavorite(taskUiState: TaskUiState) : Unit
-    fun invertTaskCompleted(taskUiState: TaskUiState) : Unit
-    fun addNewTask(collectionId: Long, content: String) : Unit
-    fun addNewTaskToCurrentCollection(content: String) : Unit
-    fun updateCurrentCollectionIndex(index: Int) : Unit
+    fun invertTaskFavorite(taskUiState: TaskUiState) = Unit
+    fun invertTaskCompleted(taskUiState: TaskUiState) = Unit
+    fun addNewTask(collectionId: Long, content: String) = Unit
+    fun addNewTaskToCurrentCollection(content: String) = Unit
+    fun updateCurrentCollectionIndex(index: Int) = Unit
+    fun addNewCollection(content: String) = Unit
 }

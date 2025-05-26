@@ -34,4 +34,18 @@ class TaskRepoImpl(
             null
         }
     }
+
+    override suspend fun addNewCollection(content: String): TaskCollection? = withContext(Dispatchers.IO) {
+        val now = Calendar.getInstance().timeInMillis
+        val taskCollection = TaskCollection(
+            content = content,
+            updatedAt = now
+        )
+        val id = taskDAO.insertTaskCollection(taskCollection)
+        if(id > 0) {
+            taskCollection.copy(id = id)
+        } else {
+            null
+        }
+    }
 }
