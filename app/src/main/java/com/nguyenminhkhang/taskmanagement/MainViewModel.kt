@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
     init {
         _listTabGroup.value = listOf(
             TaskGroupUiState(
-                tab = TabUiState(1,"Tab 1"),
+                tab = TabUiState(1, "Tab 1"),
                 page = TaskPageUiState(
                     listOf(
                         TaskUiState(
@@ -53,13 +53,14 @@ class MainViewModel @Inject constructor(
                 )
             ),
             TaskGroupUiState(
-                tab = TabUiState(1,"Tab 1"),
+                tab = TabUiState(2, "Tab 2"), // Sửa id thành 2, tên tab cũng đổi để dễ phân biệt
                 page = TaskPageUiState(
                     listOf(), listOf()
                 )
             )
         )
     }
+
 
     override fun invertTaskFavorite(taskUiState: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -101,29 +102,32 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    override fun addnewTask(collectionId: Long, content: String) {
+    override fun addNewTask(collectionId: Long, content: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(content, collectionId)?.let {taskEntity ->
+            taskRepo.addTask(content, collectionId)?.let { taskEntity ->
                 val newTaskUiState = taskEntity.toTaskUiState()
-                listTabGroup.value.let {listTabGroup ->
-                    val newTabGroup = listTabGroup.map { tabGroup ->
+                val newTabGroup = listTabGroup.value.map { tabGroup ->
+                    if (tabGroup.tab.id == collectionId) {
                         val newPage = tabGroup.page.copy(
                             activeTaskList = tabGroup.page.activeTaskList + newTaskUiState,
                         )
                         tabGroup.copy(page = newPage)
+                    } else {
+                        tabGroup // giữ nguyên tabGroup không liên quan
                     }
-                    _listTabGroup.value = newTabGroup
                 }
+                _listTabGroup.value = newTabGroup
             }
         }
     }
+
 
     override fun addNewTaskToCurrentCollection(content: String) {
         viewModelScope.launch {
             val currentTab = listTabGroup.value.getOrNull(_currentCollectedCollectionIndex)?.let {
                 currentTab ->
                 val collectionId = currentTab.tab.id
-                addnewTask(collectionId, content)
+                addNewTask(collectionId, content)
             }
         }
     }
@@ -136,7 +140,7 @@ class MainViewModel @Inject constructor(
 interface TaskDelegate {
     fun invertTaskFavorite(taskUiState: TaskUiState) : Unit
     fun invertTaskCompleted(taskUiState: TaskUiState) : Unit
-    fun addnewTask(collectionId: Long, content: String) : Unit
+    fun addNewTask(collectionId: Long, content: String) : Unit
     fun addNewTaskToCurrentCollection(content: String) : Unit
     fun updateCurrentCollectionIndex(index: Int) : Unit
 }
