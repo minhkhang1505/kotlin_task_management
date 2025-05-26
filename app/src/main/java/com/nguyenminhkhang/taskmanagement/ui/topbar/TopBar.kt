@@ -36,7 +36,7 @@ fun TopBar(taskDelegate: TaskDelegate) {
         )
         Button(
             onClick = {
-                taskDelegate.addNewCollection(content = "New Task" )
+                taskDelegate.requestAddNewCollection()
             }
         ) {
             Text("+")

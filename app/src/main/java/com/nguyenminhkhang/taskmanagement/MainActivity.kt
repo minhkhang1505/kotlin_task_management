@@ -17,6 +17,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,6 +47,19 @@ class MainActivity : ComponentActivity() {
                 val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle()
                 val taskDelegate = remember { mainViewModel }
                 var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
+                var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
+
+                LaunchedEffect(Unit) {
+                    mainViewModel.eventFlow.collect {
+                        when(it) {
+                            MainEvent.RequestAddNewCollection -> {
+                                isShowAddNewCollectionButton = true
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+
                 Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
                     CustomFloatActionButton {
                         isShowAddNoteButtonSheet = true
@@ -80,6 +94,28 @@ class MainActivity : ComponentActivity() {
                                 isShowAddNoteButtonSheet = false
                             }, modifier =  Modifier.padding(16.dp).fillMaxWidth()) {
                                 Text("Add Task")
+                            }
+                        }
+                    }
+
+                    if(isShowAddNewCollectionButton) {
+                        var inputTaskCollection by remember { mutableStateOf("") }
+
+                        ModalBottomSheet({
+                            isShowAddNewCollectionButton = false
+                        }) {
+                            Text("Input task Collection",
+                                modifier = Modifier.padding(16.dp).fillMaxWidth())
+                            TextField(value=inputTaskCollection, onValueChange = { inputTaskCollection = it },
+                                modifier = Modifier.padding(16.dp).fillMaxWidth())
+                            Button({
+                                if(inputTaskCollection.isNotEmpty()) {
+                                    taskDelegate.addNewCollection(inputTaskCollection)
+                                    inputTaskCollection = ""
+                                }
+                                isShowAddNewCollectionButton = false
+                            }, modifier =  Modifier.padding(16.dp).fillMaxWidth()) {
+                                Text("Add collection")
                             }
                         }
                     }

@@ -13,7 +13,9 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -21,6 +23,9 @@ import kotlinx.coroutines.launch
 class MainViewModel @Inject constructor(
     private val taskRepo: TaskRepo
 ) : ViewModel(), TaskDelegate {
+    private val _eventFlow: MutableSharedFlow<MainEvent> = MutableSharedFlow()
+    public val eventFlow = _eventFlow.asSharedFlow()
+
     private val _listTabGroup: MutableStateFlow<List<TaskGroupUiState>> = MutableStateFlow(emptyList())
     val listTabGroup = _listTabGroup.asStateFlow()
 
@@ -148,6 +153,12 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    override fun requestAddNewCollection() {
+        viewModelScope.launch {
+            _eventFlow.emit(MainEvent.RequestAddNewCollection)
+        }
+    }
 }
 
 interface TaskDelegate {
@@ -157,4 +168,9 @@ interface TaskDelegate {
     fun addNewTaskToCurrentCollection(content: String) = Unit
     fun updateCurrentCollectionIndex(index: Int) = Unit
     fun addNewCollection(content: String) = Unit
+    fun requestAddNewCollection() = Unit
+}
+
+sealed class MainEvent {
+    data object RequestAddNewCollection : MainEvent()
 }
