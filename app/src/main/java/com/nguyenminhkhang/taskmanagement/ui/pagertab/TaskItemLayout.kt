@@ -51,7 +51,7 @@ fun TaskItemLayout(
                 textDecoration = TextDecoration.LineThrough.takeIf { state.isCompleted }
             )
             if(state.isCompleted) {
-                Text(text = "Completed: ${state.updatedAt}", modifier = Modifier.padding(end = 10.dp), color = MaterialTheme.colorScheme.primary)
+                Text(text = "Completed: ${state.stringUpdateAt}", modifier = Modifier.padding(end = 10.dp), color = MaterialTheme.colorScheme.primary)
 
             }
         }

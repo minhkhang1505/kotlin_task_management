@@ -23,11 +23,12 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
         isCompleted = this.isCompleted,
         collectionId = this.collectionId,
         updatedAt = this.updatedAt,
-        stringUpdateAt = Date(this.updatedAt).toString()
+        stringUpdateAt = this.updatedAt.millisToDateString()
     )
 }
 
 
 fun Long.millisToDateString(): String {
-    return SimpleDateFormat("EEE,dd MM yyyy", Locale.getDefault()).format(Date(this)).toString()
+    return SimpleDateFormat("EEE,dd MM yyyy", Locale.getDefault())
+        .format(Date(this)).toString()
 }

@@ -117,14 +117,17 @@ class MainViewModel @Inject constructor(
                 val newListTabGroup = listTabGroup.map { tabGroup ->
                     val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
                     val updateList = sumList.map{task ->
-                        if(task.id == newTaskUiState.id) newTaskUiState.copy(
-                            updatedAt = Calendar.getInstance().timeInMillis,
-                            stringUpdateAt = Calendar.getInstance().time.toString()
-                        ) else task
+                        if(task.id == newTaskUiState.id) {
+                            val newUpdateAt = Calendar.getInstance().timeInMillis
+                            newTaskUiState.copy(
+                                updatedAt = newUpdateAt,
+                                stringUpdateAt = newUpdateAt.millisToDateString()
+                            )
+                        } else task
                     }
                     val newPage = tabGroup.page.copy(
-                        activeTaskList = updateList.filter{ !it.isCompleted },
-                        completedTaskList = updateList.filter{ it.isCompleted}
+                        activeTaskList = updateList.filter{ !it.isCompleted }.sortedByDescending { it.updatedAt },
+                        completedTaskList = updateList.filter{ it.isCompleted}.sortedByDescending { it.updatedAt }
                     )
                     tabGroup.copy(page = newPage)
                 }
