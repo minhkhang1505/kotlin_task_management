@@ -11,7 +11,8 @@ data class TaskUiState(
     val isFavorite: Boolean = false,
     val isCompleted: Boolean = false,
     val collectionId: Long,
-    val updatedAt: Long =  System.currentTimeMillis()
+    val updatedAt: Long =  System.currentTimeMillis(),
+    val stringUpdateAt: String
 )
 
 fun TaskEntity.toTaskUiState(): TaskUiState {
@@ -21,7 +22,8 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
         isFavorite = this.isFavorite,
         isCompleted = this.isCompleted,
         collectionId = this.collectionId,
-        updatedAt = this.updatedAt
+        updatedAt = this.updatedAt,
+        stringUpdateAt = Date(this.updatedAt).toString()
     )
 }
 

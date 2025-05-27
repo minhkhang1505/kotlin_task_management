@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement
 
+import android.icu.util.Calendar
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +26,7 @@ class MainViewModel @Inject constructor(
     private val taskRepo: TaskRepo
 ) : ViewModel(), TaskDelegate {
     private val _eventFlow: MutableSharedFlow<MainEvent> = MutableSharedFlow()
-    public val eventFlow = _eventFlow.asSharedFlow()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     private val _listTabGroup: MutableStateFlow<List<TaskGroupUiState>> = MutableStateFlow(emptyList())
     val listTabGroup = _listTabGroup.asStateFlow()
@@ -41,20 +43,23 @@ class MainViewModel @Inject constructor(
                             id = 1,
                             content = "Task 1",
                             collectionId = 1,
-                            updatedAt = 1232
+                            updatedAt = 1232,
+                            stringUpdateAt = "Thu, 01 Jan 1970" // Chỉnh sửa để có giá trị hợp lệ
                         ),
                         TaskUiState(
                             id = 2,
                             content = "Task 2",
                             collectionId = 1,
-                            updatedAt = 1233
+                            updatedAt = 1233,
+                            stringUpdateAt = "Thu, 02 Jan 1970" // Chỉnh sửa để có giá trị hợp lệ
                         ),
                         TaskUiState(
                             id = 3,
                             content = "Task 3",
                             collectionId = 1,
                             isFavorite = true,
-                            updatedAt = 1234
+                            updatedAt = 1234,
+                            stringUpdateAt = "Thu, 03 Jan 1970" // Chỉnh sửa để có giá trị hợp lệ
                         ),
                     ), listOf()
                 )
@@ -72,15 +77,27 @@ class MainViewModel @Inject constructor(
     override fun invertTaskFavorite(taskUiState: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
             val newTaskUiState = taskUiState.copy(isFavorite = !taskUiState.isFavorite)
+            taskRepo.updateTaskFavorite(newTaskUiState.id!!, newTaskUiState.isFavorite).let { isSuccess ->
+                if(!isSuccess) {
+                    Log.e("MainViewModel", "invertTaskFavorite: Failed to update task favorite status")
+                    return@launch
+                }
+            }
             listTabGroup.value.let{listTabGroup->
                 val newListTabGroup = listTabGroup.map { tabGroup ->
                     val newPage = tabGroup.page.copy(
                         activeTaskList = tabGroup.page.activeTaskList.map {task ->
-                            if(task.id == newTaskUiState.id) newTaskUiState.copy() else {task}
-                        },
+                            if(task.id == newTaskUiState.id) newTaskUiState.copy(
+                                updatedAt = Calendar.getInstance().timeInMillis,
+                                stringUpdateAt = Calendar.getInstance().time.toString()
+                            ) else {task}
+                        }.sortedByDescending { it.updatedAt },
                         completedTaskList = tabGroup.page.completedTaskList.map {task ->
-                            if(task.id == newTaskUiState.id) newTaskUiState.copy() else task
-                        }
+                            if(task.id == newTaskUiState.id) newTaskUiState.copy(
+                                updatedAt = Calendar.getInstance().timeInMillis,
+                                stringUpdateAt = Calendar.getInstance().time.toString()
+                            ) else task
+                        }.sortedByDescending { it.updatedAt }
                     )
                     tabGroup.copy(page = newPage)
                 }
@@ -92,11 +109,18 @@ class MainViewModel @Inject constructor(
     override fun invertTaskCompleted(taskUiState: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
             val newTaskUiState = taskUiState.copy(isCompleted = !taskUiState.isCompleted)
+            if(!taskRepo.updateTaskCompleted(newTaskUiState.id!!, newTaskUiState.isCompleted)) {
+                Log.e("MainViewModel", "invertTaskCompleted: Failed to update task completed status")
+                return@launch
+            }
             listTabGroup.value.let{listTabGroup->
                 val newListTabGroup = listTabGroup.map { tabGroup ->
                     val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
                     val updateList = sumList.map{task ->
-                        if(task.id == newTaskUiState.id) newTaskUiState.copy() else task
+                        if(task.id == newTaskUiState.id) newTaskUiState.copy(
+                            updatedAt = Calendar.getInstance().timeInMillis,
+                            stringUpdateAt = Calendar.getInstance().time.toString()
+                        ) else task
                     }
                     val newPage = tabGroup.page.copy(
                         activeTaskList = updateList.filter{ !it.isCompleted },

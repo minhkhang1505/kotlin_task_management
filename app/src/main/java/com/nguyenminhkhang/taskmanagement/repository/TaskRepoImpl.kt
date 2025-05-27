@@ -14,11 +14,13 @@ class TaskRepoImpl(
         taskDAO.getAllTaskCollection()
     }
 
-    override suspend fun getTaskCollectionById(collectionId: Long): List<TaskEntity> = withContext(Dispatchers.IO) {
+    override suspend fun getTaskCollectionById(collectionId: Long): List<TaskEntity> =
+        withContext(Dispatchers.IO) {
         taskDAO.getAllTaskByCollectionId(collectionId)
     }
 
-    override suspend fun addTask(content: String, collectionId: Long): TaskEntity? = withContext(Dispatchers.IO) {
+    override suspend fun addTask(content: String, collectionId: Long): TaskEntity? =
+        withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val task = TaskEntity(
             content = content,
@@ -30,12 +32,11 @@ class TaskRepoImpl(
         val id = taskDAO.insertTask(task)
         if (id > 0) {
             task.copy(id = id)
-        } else {
-            null
-        }
+        } else null
     }
 
-    override suspend fun addNewCollection(content: String): TaskCollection? = withContext(Dispatchers.IO) {
+    override suspend fun addNewCollection(content: String): TaskCollection? =
+        withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val taskCollection = TaskCollection(
             content = content,
@@ -44,8 +45,25 @@ class TaskRepoImpl(
         val id = taskDAO.insertTaskCollection(taskCollection)
         if(id > 0) {
             taskCollection.copy(id = id)
-        } else {
-            null
-        }
+        } else null
+    }
+
+    override suspend fun updateTask(task: TaskEntity): Boolean = withContext(Dispatchers.IO) {
+        taskDAO.updateTask(task) > 0
+    }
+
+    override suspend fun updateTaskCollection(taskCollection: TaskCollection): Boolean =
+        withContext(Dispatchers.IO) {
+        taskDAO.updateTaskCollection(taskCollection) > 0
+    }
+
+    override suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean =
+        withContext(Dispatchers.IO) {
+        taskDAO.updateTaskCompleted(taskId.toInt(), isCompleted) > 0
+    }
+
+    override suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean): Boolean =
+        withContext(Dispatchers.IO) {
+        taskDAO.updateTaskFavorite(taskId.toInt(), isFavorite) > 0
     }
 }
