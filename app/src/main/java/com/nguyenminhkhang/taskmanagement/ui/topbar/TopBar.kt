@@ -34,12 +34,5 @@ fun TopBar(taskDelegate: TaskDelegate) {
             color = Color.Black,
             modifier = Modifier.align(Alignment.Center)
         )
-        Button(
-            onClick = {
-                taskDelegate.requestAddNewCollection()
-            }
-        ) {
-            Text("+")
-        }
     }
 }

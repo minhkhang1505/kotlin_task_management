@@ -40,31 +40,8 @@ fun CompletedTaskListSection(completedTask: List<TaskUiState>, taskDelegate: Tas
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AnimatedVisibility(
-            visible = completedTask.isEmpty(),
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                val lottieComposition by rememberLottieComposition(
-                    spec = LottieCompositionSpec.RawRes(R.raw.lottie_empty_01)
-                )
-                LottieAnimation(lottieComposition)
-                Text(
-                    "Not have task completed",
-                    fontSize = 24.sp,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Text("Nice work!", fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-
         completedTask.forEach {
-            TaskItemLayout( it,onCompletedTask = {
+            TaskItemLayout(it, onCompletedTask = {
                 taskDelegate.invertTaskCompleted(it)
                 Log.d("TaskItemLayout", "onCompletedTask: $it")
             }, onFavoriteTask = {

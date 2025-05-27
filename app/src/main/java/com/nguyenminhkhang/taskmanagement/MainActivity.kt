@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TaskManagementTheme {
-                val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle()
+                val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList())
                 val taskDelegate = remember { mainViewModel }
                 var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
                 var isShowAddNewCollectionButton by remember { mutableStateOf(false) }

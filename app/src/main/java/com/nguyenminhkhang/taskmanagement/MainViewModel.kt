@@ -2,6 +2,10 @@ package com.nguyenminhkhang.taskmanagement
 
 import android.icu.util.Calendar
 import android.util.Log
+import androidx.compose.material.icons.materialIcon
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
@@ -17,9 +21,15 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+
+const val ID_ADD_NEW_LIST = -999L
+const val ID_ADD_FAVORITE_LIST = -1000L
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -29,7 +39,26 @@ class MainViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     private val _listTabGroup: MutableStateFlow<List<TaskGroupUiState>> = MutableStateFlow(emptyList())
-    val listTabGroup = _listTabGroup.asStateFlow()
+    val listTabGroup = _listTabGroup.map {
+        listOf(
+            TaskGroupUiState(
+                tab = TabUiState(ID_ADD_FAVORITE_LIST, "⭐️"),
+                page = TaskPageUiState(
+                    mutableListOf<TaskUiState>().apply {
+                        it.forEach { tab ->
+                            addAll(tab.page.activeTaskList.filter { task -> task.isFavorite })
+                        }
+                    }.sortedByDescending { it.updatedAt }, emptyList()
+                )
+            )
+        ) + it + TaskGroupUiState(
+            tab = TabUiState(ID_ADD_NEW_LIST, "Add New Tab"),
+            page = TaskPageUiState(
+                activeTaskList = emptyList(),
+                completedTaskList = emptyList()
+            )
+        )
+    }
 
     private var _currentCollectedCollectionIndex:Int = 0
 
@@ -83,7 +112,7 @@ class MainViewModel @Inject constructor(
                     return@launch
                 }
             }
-            listTabGroup.value.let{listTabGroup->
+            _listTabGroup.value.let{listTabGroup->
                 val newListTabGroup = listTabGroup.map { tabGroup ->
                     val newPage = tabGroup.page.copy(
                         activeTaskList = tabGroup.page.activeTaskList.map {task ->
@@ -113,7 +142,7 @@ class MainViewModel @Inject constructor(
                 Log.e("MainViewModel", "invertTaskCompleted: Failed to update task completed status")
                 return@launch
             }
-            listTabGroup.value.let{listTabGroup->
+            _listTabGroup.value.let{listTabGroup->
                 val newListTabGroup = listTabGroup.map { tabGroup ->
                     val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
                     val updateList = sumList.map{task ->
@@ -140,7 +169,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             taskRepo.addTask(content, collectionId)?.let { taskEntity ->
                 val newTaskUiState = taskEntity.toTaskUiState()
-                val newTabGroup = listTabGroup.value.map { tabGroup ->
+                val newTabGroup = _listTabGroup.value.map { tabGroup ->
                     if (tabGroup.tab.id == collectionId) {
                         val newPage = tabGroup.page.copy(
                             activeTaskList = tabGroup.page.activeTaskList + newTaskUiState,
@@ -158,10 +187,10 @@ class MainViewModel @Inject constructor(
 
     override fun addNewTaskToCurrentCollection(content: String) {
         viewModelScope.launch {
-            val currentTab = listTabGroup.value.getOrNull(_currentCollectedCollectionIndex)?.let {
-                currentTab ->
+            val currentTab = _listTabGroup.value.getOrNull(_currentCollectedCollectionIndex)
+                ?.let { currentTab ->
                 val collectionId = currentTab.tab.id
-                addNewTask(collectionId, content)
+                if(collectionId > 0) addNewTask(collectionId, content)
             }
         }
     }

@@ -25,6 +25,8 @@ fun TaskListPage(state: TaskPageUiState, taskDelegate: TaskDelegate) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         ActiveTaskListSection(state.activeTaskList, taskDelegate)
-        CompletedTaskListSection(state.completedTaskList, taskDelegate)
+        if (state.completedTaskList.isNotEmpty()) {
+            CompletedTaskListSection(state.completedTaskList, taskDelegate)
+        }
     }
 }
