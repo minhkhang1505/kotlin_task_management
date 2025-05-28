@@ -2,10 +2,6 @@ package com.nguyenminhkhang.taskmanagement
 
 import android.icu.util.Calendar
 import android.util.Log
-import androidx.compose.material.icons.materialIcon
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
@@ -21,11 +17,8 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 const val ID_ADD_NEW_LIST = -999L
@@ -60,7 +53,7 @@ class MainViewModel @Inject constructor(
         )
     }
 
-    private var _currentCollectedCollectionIndex:Int = 0
+    private var _currentSelectedCollectionId:Long = -1L
 
     init {
         _listTabGroup.value = listOf(
@@ -187,16 +180,19 @@ class MainViewModel @Inject constructor(
 
     override fun addNewTaskToCurrentCollection(content: String) {
         viewModelScope.launch {
-            val currentTab = _listTabGroup.value.getOrNull(_currentCollectedCollectionIndex)
-                ?.let { currentTab ->
+            _listTabGroup.value.firstOrNull { it.tab.id == _currentSelectedCollectionId }?.let { currentTab ->
                 val collectionId = currentTab.tab.id
                 if(collectionId > 0) addNewTask(collectionId, content)
             }
         }
     }
 
-    override fun updateCurrentCollectionIndex(index: Int) {
-        _currentCollectedCollectionIndex = index
+    override fun updateCurrentCollectionId(collectionId: Long) {
+        _currentSelectedCollectionId = collectionId
+    }
+
+    override fun currentCollectionId(): Long {
+        return _currentSelectedCollectionId
     }
 
     override fun addNewCollection(content: String) {
@@ -222,7 +218,8 @@ interface TaskDelegate {
     fun invertTaskCompleted(taskUiState: TaskUiState) = Unit
     fun addNewTask(collectionId: Long, content: String) = Unit
     fun addNewTaskToCurrentCollection(content: String) = Unit
-    fun updateCurrentCollectionIndex(index: Int) = Unit
+    fun updateCurrentCollectionId(collectionId: Long) = Unit
+    fun currentCollectionId(): Long = -1L
     fun addNewCollection(content: String) = Unit
     fun requestAddNewCollection() = Unit
 }

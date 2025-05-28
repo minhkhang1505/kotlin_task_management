@@ -20,17 +20,20 @@ import kotlinx.coroutines.launch
 fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     var pageCount by remember { mutableStateOf(0) }
     val pagerState = rememberPagerState(pageCount = { pageCount })
-
+    var internalState by remember {
+        mutableStateOf(state)
+    }
+    internalState = state
     pageCount = state.count{
         it.tab.id != ID_ADD_NEW_LIST
     }
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
-        snapshotFlow { pagerState.currentPage }
-
-            .collect { page ->
-                taskDelegate.updateCurrentCollectionIndex(page)
+        snapshotFlow { pagerState.currentPage }.collect { index ->
+            internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
+                taskDelegate.updateCurrentCollectionId(currentCollectionId)
+            }
         }
     }
 

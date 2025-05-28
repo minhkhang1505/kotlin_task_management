@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
-import com.nguyenminhkhang.taskmanagement.ui.floataction.CustomFloatActionButton
+import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,8 +61,8 @@ class MainActivity : ComponentActivity() {
                 }
 
                 Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
-                    CustomFloatActionButton {
-                        isShowAddNoteButtonSheet = true
+                    AppFloatActionButton {
+                        isShowAddNoteButtonSheet = taskDelegate.currentCollectionId() > 0
                     }
                 }) { innerPadding ->
                     Column(
