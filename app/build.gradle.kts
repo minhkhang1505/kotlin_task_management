@@ -59,7 +59,6 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.room.testing)
-
     //Add data store dependencies
     implementation(libs.androidx.datastore.preferences)
 
@@ -67,7 +66,9 @@ dependencies {
     kapt(libs.dagger.hilt.android.compiler)
 
     implementation(libs.airbnb.android.lottie.compose)
+    implementation(libs.androidx.navigation.compose)
 
+    implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -34,9 +34,10 @@ import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 @Composable
-fun ActiveTaskListSection(activeTaskList: List<TaskUiState>, taskDelegate: TaskDelegate) {
+fun ActiveTaskListSection(collectionId: Long,activeTaskList: List<TaskUiState>, taskDelegate: TaskDelegate) {
     Column (
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .wrapContentHeight()
             .background(
                 color = Color.Black.copy(alpha = 0.1f),
@@ -49,21 +50,32 @@ fun ActiveTaskListSection(activeTaskList: List<TaskUiState>, taskDelegate: TaskD
     ) {
 
         AnimatedVisibility(visible = activeTaskList.isNotEmpty()) {
-            Row(
-                modifier = Modifier.padding(start = 12.dp, end = 6.dp)
-            ) {
-                Text(text = "Title", style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.weight(1f), textAlign = TextAlign.Start)
-                Icon( painter = painterResource(R.drawable.baseline_filter_alt_24),
-                    contentDescription = "Filter",
-                    modifier = Modifier.padding(start = 8.dp).clickable {  },
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Icon(
-                    Icons.Default.MoreVert, contentDescription = "More options",
-                    modifier = Modifier.padding(start = 8.dp).clickable {  },
-                    tint = MaterialTheme.colorScheme.primary
-                )
+            if( collectionId > 0) {
+                Row(
+                    modifier = Modifier.padding(start = 12.dp, end = 6.dp)
+                ) {
+                    Text(
+                        text = "Title", style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.weight(1f), textAlign = TextAlign.Start
+                    )
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_filter_alt_24),
+                        contentDescription = "Filter",
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable { },
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Icon(
+                        Icons.Default.MoreVert, contentDescription = "More options",
+                        modifier = Modifier
+                            .padding(start = 8.dp)
+                            .clickable {
+                                taskDelegate.requestUpdateCollection(collectionId)
+                            },
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
 

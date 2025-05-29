@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
+import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
@@ -13,13 +14,13 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val ID_ADD_NEW_LIST = -999L
 const val ID_ADD_FAVORITE_LIST = -1000L
@@ -211,6 +212,10 @@ class MainViewModel @Inject constructor(
             _eventFlow.emit(MainEvent.RequestAddNewCollection)
         }
     }
+
+    override fun requestUpdateCollection(collectionId: Long) {
+        Log.d("MainViewModel", "requestUpdateCollection: $collectionId")
+    }
 }
 
 interface TaskDelegate {
@@ -222,8 +227,10 @@ interface TaskDelegate {
     fun currentCollectionId(): Long = -1L
     fun addNewCollection(content: String) = Unit
     fun requestAddNewCollection() = Unit
+    fun requestUpdateCollection(collectionId: Long) = Unit
 }
 
 sealed class MainEvent {
     data object RequestAddNewCollection : MainEvent()
+    data class RequestShowButtonSheetOption(val list: List<AppMenuItem>) : MainEvent()
 }

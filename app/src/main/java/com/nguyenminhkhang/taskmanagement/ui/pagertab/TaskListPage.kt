@@ -15,7 +15,7 @@ import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
 
 @Composable
-fun TaskListPage(state: TaskPageUiState, taskDelegate: TaskDelegate) {
+fun TaskListPage(collectionId: Long,state: TaskPageUiState, taskDelegate: TaskDelegate) {
     Column(
         modifier = Modifier.fillMaxWidth()
             .fillMaxHeight()
@@ -24,7 +24,7 @@ fun TaskListPage(state: TaskPageUiState, taskDelegate: TaskDelegate) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        ActiveTaskListSection(state.activeTaskList, taskDelegate)
+        ActiveTaskListSection(collectionId,state.activeTaskList, taskDelegate)
         if (state.completedTaskList.isNotEmpty()) {
             CompletedTaskListSection(state.completedTaskList, taskDelegate)
         }

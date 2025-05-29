@@ -21,6 +21,8 @@ fun AppTabRowLayout(
 ) {
     if (listTabs.isNotEmpty() && selectedTabIndex in listTabs.indices) {
         if (listTabs.size > 3) {
+            Log.d("AppTabRowLayout", "tabPositions: ${listTabs[selectedTabIndex].id}")
+
             ScrollableTabRow(
                 selectedTabIndex,
                 indicator = { tabPositions ->
