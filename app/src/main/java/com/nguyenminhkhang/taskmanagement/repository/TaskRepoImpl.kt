@@ -66,4 +66,10 @@ class TaskRepoImpl(
         withContext(Dispatchers.IO) {
         taskDAO.updateTaskFavorite(taskId.toInt(), isFavorite) > 0
     }
+
+    override suspend fun deleteTaskCollectionById(collectionId: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.deleteTaskCollectionById(collectionId) > 0
+        }
+    }
 }

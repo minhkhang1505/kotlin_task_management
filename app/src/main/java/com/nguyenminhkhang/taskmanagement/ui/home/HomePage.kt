@@ -1,6 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nguyenminhkhang.taskmanagement.MainEvent
 import com.nguyenminhkhang.taskmanagement.MainViewModel
+import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
@@ -36,6 +38,7 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
     val taskDelegate = remember { mainViewModel }
     var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
     var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
+    var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
 
     LaunchedEffect(Unit) {
         mainViewModel.eventFlow.collect {
@@ -45,6 +48,7 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
                 }
                 is MainEvent.RequestShowButtonSheetOption -> {
                     Log.d("HomeLayout", "RequestShowButtonSheetOption: ${it}")
+                    menuListButtonSheet = it.list
                 }
             }
         }
@@ -108,6 +112,28 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
                     Text("Add collection")
                 }
             }
+        }
+
+        if(menuListButtonSheet.isNullOrEmpty()== false) {
+            ModalBottomSheet(
+                onDismissRequest = {
+                    menuListButtonSheet = null
+                }
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    menuListButtonSheet?.forEach { item ->
+                        Text(item.title, modifier = Modifier.fillMaxWidth().clickable {
+                            item.action.invoke()
+                            menuListButtonSheet = null
+                        }.padding(12.dp))
+                    }
+                }
+            }
+
         }
     }
 }

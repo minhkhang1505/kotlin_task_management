@@ -215,6 +215,29 @@ class MainViewModel @Inject constructor(
 
     override fun requestUpdateCollection(collectionId: Long) {
         Log.d("MainViewModel", "requestUpdateCollection: $collectionId")
+        val actionsList = listOf(
+            AppMenuItem(title = "Delete Collection") {
+                deleteCollectionById(collectionId)
+                Log.d("MainViewModel", "requestUpdateCollection: Delete Collection $collectionId")
+            },
+            AppMenuItem(title = "Rename Collection") {
+                Log.d("MainViewModel", "requestUpdateCollection: Rename Collection $collectionId")
+            }
+        )
+        viewModelScope.launch {
+            _eventFlow.emit(MainEvent.RequestShowButtonSheetOption(actionsList))
+        }
+    }
+
+    fun deleteCollectionById(collectionId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if(taskRepo.deleteTaskCollectionById(collectionId)) {
+                _listTabGroup.value.let { listTabs ->
+                    val newTabGroup = listTabs.filter { tabItem -> tabItem.tab.id != collectionId }
+                    _listTabGroup.value = newTabGroup
+                }
+            }
+        }
     }
 }
 
