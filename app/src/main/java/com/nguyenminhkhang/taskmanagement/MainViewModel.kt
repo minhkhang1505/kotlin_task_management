@@ -57,45 +57,41 @@ class MainViewModel @Inject constructor(
     private var _currentSelectedCollectionId:Long = -1L
 
     init {
-        _listTabGroup.value = listOf(
-            TaskGroupUiState(
-                tab = TabUiState(1, "Tab 1"),
-                page = TaskPageUiState(
-                    listOf(
-                        TaskUiState(
-                            id = 1,
-                            content = "Task 1",
-                            collectionId = 1,
-                            updatedAt = 1232,
-                            stringUpdateAt = "Thu, 01 Jan 1970" // Chỉnh sửa để có giá trị hợp lệ
-                        ),
-                        TaskUiState(
-                            id = 2,
-                            content = "Task 2",
-                            collectionId = 1,
-                            updatedAt = 1233,
-                            stringUpdateAt = "Thu, 02 Jan 1970" // Chỉnh sửa để có giá trị hợp lệ
-                        ),
-                        TaskUiState(
-                            id = 3,
-                            content = "Task 3",
-                            collectionId = 1,
-                            isFavorite = true,
-                            updatedAt = 1234,
-                            stringUpdateAt = "Thu, 03 Jan 1970" // Chỉnh sửa để có giá trị hợp lệ
-                        ),
-                    ), listOf()
-                )
-            ),
-            TaskGroupUiState(
-                tab = TabUiState(2, "Tab 2"), // Sửa id thành 2, tên tab cũng đổi để dễ phân biệt
-                page = TaskPageUiState(
-                    listOf(), listOf()
-                )
-            )
-        )
-    }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Log.d("MainViewModel", "Init block started")
 
+                val taskCollections = taskRepo.getTaskCollection()
+                Log.d("MainViewModel", "Fetched ${taskCollections.size} task collections")
+
+                if (taskCollections.isEmpty()) {
+                    taskRepo.addNewCollection("Personal")
+                    taskRepo.addNewCollection("Work")
+                }
+
+                val updatedTaskCollections = taskRepo.getTaskCollection()
+
+                val listTabGroupUiState = updatedTaskCollections.map { taskCollection ->
+                    val tasks = taskRepo.getAllTaskByCollectionId(taskCollection.id!!)
+
+                    val taskUiStates = tasks.map { taskEntity ->
+                        taskEntity.toTaskUiState()
+                    }
+
+                    TaskGroupUiState(
+                        tab = taskCollection.toTabUiState(),
+                        page = TaskPageUiState(
+                            activeTaskList = taskUiStates.filter{task -> !task.isCompleted},
+                            completedTaskList = taskUiStates.filter{task -> task.isCompleted}
+                        )
+                    )
+                }
+                _listTabGroup.value = listTabGroupUiState
+            } catch (e: Exception) {
+                Log.e("MainViewModel", "Error during init: ${e.message}", e)
+            }
+        }
+    }
 
     override fun invertTaskFavorite(taskUiState: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {

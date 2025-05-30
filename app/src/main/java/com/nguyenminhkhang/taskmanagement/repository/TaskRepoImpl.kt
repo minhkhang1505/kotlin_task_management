@@ -14,7 +14,7 @@ class TaskRepoImpl(
         taskDAO.getAllTaskCollection()
     }
 
-    override suspend fun getTaskCollectionById(collectionId: Long): List<TaskEntity> =
+    override suspend fun getAllTaskByCollectionId(collectionId: Long): List<TaskEntity> =
         withContext(Dispatchers.IO) {
         taskDAO.getAllTaskByCollectionId(collectionId)
     }
