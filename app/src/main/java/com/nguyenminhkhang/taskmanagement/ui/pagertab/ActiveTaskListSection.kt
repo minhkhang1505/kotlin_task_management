@@ -63,7 +63,9 @@ fun ActiveTaskListSection(collectionId: Long,activeTaskList: List<TaskUiState>, 
                         contentDescription = "Filter",
                         modifier = Modifier
                             .padding(start = 8.dp)
-                            .clickable { },
+                            .clickable {
+                                taskDelegate.requestSortTasks(collectionId)
+                            },
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Icon(

@@ -16,6 +16,8 @@ data class TaskEntity(
     val isCompleted: Boolean,
     @ColumnInfo(name = "collection_id")
     val collectionId: Long,
-    @ColumnInfo(name = "created_at")
+    @ColumnInfo(name = "updated_at")
     val updatedAt: Long,
+    @ColumnInfo(name = "created_at")
+    val createdAt: Long = System.currentTimeMillis()
 )
