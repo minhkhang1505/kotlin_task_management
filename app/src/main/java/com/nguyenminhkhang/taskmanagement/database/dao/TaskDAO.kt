@@ -47,4 +47,7 @@ interface TaskDAO {
 
     @Update
     suspend fun updateTaskCollection(taskCollection: TaskCollection) : Int
+
+    @Query("UPDATE task_collection SET sorted_type = :sortType WHERE id = :collectionId")
+    suspend fun updateCollectionSortedType(collectionId: Long, sortType: Int) : Int
 }

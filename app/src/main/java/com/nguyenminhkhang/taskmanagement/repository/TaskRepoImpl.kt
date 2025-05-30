@@ -1,6 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.repository
 
 import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
+import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +41,8 @@ class TaskRepoImpl(
         val now = Calendar.getInstance().timeInMillis
         val taskCollection = TaskCollection(
             content = content,
-            updatedAt = now
+            updatedAt = now,
+            sortedType = SortedType.SORTED_BY_DATE.value
         )
         val id = taskDAO.insertTaskCollection(taskCollection)
         if(id > 0) {
@@ -70,6 +72,12 @@ class TaskRepoImpl(
     override suspend fun deleteTaskCollectionById(collectionId: Long): Boolean {
         return withContext(Dispatchers.IO) {
             taskDAO.deleteTaskCollectionById(collectionId) > 0
+        }
+    }
+
+    override suspend fun updateCollectionSortedType(collectionId: Long, sortedType: SortedType): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateCollectionSortedType(collectionId, sortedType.value) > 0
         }
     }
 }
