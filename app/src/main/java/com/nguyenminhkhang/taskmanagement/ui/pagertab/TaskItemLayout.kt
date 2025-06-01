@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -17,27 +18,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 @Composable
-fun TaskItemLayout(
+fun LazyItemScope.TaskItemLayout(
     state: TaskUiState,
-    onCompletedTask: (TaskUiState) -> Unit = {},
-    onFavoriteTask: (TaskUiState) -> Unit = {},
-    onClickedTask: (TaskUiState) -> Unit = {}
+    taskDelegate: TaskDelegate
 ){
     Row(
         modifier = Modifier.fillMaxWidth().clickable {
-            onClickedTask(state)
-        },
+            taskDelegate.invertTaskCompleted(state)
+        }.animateItem(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Checkbox(
             checked = state.isCompleted,
             onCheckedChange = {isChecked ->
-                onCompletedTask(state)
-
+                taskDelegate.invertTaskCompleted(state)
             }
         )
         Column(
@@ -61,7 +60,7 @@ fun TaskItemLayout(
                 painter = painterResource(if(state.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
                 contentDescription = "Favorite Icon",
                 modifier = Modifier.padding(end = 10.dp).clickable {
-                    onFavoriteTask(state)
+                    taskDelegate.invertTaskFavorite(state)
                 }
             )
         }

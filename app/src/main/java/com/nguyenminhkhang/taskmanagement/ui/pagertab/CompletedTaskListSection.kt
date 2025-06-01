@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -36,9 +38,9 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 @Composable
 fun CompletedTaskListSection(completedTask: List<TaskUiState>, taskDelegate: TaskDelegate) {
-    Column (
+    var isExpanded by remember { mutableStateOf(false) }
+    LazyColumn (
         modifier = Modifier.fillMaxWidth()
-            .wrapContentHeight()
             .background(
                 color = Color.Black.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(12.dp)
@@ -48,31 +50,35 @@ fun CompletedTaskListSection(completedTask: List<TaskUiState>, taskDelegate: Tas
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var isExpanded by remember { mutableStateOf(false) }
-        Row(
-            modifier = Modifier.padding( vertical = 4.dp).clickable {
-                isExpanded = !isExpanded
-                Log.d("CompletedTaskListSection", "isExpanded: $isExpanded")
+
+        item {
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 4.dp)
+                    .clickable { isExpanded = !isExpanded }
+            ) {
+                Text(
+                    text = "Completed (${completedTask.size})",
+                    style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 14.dp, end = 6.dp)
+                )
+                if (!isExpanded) Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Expand",
+                    modifier = Modifier.padding(end = 12.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-        ) {
-            Text(text = "Completed (${completedTask.size})",
-                style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
-                modifier = Modifier.weight(1f).padding(start = 14.dp, end = 6.dp))
-            if(!isExpanded) Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Expand",
-                modifier = Modifier.padding(end = 12.dp), tint = MaterialTheme.colorScheme.primary)
         }
+
         if (isExpanded) {
-            completedTask.forEach {
-                TaskItemLayout(it, onCompletedTask = {
-                    taskDelegate.invertTaskCompleted(it)
-                    Log.d("TaskItemLayout", "onCompletedTask: $it")
-                }, onFavoriteTask = {
-                    taskDelegate.invertTaskFavorite(it)
-                    Log.d("TaskItemLayout", "onFavoriteTask: $it")
-                }, onClickedTask = {
-                    taskDelegate.invertTaskCompleted(it)
-                    Log.d("TaskItemLayout", "onClickedTask: $it")
-                })
+            items(completedTask) { task ->
+                TaskItemLayout(
+                    task,
+                    taskDelegate = taskDelegate
+                )
             }
         }
 

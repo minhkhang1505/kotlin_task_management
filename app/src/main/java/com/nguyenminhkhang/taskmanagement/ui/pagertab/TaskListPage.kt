@@ -1,32 +1,52 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.TaskDelegate
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.activeTasksHeader
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.bottomCorner
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.completeTasksHeader
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.emptyState
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.listTaskItems
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.spacer
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.topCorner
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 @Composable
-fun TaskListPage(collectionId: Long,state: TaskPageUiState, taskDelegate: TaskDelegate) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
+fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxWidth()
             .fillMaxHeight()
-            .verticalScroll(rememberScrollState())
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        ActiveTaskListSection(collectionId,state.activeTaskList, taskDelegate)
-        if (state.completedTaskList.isNotEmpty()) {
-            CompletedTaskListSection(state.completedTaskList, taskDelegate)
+        if(state.page.activeTaskList.isNotEmpty()) {
+            topCorner()
+        }
+        activeTasksHeader(state.tab.title, state, taskDelegate)
+        emptyState("empty", state.page)
+        listTaskItems("active", state.page.activeTaskList, taskDelegate)
+        if(state.page.activeTaskList.isNotEmpty()) {
+            bottomCorner()
+        }
+        spacer(12)
+
+        if(state.page.completedTaskList.isNotEmpty()) {
+            topCorner()
+            completeTasksHeader("Completed", state)
+            listTaskItems("completed", state.page.completedTaskList, taskDelegate)
+            bottomCorner()
         }
     }
 }

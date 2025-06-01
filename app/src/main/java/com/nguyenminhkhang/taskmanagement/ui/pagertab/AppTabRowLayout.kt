@@ -1,7 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
 import android.util.Log
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRow

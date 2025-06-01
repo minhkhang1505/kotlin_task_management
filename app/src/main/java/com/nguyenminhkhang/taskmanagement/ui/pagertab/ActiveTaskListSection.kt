@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -38,7 +41,7 @@ fun ActiveTaskListSection(collectionId: Long,activeTaskList: List<TaskUiState>, 
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
+            .heightIn(max = 500.dp)
             .background(
                 color = Color.Black.copy(alpha = 0.1f),
                 shape = RoundedCornerShape(12.dp)
@@ -49,73 +52,49 @@ fun ActiveTaskListSection(collectionId: Long,activeTaskList: List<TaskUiState>, 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        AnimatedVisibility(visible = activeTaskList.isNotEmpty()) {
-            if( collectionId > 0) {
-                Row(
-                    modifier = Modifier.padding(start = 12.dp, end = 6.dp)
-                ) {
-                    Text(
-                        text = "Title", style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f), textAlign = TextAlign.Start
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_filter_alt_24),
-                        contentDescription = "Filter",
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .clickable {
-                                taskDelegate.requestSortTasks(collectionId)
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Icon(
-                        Icons.Default.MoreVert, contentDescription = "More options",
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .clickable {
-                                taskDelegate.requestUpdateCollection(collectionId)
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-        }
+//        AnimatedVisibility(visible = activeTaskList.isNotEmpty()) {
+//            if( collectionId > 0) {
+//                Row(
+//                    modifier = Modifier.padding(start = 12.dp, end = 6.dp)
+//                ) {
+//                    Text(
+//                        text = "Title", style = MaterialTheme.typography.titleLarge,
+//                        modifier = Modifier.weight(1f), textAlign = TextAlign.Start
+//                    )
+//                    Icon(
+//                        painter = painterResource(R.drawable.baseline_filter_alt_24),
+//                        contentDescription = "Filter",
+//                        modifier = Modifier
+//                            .padding(start = 8.dp)
+//                            .clickable {
+//                                taskDelegate.requestSortTasks(collectionId)
+//                            },
+//                        tint = MaterialTheme.colorScheme.primary
+//                    )
+//                    Icon(
+//                        Icons.Default.MoreVert, contentDescription = "More options",
+//                        modifier = Modifier
+//                            .padding(start = 8.dp)
+//                            .clickable {
+//                                taskDelegate.requestUpdateCollection(collectionId)
+//                            },
+//                        tint = MaterialTheme.colorScheme.primary
+//                    )
+//                }
+//            }
+//        }
 
-        AnimatedVisibility(
-            visible = activeTaskList.isEmpty(),
-        ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                val lottieComposition by rememberLottieComposition(
-                    spec = LottieCompositionSpec.RawRes(R.raw.lottie_empty_01)
-                )
-                LottieAnimation(lottieComposition)
-                Text(
-                    "All tasks completed",
-                    fontSize = 24.sp,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Text("Nice work!", fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-
-        activeTaskList.forEach {
-            TaskItemLayout( it,onCompletedTask = {
-                taskDelegate.invertTaskCompleted(it)
-                Log.d("TaskItemLayout", "onCompletedTask: $it")
-            }, onFavoriteTask = {
-                taskDelegate.invertTaskFavorite(it)
-                Log.d("TaskItemLayout", "onFavoriteTask: $it")
-            }, onClickedTask = {
-                taskDelegate.invertTaskCompleted(it)
-                Log.d("TaskItemLayout", "onClickedTask: $it")
-            })
-        }
+//        activeTaskList.forEach {
+//            TaskItemLayout( it,onCompletedTask = {
+//                taskDelegate.invertTaskCompleted(it)
+//                Log.d("TaskItemLayout", "onCompletedTask: $it")
+//            }, onFavoriteTask = {
+//                taskDelegate.invertTaskFavorite(it)
+//                Log.d("TaskItemLayout", "onFavoriteTask: $it")
+//            }, onClickedTask = {
+//                taskDelegate.invertTaskCompleted(it)
+//                Log.d("TaskItemLayout", "onClickedTask: $it")
+//            })
+//        }
     }
 }
