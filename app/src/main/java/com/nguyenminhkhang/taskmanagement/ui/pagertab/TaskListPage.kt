@@ -1,15 +1,18 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.activeTasksHeader
@@ -23,6 +26,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 @Composable
 fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate) {
+    var isExpandedCompletedTask by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -40,12 +44,14 @@ fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate) {
         if(state.page.activeTaskList.isNotEmpty()) {
             bottomCorner()
         }
-        spacer(12)
 
+        spacer(12)
         if(state.page.completedTaskList.isNotEmpty()) {
             topCorner()
-            completeTasksHeader("Completed", state)
-            listTaskItems("completed", state.page.completedTaskList, taskDelegate)
+            completeTasksHeader("Completed", state, onToggleExpand = { isExpandedCompletedTask = !isExpandedCompletedTask })
+            if( isExpandedCompletedTask) {
+                listTaskItems("completed", state.page.completedTaskList, taskDelegate)
+            }
             bottomCorner()
         }
     }

@@ -19,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,7 +47,8 @@ fun LazyListScope.emptyState (
         item(key = key) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth().background(
+                    .fillMaxWidth()
+                    .background(
                         color = Color.Black.copy(alpha = 0.1f),
                         shape = RoundedCornerShape(12.dp)
                     ),
@@ -56,11 +59,11 @@ fun LazyListScope.emptyState (
                 )
                 LottieAnimation(lottieComposition)
                 Text(
-                    "All tasks completed",
+                    "Not have any tasks yet",
                     fontSize = 24.sp,
                     style = MaterialTheme.typography.headlineMedium
                 )
-                Text("Nice work!", fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium)
+                Text("Add some tasks and follow it on Task Management Workspace", fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -69,10 +72,13 @@ fun LazyListScope.emptyState (
 fun LazyListScope.topCorner (key: String? = null) {
     item(key) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(12.dp).background(
-                color = itemBgColor,
-                shape = RoundedCornerShape(12.dp, 12.dp, 0.dp, 0.dp)
-            )
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .background(
+                    color = itemBgColor,
+                    shape = RoundedCornerShape(12.dp, 12.dp, 0.dp, 0.dp)
+                )
         )
     }
 }
@@ -80,10 +86,13 @@ fun LazyListScope.topCorner (key: String? = null) {
 fun LazyListScope.bottomCorner(key: String? = null) {
     item(key) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(12.dp).background(
-                color = itemBgColor,
-                shape = RoundedCornerShape(0.dp, 0.dp, 12.dp, 12.dp)
-            )
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .background(
+                    color = itemBgColor,
+                    shape = RoundedCornerShape(0.dp, 0.dp, 12.dp, 12.dp)
+                )
         )
     }
 }
@@ -97,7 +106,9 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDe
                 ) {
                     Text(
                         text = key, style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f).padding(start = 12.dp), textAlign = TextAlign.Start
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 12.dp), textAlign = TextAlign.Start
                     )
                     Icon(
                         painter = painterResource(R.drawable.baseline_filter_alt_24),
@@ -124,16 +135,18 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDe
     }
 }
 
-fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState) {
+fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onToggleExpand: () -> Unit) {
     if(state.page.activeTaskList.isNotEmpty()) {
         item(key = key) {
             if( state.tab.id > 0) {
                 Row(
-                    modifier = Modifier.background(color = Color.Black.copy(alpha = 0.1f),)
+                    modifier = Modifier.background(color = Color.Black.copy(alpha = 0.1f)).clickable { onToggleExpand() },
                 ) {
                     Text(
                         text = "$key (${state.page.completedTaskList.size})", style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.weight(1f).padding(start = 12.dp), textAlign = TextAlign.Start
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = 12.dp), textAlign = TextAlign.Start
                     )
                     Icon(
                         Icons.Default.KeyboardArrowDown, contentDescription = "More options",
@@ -151,11 +164,14 @@ fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState) {
 }
 
 fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDelegate: TaskDelegate) {
-    itemsIndexed(state, key = { _, item -> "$key${item.id}" }, contentType = { _, item -> item::class.java.name }) { _, item ->
+    itemsIndexed(
+        state,
+        key = { _, item -> "$key${item.id}" },
+        contentType = { _, item -> item::class.java.name }) { _, item ->
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.Black.copy(alpha = 0.1f)) // Add your desired background color here
+                .background(color = Color.Black.copy(alpha = 0.1f))
         ) {
             TaskItemLayout(item, taskDelegate)
         }
