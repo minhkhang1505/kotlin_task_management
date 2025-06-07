@@ -18,15 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RoundedOutlinedTextField(content : String) {
+fun RoundedOutlinedTextField(content : String, onClick: () -> Unit = {}) {
 
-    val inputText by remember { mutableStateOf(content) }
     Box(
         modifier = Modifier.border(width = 1.dp,
             color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
@@ -36,8 +36,14 @@ fun RoundedOutlinedTextField(content : String) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = inputText, modifier = Modifier.padding(horizontal = 4.dp))
-            Icon(Icons.Default.Clear, contentDescription = "Clear", modifier = Modifier.padding(end = 4.dp).size(18.dp).clickable {})
+            Text(text = content, modifier = Modifier.padding(horizontal = 4.dp))
+            Icon(
+                Icons.Default.Clear,
+                contentDescription = "Clear",
+                modifier = Modifier.padding(end = 4.dp).size(18.dp).clickable {
+                    // Handle clear action
+                    onClick()
+                })
         }
     }
 }

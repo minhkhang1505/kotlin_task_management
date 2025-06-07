@@ -38,7 +38,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
-val itemBgColor = Color.Black.copy(alpha = 0.1f)
+val itemBgColor = Color.White.copy(alpha = 0.5f)
 
 fun LazyListScope.emptyState (
     key: String,state: TaskPageUiState
@@ -49,8 +49,7 @@ fun LazyListScope.emptyState (
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color.Black.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(12.dp)
+                        color = itemBgColor
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -61,9 +60,14 @@ fun LazyListScope.emptyState (
                 Text(
                     "Not have any tasks yet",
                     fontSize = 24.sp,
-                    style = MaterialTheme.typography.headlineMedium
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(vertical = 30.dp),
                 )
-                Text("Add some tasks and follow it on Task Management Workspace", fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium)
+                Text("Add some tasks and follow it on Task Management Workspace",
+                    fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(start = 50.dp, end = 50.dp, bottom = 30.dp),
+                    textAlign = TextAlign.Center
+                )
             }
         }
     }
@@ -98,60 +102,58 @@ fun LazyListScope.bottomCorner(key: String? = null) {
 }
 
 fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDelegate: TaskDelegate) {
-    if(state.page.activeTaskList.isNotEmpty()) {
-        item(key = key) {
-            if( state.tab.id > 0) {
-                Row(
-                    modifier = Modifier.background(color = Color.Black.copy(alpha = 0.1f),)
-                ) {
-                    Text(
-                        text = key, style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(start = 12.dp), textAlign = TextAlign.Start
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_filter_alt_24),
-                        contentDescription = "Filter",
-                        modifier = Modifier
-                            .padding(start = 8.dp)
-                            .clickable {
-                                taskDelegate.requestSortTasks(state.tab.id)
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Icon(
-                        Icons.Default.MoreVert, contentDescription = "More options",
-                        modifier = Modifier
-                            .padding(start = 8.dp, end = 6.dp)
-                            .clickable {
-                                taskDelegate.requestUpdateCollection(state.tab.id)
-                            },
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
+    item(key = key) {
+        if( state.tab.id > 0) {
+            Row(
+                modifier = Modifier.background(color = itemBgColor,)
+            ) {
+                Text(
+                    text = key, style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 12.dp, top = 8.dp, bottom = 8.dp), textAlign = TextAlign.Start
+                )
+                Icon(
+                    painter = painterResource(R.drawable.baseline_filter_alt_24),
+                    contentDescription = "Filter",
+                    modifier = Modifier
+                        .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+                        .clickable {
+                            taskDelegate.requestSortTasks(state.tab.id)
+                        },
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Icon(
+                    Icons.Default.MoreVert, contentDescription = "More options",
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
+                        .clickable {
+                            taskDelegate.requestUpdateCollection(state.tab.id)
+                        },
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
 }
 
 fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onToggleExpand: () -> Unit) {
-    if(state.page.activeTaskList.isNotEmpty()) {
+    if(state.page.completedTaskList.isNotEmpty()) {
         item(key = key) {
             if( state.tab.id > 0) {
                 Row(
-                    modifier = Modifier.background(color = Color.Black.copy(alpha = 0.1f)).clickable { onToggleExpand() },
+                    modifier = Modifier.background(color = itemBgColor).clickable { onToggleExpand() },
                 ) {
                     Text(
-                        text = "$key (${state.page.completedTaskList.size})", style = MaterialTheme.typography.titleLarge,
+                        text = "$key (${state.page.completedTaskList.size})", style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier
                             .weight(1f)
-                            .padding(start = 12.dp), textAlign = TextAlign.Start
+                            .padding(start = 12.dp, top = 8.dp, bottom = 8.dp), textAlign = TextAlign.Start
                     )
                     Icon(
                         Icons.Default.KeyboardArrowDown, contentDescription = "More options",
                         modifier = Modifier
-                            .padding(start = 8.dp, end = 6.dp)
+                            .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
                             .clickable {
 
                             },
@@ -171,7 +173,7 @@ fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDel
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(color = Color.Black.copy(alpha = 0.1f))
+                .background(color = itemBgColor)
         ) {
             TaskItemLayout(item, taskDelegate)
         }

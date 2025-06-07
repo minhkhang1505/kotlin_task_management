@@ -35,15 +35,11 @@ fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        if(state.page.activeTaskList.isNotEmpty()) {
-            topCorner()
-        }
+        topCorner()
         activeTasksHeader(state.tab.title, state, taskDelegate)
         emptyState("empty", state.page)
         listTaskItems("active", state.page.activeTaskList, taskDelegate)
-        if(state.page.activeTaskList.isNotEmpty()) {
-            bottomCorner()
-        }
+        bottomCorner()
 
         spacer(12)
         if(state.page.completedTaskList.isNotEmpty()) {
