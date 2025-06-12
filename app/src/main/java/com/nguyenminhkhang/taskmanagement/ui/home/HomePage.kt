@@ -21,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -49,6 +52,8 @@ import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
+import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,6 +73,7 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
     var selectedTime by remember { mutableStateOf("") }
     var contentDateTime by remember { mutableStateOf("") }
     var isFavorite by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
         mainViewModel.eventFlow.collect {
@@ -83,11 +89,44 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
         }
     }
 
-    Scaffold(modifier = Modifier.fillMaxSize(), floatingActionButton = {
-        AppFloatActionButton{
-            isShowAddNoteButtonSheet = taskDelegate.currentCollectionId() > 0
+    LaunchedEffect(key1 = true) {
+        mainViewModel.snackbarEvent.collect { event ->
+            val result = snackbarHostState.showSnackbar(
+                message = event.message,
+                actionLabel = event.actionLabel,
+                duration = event.duration
+            )
+
+            when (result) {
+                SnackbarResult.ActionPerformed -> {
+                    when (event.actionType) {
+                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
+                            mainViewModel.undoToggleComplete()
+                        }
+                        else -> {}
+                    }
+                }
+                SnackbarResult.Dismissed -> {
+                    when (event.actionType) {
+                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
+                            mainViewModel.confirmToggleComplete()
+                        }
+                        else -> {}
+                    }
+                }
+            }
         }
-    }) { innerPadding ->
+    }
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        floatingActionButton = {
+            AppFloatActionButton{
+                isShowAddNoteButtonSheet = taskDelegate.currentCollectionId() > 0
+            }
+        },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -152,11 +191,7 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
                 if (isShowTimePicker) {
                     TimePickerModal(onDismiss = {isShowTimePicker = false},
                         onConfirm = { timePickerState ->
-                            val selectedHour = timePickerState.hour
-                            val selectedMinute = timePickerState.minute
-
-                            selectedTime = String.format("%02d:%02d", selectedHour, selectedMinute)
-
+                            selectedTime = timePickerState.toHourMinuteString()
                         } )
                 }
                 if(selectedDate.isNotEmpty() || selectedTime.isNotEmpty()) {

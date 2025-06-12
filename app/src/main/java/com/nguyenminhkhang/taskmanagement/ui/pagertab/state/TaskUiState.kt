@@ -1,5 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab.state
 
+import android.util.TimeUtils
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TimePickerState
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -31,6 +34,10 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+fun TimePickerState.toHourMinuteString(): String {
+    return String.format("%02d:%02d", this.hour, this.minute)
+}
 
 fun Long.millisToDateString(): String {
     return SimpleDateFormat("EEE,dd MM yyyy", Locale.getDefault())
