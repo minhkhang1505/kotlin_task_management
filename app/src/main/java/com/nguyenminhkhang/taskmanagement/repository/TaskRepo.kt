@@ -15,4 +15,5 @@ interface TaskRepo {
     suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean
     suspend fun deleteTaskCollectionById(collectionId: Long): Boolean
     suspend fun updateCollectionSortedType(collectionId: Long, sortedType: SortedType) : Boolean
+    suspend fun getTaskById(taskId: Long): TaskEntity
 }

@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
@@ -165,7 +166,7 @@ fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onTo
     }
 }
 
-fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDelegate: TaskDelegate) {
+fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDelegate: TaskDelegate, navController: NavController) {
     itemsIndexed(
         state,
         key = { _, item -> "$key${item.id}" },
@@ -175,7 +176,7 @@ fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDel
                 .fillMaxWidth()
                 .background(color = itemBgColor)
         ) {
-            TaskItemLayout(item, taskDelegate)
+            TaskItemLayout(item, taskDelegate, onTaskClick = {navController.navigate("TaskDetail/${it}") })
         }
     }
 }

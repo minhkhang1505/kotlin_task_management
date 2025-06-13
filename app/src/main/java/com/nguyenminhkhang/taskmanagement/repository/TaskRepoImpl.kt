@@ -80,4 +80,8 @@ class TaskRepoImpl(
             taskDAO.updateCollectionSortedType(collectionId, sortedType.value) > 0
         }
     }
+
+    override suspend fun getTaskById(taskId: Long): TaskEntity = withContext(Dispatchers.IO) {
+        taskDAO.getTaskById(taskId)
+    }
 }

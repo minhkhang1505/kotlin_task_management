@@ -2,10 +2,10 @@ package com.nguyenminhkhang.taskmanagement
 
 import android.icu.util.Calendar
 import android.util.Log
-import androidx.compose.material3.SnackbarDuration
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
+import com.nguyenminhkhang.taskmanagement.handler.TaskCompletionHandler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
@@ -15,7 +15,6 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
-import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,8 @@ const val ID_ADD_FAVORITE_LIST = -1000L
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val taskRepo: TaskRepo
+    private val taskRepo: TaskRepo,
+    private val completionHandler: TaskCompletionHandler
 ) : ViewModel(), TaskDelegate {
     private val _eventFlow: MutableSharedFlow<MainEvent> = MutableSharedFlow()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -75,9 +75,7 @@ class MainViewModel @Inject constructor(
     private var _currentSelectedCollectionId:Long = -1L
 
     private var _snackBarEvent = MutableSharedFlow<SnackbarEvent>()
-    val snackbarEvent = _snackBarEvent.asSharedFlow()
-
-    private var lastToggledCompleteTask: TaskUiState? = null
+    val snackBarEvent = _snackBarEvent.asSharedFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -93,10 +91,7 @@ class MainViewModel @Inject constructor(
 
                 val listTabGroupUiState = updatedTaskCollections.map { taskCollection ->
                     val tasks = taskRepo.getAllTaskByCollectionId(taskCollection.id!!)
-
-                    val taskUiStates = tasks.map { taskEntity ->
-                        taskEntity.toTaskUiState()
-                    }
+                    val taskUiStates = tasks.map { taskEntity -> taskEntity.toTaskUiState() }
 
                     TaskGroupUiState(
                         tab = taskCollection.toTabUiState(),
@@ -109,6 +104,25 @@ class MainViewModel @Inject constructor(
                 _listTabGroup.value = listTabGroupUiState
             } catch (e: Exception) {
                 Log.e("MainViewModel", "Error during init: ${e.message}", e)
+            }
+        }
+    }
+
+    override fun addNewTask(collectionId: Long, content: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepo.addTask(content, collectionId)?.let { taskEntity ->
+                val newTaskUiState = taskEntity.toTaskUiState()
+                val newTabGroup = _listTabGroup.value.map { tabGroup ->
+                    if (tabGroup.tab.id == collectionId) {
+                        val newPage = tabGroup.page.copy(
+                            activeTaskList = tabGroup.page.activeTaskList + newTaskUiState,
+                        )
+                        tabGroup.copy(page = newPage)
+                    } else {
+                        tabGroup
+                    }
+                }
+                _listTabGroup.value = newTabGroup
             }
         }
     }
@@ -145,112 +159,49 @@ class MainViewModel @Inject constructor(
         }
     }
 
-
     override fun invertTaskCompleted(taskUiState: TaskUiState) {
-        lastToggledCompleteTask = taskUiState
-
-        val toggledTask = taskUiState.copy(
-            isCompleted = !taskUiState.isCompleted,
-            updatedAt = System.currentTimeMillis() // Cập nhật thời gian
+        completionHandler.invertTaskCompletion(
+            scope = viewModelScope,
+            task = taskUiState,
+            onUpdateList = { updatedTask ->
+                _updateUiWithTask(updatedTask)
+            },
+            onShowSnackbar = {event->
+                _snackBarEvent.emit(event)
+            }
         )
-
-        viewModelScope.launch(Dispatchers.IO) {
-//            val newTaskUiState = taskUiState.copy(isCompleted = !taskUiState.isCompleted)
-//            if(!taskRepo.updateTaskCompleted(newTaskUiState.id!!, newTaskUiState.isCompleted)) {
-//                return@launch
-//            }
-            _listTabGroup.value.let{ listTabGroup->
-                val newListTabGroup = listTabGroup.map { tabGroup ->
-                    val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
-                    val updateList = sumList.map{task ->
-                        if(task.id == toggledTask.id) {
-                            val newUpdateAt = Calendar.getInstance().timeInMillis
-                            toggledTask.copy(
-                                updatedAt = newUpdateAt,
-                                stringUpdateAt = newUpdateAt.millisToDateString()
-                            )
-                        } else task
-                    }
-                    val newPage = tabGroup.page.copy(
-                        activeTaskList = updateList.filter{ !it.isCompleted },
-                        completedTaskList = updateList.filter{ it.isCompleted}
-                    )
-                    tabGroup.copy(page = newPage)
-                }
-                _listTabGroup.value = newListTabGroup
-            }
-
-            val message = if (toggledTask.isCompleted) {
-                "Đã hoàn thành '${toggledTask.content}'"
-            } else {
-                "Đã bỏ hoàn thành '${toggledTask.content}'"
-            }
-
-            viewModelScope.launch {
-                _snackBarEvent.emit(
-                    SnackbarEvent(
-                        message = message,
-                        duration = SnackbarDuration.Long,
-                        actionLabel = "Undo",
-                        actionType = SnackbarActionType.UNDO_TOGGLE_COMPLETE
-                    )
-                )
-            }
-        }
-    }
-
-    override fun addNewTask(collectionId: Long, content: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(content, collectionId)?.let { taskEntity ->
-                val newTaskUiState = taskEntity.toTaskUiState()
-                val newTabGroup = _listTabGroup.value.map { tabGroup ->
-                    if (tabGroup.tab.id == collectionId) {
-                        val newPage = tabGroup.page.copy(
-                            activeTaskList = tabGroup.page.activeTaskList + newTaskUiState,
-                        )
-                        tabGroup.copy(page = newPage)
-                    } else {
-                        tabGroup
-                    }
-                }
-                _listTabGroup.value = newTabGroup
-            }
-        }
     }
 
     fun undoToggleComplete() {
-        lastToggledCompleteTask?.let { originalTask ->
-            _listTabGroup.value.let { listTabGroup ->
-                val newListTabGroup = listTabGroup.map { tabGroup ->
-                    val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
-                    val updateList = sumList.map { task ->
-                        if (task.id == originalTask.id) originalTask else task
-                    }
-
-                    val newPage = tabGroup.page.copy(
-                        activeTaskList = updateList.filter { !it.isCompleted },
-                        completedTaskList = updateList.filter { it.isCompleted }
-                    )
-                    tabGroup.copy(page = newPage)
-                }
-                _listTabGroup.value = newListTabGroup
-            }
-
-            lastToggledCompleteTask = null
-            Log.d("MainViewModel", "Reverted task status for: ${originalTask.content}")
+        completionHandler.undo { originalTask ->
+            _updateUiWithTask(originalTask)
         }
     }
 
     fun confirmToggleComplete() {
-        lastToggledCompleteTask?.let { originalTask ->
-            val finalTaskState = originalTask.copy(isCompleted = !originalTask.isCompleted)
+        completionHandler.confirm(viewModelScope)
+    }
 
-            viewModelScope.launch(Dispatchers.IO) {
-                taskRepo.updateTaskCompleted(finalTaskState.id!!, finalTaskState.isCompleted)
-                Log.d("MainViewModel", "Confirmed task status change for: ${finalTaskState.content}")
+    private fun _updateUiWithTask(taskToUpdate: TaskUiState) {
+        _listTabGroup.value.let{ listTabGroup->
+            val newListTabGroup = listTabGroup.map { tabGroup ->
+                val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
+                val updateList = sumList.map{task ->
+                    if(task.id == taskToUpdate.id) {
+                        val newUpdateAt = Calendar.getInstance().timeInMillis
+                        taskToUpdate.copy(
+                            updatedAt = newUpdateAt,
+                            stringUpdateAt = newUpdateAt.millisToDateString()
+                        )
+                    } else task
+                }
+                val newPage = tabGroup.page.copy(
+                    activeTaskList = updateList.filter{ !it.isCompleted },
+                    completedTaskList = updateList.filter{ it.isCompleted}
+                )
+                tabGroup.copy(page = newPage)
             }
-
-            lastToggledCompleteTask = null
+            _listTabGroup.value = newListTabGroup
         }
     }
 

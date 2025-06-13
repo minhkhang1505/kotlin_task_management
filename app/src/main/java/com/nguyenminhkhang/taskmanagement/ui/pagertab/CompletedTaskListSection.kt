@@ -75,10 +75,10 @@ fun CompletedTaskListSection(completedTask: List<TaskUiState>, taskDelegate: Tas
 
         if (isExpanded) {
             items(completedTask) { task ->
-                TaskItemLayout(
-                    task,
-                    taskDelegate = taskDelegate
-                )
+//                TaskItemLayout(
+//                    task,
+//                    taskDelegate = taskDelegate,
+//                )
             }
         }
 

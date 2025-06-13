@@ -24,12 +24,15 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 @Composable
 fun LazyItemScope.TaskItemLayout(
     state: TaskUiState,
-    taskDelegate: TaskDelegate
+    taskDelegate: TaskDelegate,
+    onTaskClick: (Long) -> Unit
 ){
     Row(
-        modifier = Modifier.fillMaxWidth().clickable {
-            taskDelegate.invertTaskCompleted(state)
-        }.animateItem(),
+        modifier = Modifier.fillMaxWidth()
+            .clickable {
+                onTaskClick(state.id!!)
+            }
+            .animateItem(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {

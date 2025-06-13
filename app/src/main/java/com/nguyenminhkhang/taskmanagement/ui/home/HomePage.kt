@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.MainEvent
 import com.nguyenminhkhang.taskmanagement.MainViewModel
 import com.nguyenminhkhang.taskmanagement.R
@@ -58,7 +59,7 @@ import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
+fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel(), navController: NavController) {
     val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList())
     val taskDelegate = remember { mainViewModel }
     var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
@@ -90,7 +91,7 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
     }
 
     LaunchedEffect(key1 = true) {
-        mainViewModel.snackbarEvent.collect { event ->
+        mainViewModel.snackBarEvent.collect { event ->
             val result = snackbarHostState.showSnackbar(
                 message = event.message,
                 actionLabel = event.actionLabel,
@@ -135,7 +136,7 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopBar(taskDelegate)
-            PagerTabLayout( listTabGroup, taskDelegate)
+            PagerTabLayout( listTabGroup, taskDelegate, navController)
         }
 
         if(isShowAddNoteButtonSheet) {
@@ -160,40 +161,6 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                if(isShowDetailTextField) {
-                    Text("Detail", modifier = Modifier.padding(horizontal = 16.dp))
-                    TextField(
-                        value=inputTaskDetailContent,
-                        onValueChange = { inputTaskDetailContent = it },
-                        placeholder = { Text("Add detail", style = TextStyle(fontSize = 12.sp, color = Color.Gray.copy(0.5f))) },
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp,)
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp)),
-                        colors = TextFieldDefaults.colors(
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            disabledIndicatorColor = Color.Transparent,
-                            errorIndicatorColor = Color.Transparent
-                        ),
-                        textStyle = TextStyle(fontSize = 12.sp)
-                    )
-                }
-                if(isShowDatePickerModel) {
-                    DatePickerModal(
-                        onDismiss = { isShowDatePickerModel = false },
-                        onDateSelected = { date ->
-                            // Handle the selected date here
-                            selectedDate = date
-                        }
-                    )
-                }
-                if (isShowTimePicker) {
-                    TimePickerModal(onDismiss = {isShowTimePicker = false},
-                        onConfirm = { timePickerState ->
-                            selectedTime = timePickerState.toHourMinuteString()
-                        } )
-                }
                 if(selectedDate.isNotEmpty() || selectedTime.isNotEmpty()) {
                     Row(
                         modifier = Modifier
@@ -328,6 +295,43 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel()) {
                 }
             }
 
+        }
+
+        if(isShowDetailTextField) {
+            Text("Detail", modifier = Modifier.padding(horizontal = 16.dp))
+            TextField(
+                value=inputTaskDetailContent,
+                onValueChange = { inputTaskDetailContent = it },
+                placeholder = { Text("Add detail", style = TextStyle(fontSize = 12.sp, color = Color.Gray.copy(0.5f))) },
+                modifier = Modifier
+                    .padding(horizontal = 16.dp,)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(12.dp)),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
+                ),
+                textStyle = TextStyle(fontSize = 12.sp)
+            )
+        }
+
+        if(isShowDatePickerModel) {
+            DatePickerModal(
+                onDismiss = { isShowDatePickerModel = false },
+                onDateSelected = { date ->
+                    // Handle the selected date here
+                    selectedDate = date
+                }
+            )
+        }
+
+        if (isShowTimePicker) {
+            TimePickerModal(onDismiss = {isShowTimePicker = false},
+                onConfirm = { timePickerState ->
+                    selectedTime = timePickerState.toHourMinuteString()
+                } )
         }
     }
 }

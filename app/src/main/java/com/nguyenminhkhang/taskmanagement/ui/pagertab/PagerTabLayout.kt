@@ -11,13 +11,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ID_ADD_NEW_LIST
 import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import kotlinx.coroutines.launch
 
 @Composable
-fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
+fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, navController: NavController) {
     var pageCount by remember { mutableStateOf(0) }
     val pagerState = rememberPagerState(pageCount = { pageCount })
     var internalState by remember {
@@ -54,6 +55,6 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate) {
     HorizontalPager(
         pagerState, key = { it }, beyondViewportPageCount = 2
     ) { pageIndex ->
-        TaskListPage(state = state[pageIndex], taskDelegate)
+        TaskListPage(state = state[pageIndex], taskDelegate, navController)
     }
 }

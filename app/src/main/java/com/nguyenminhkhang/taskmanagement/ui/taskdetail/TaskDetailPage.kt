@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
@@ -30,6 +31,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,26 +42,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDetailPage() {
+fun TaskDetailPage(viewModel: TaskDetailViewModel = hiltViewModel(), navController: NavController) {
     var detailInput by remember { mutableStateOf("") }
     var isShowDatePickerModel by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
     var isShowTimePicker by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf("") }
-    var contentDateTime by remember { mutableStateOf("") }
     var isFavorite by remember { mutableStateOf(false) }
+    val taskState by viewModel.task.collectAsState()
+
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text(text = "Task Detail") },
+                title = { Text(text = "", style = MaterialTheme.typography.titleLarge) },
                 actions = {
                     IconButton(
                         onClick = { isFavorite = !isFavorite },
@@ -75,6 +83,16 @@ fun TaskDetailPage() {
                                 contentDescription = "Favorite"
                             )
                         }
+                    )
+                },
+                navigationIcon = {
+                    Icon(Icons.Default.Clear, contentDescription = "Back",
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clickable {
+                                // Handle back navigation
+                                navController.popBackStack()
+                            }
                     )
                 }
             )
@@ -103,8 +121,8 @@ fun TaskDetailPage() {
                     )
                 }
                 Text(
-                    text = "Task details go here",
                     modifier = Modifier.padding(8.dp),
+                    text = taskState.content,
                     style = MaterialTheme.typography.titleLarge
                 )
                 // menu icon sub task detail
