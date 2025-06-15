@@ -166,10 +166,25 @@ class MainViewModel @Inject constructor(
             onUpdateList = { updatedTask ->
                 _updateUiWithTask(updatedTask)
             },
-            onShowSnackbar = {event->
+            onShowSnackbar = { event ->
+                Log.d("DEBUG_FLOW", "5. VIEWMODEL PHÁT SỰ KIỆN: Chuẩn bị phát Snackbar: ${event.message}")
                 _snackBarEvent.emit(event)
             }
         )
+    }
+
+    fun handleTaskCompletionResult(taskId: Long) {
+        Log.d("INSTANCE_CHECK", "ViewModel đang XỬ LÝ KẾT QUẢ có HashCode: ${this.hashCode()}")
+        Log.d("DEBUG_FLOW", "4. VIEWMODEL NHẬN LỆNH: Đang xử lý cho task ID = $taskId")
+        val taskToComplete = _listTabGroup.value.map { tabGroup ->
+                tabGroup.page.activeTaskList.firstOrNull { task -> task.id == taskId }
+                    ?: tabGroup.page.completedTaskList.firstOrNull { task -> task.id == taskId }
+            }.firstOrNull { it != null
+        }
+
+        taskToComplete?.let {
+            invertTaskCompleted(it)
+        }?:Log.d("DEBUG_FLOW", "LỖI: Không tìm thấy task với ID = $taskId")
     }
 
     fun undoToggleComplete() {
@@ -180,6 +195,7 @@ class MainViewModel @Inject constructor(
 
     fun confirmToggleComplete() {
         completionHandler.confirm(viewModelScope)
+        Log.d("DEBUG_FLOW", "7. VIEWMODEL Hoàn Tất: Da luu thay doi trong CSDL")
     }
 
     private fun _updateUiWithTask(taskToUpdate: TaskUiState) {

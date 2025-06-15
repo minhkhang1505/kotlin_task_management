@@ -23,12 +23,10 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,27 +39,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.MainEvent
-import com.nguyenminhkhang.taskmanagement.MainViewModel
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
-import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel(), navController: NavController) {
-    val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList())
-    val taskDelegate = remember { mainViewModel }
+fun HomeLayout(
+    listTabGroup: List<TaskGroupUiState>,
+    taskDelegate: TaskDelegate,
+    navController: NavController,
+    snackbarHostState: SnackbarHostState
+) {
     var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
     var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
     var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
@@ -74,50 +72,6 @@ fun HomeLayout(mainViewModel: MainViewModel = hiltViewModel(), navController: Na
     var selectedTime by remember { mutableStateOf("") }
     var contentDateTime by remember { mutableStateOf("") }
     var isFavorite by remember { mutableStateOf(false) }
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(Unit) {
-        mainViewModel.eventFlow.collect {
-            when(it) {
-                MainEvent.RequestAddNewCollection -> {
-                    isShowAddNewCollectionButton = true
-                }
-                is MainEvent.RequestShowButtonSheetOption -> {
-                    Log.d("HomeLayout", "RequestShowButtonSheetOption: ${it}")
-                    menuListButtonSheet = it.list
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(key1 = true) {
-        mainViewModel.snackBarEvent.collect { event ->
-            val result = snackbarHostState.showSnackbar(
-                message = event.message,
-                actionLabel = event.actionLabel,
-                duration = event.duration
-            )
-
-            when (result) {
-                SnackbarResult.ActionPerformed -> {
-                    when (event.actionType) {
-                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
-                            mainViewModel.undoToggleComplete()
-                        }
-                        else -> {}
-                    }
-                }
-                SnackbarResult.Dismissed -> {
-                    when (event.actionType) {
-                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
-                            mainViewModel.confirmToggleComplete()
-                        }
-                        else -> {}
-                    }
-                }
-            }
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

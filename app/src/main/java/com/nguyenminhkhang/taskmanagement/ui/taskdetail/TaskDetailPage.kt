@@ -44,8 +44,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
@@ -55,14 +53,15 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDetailPage(viewModel: TaskDetailViewModel = hiltViewModel(), navController: NavController) {
+fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), navController: NavController) {
     var detailInput by remember { mutableStateOf("") }
     var isShowDatePickerModel by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
     var isShowTimePicker by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf("") }
     var isFavorite by remember { mutableStateOf(false) }
-    val taskState by viewModel.task.collectAsState()
+    val taskState by taskDetailViewModel.task.collectAsState()
+    var repeatTime by remember { mutableStateOf("")}
 
     Scaffold (
         topBar = {
@@ -96,7 +95,6 @@ fun TaskDetailPage(viewModel: TaskDetailViewModel = hiltViewModel(), navControll
                     )
                 }
             )
-
         },
 
     ) {
@@ -191,11 +189,39 @@ fun TaskDetailPage(viewModel: TaskDetailViewModel = hiltViewModel(), navControll
                         .padding(vertical = 8.dp)
                         .height(50.dp)
                         .clickable { isShowTimePicker = true
-                            Log.d("TaskDetailPage", "Time : ${selectedTime}") },
+                            Log.d("TaskDetailPage", "Time : ${repeatTime}") },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.width(8.dp))
                     Icon(painter = painterResource(R.drawable.baseline_access_time_24), contentDescription = "Time Icon",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    if(repeatTime.isEmpty()) {
+                        Text(text = "Set repeat times", modifier = Modifier.padding(horizontal = 16.dp),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    } else {
+                        RoundedOutlinedTextField(
+                            content = repeatTime,
+                            onClick = { repeatTime = "" },
+                        )
+                    }
+                }
+
+                // repeat icon and text field
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .height(50.dp)
+                        .clickable { navController.navigate("Repeat") },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(painter = painterResource(R.drawable.baseline_repeat_24), contentDescription = "Time Icon",
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(12.dp)),
@@ -232,7 +258,15 @@ fun TaskDetailPage(viewModel: TaskDetailViewModel = hiltViewModel(), navControll
                 )
             }
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+                    taskState.id?.let { taskId ->
+                        Log.d("DEBUG_FLOW", "1. GỬI KẾT QUẢ: Chuẩn bị gửi task ID = $taskId")
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("task_completed_id", taskId)
+                        navController.popBackStack()
+                    }
+                },
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.BottomEnd),

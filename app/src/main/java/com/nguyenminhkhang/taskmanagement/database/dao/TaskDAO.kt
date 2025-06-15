@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 @Dao
 interface TaskDAO {

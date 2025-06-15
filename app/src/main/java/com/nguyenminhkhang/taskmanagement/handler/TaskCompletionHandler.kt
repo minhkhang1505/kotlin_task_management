@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.handler
 
+import android.util.Log
 import androidx.compose.material3.SnackbarDuration
 import com.nguyenminhkhang.taskmanagement.database.domain.ToggleCompleteUseCase
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
@@ -56,7 +57,12 @@ class TaskCompletionHandler @Inject constructor(
     fun confirm(scope: CoroutineScope) {
         lastToggledCompleteTask?.let { originalTask ->
             scope.launch(Dispatchers.IO) {
-                toggleCompleteUseCase(originalTask.id!!, !originalTask.isCompleted)
+                try {
+                    val result = toggleCompleteUseCase(originalTask.id!!, !originalTask.isCompleted)
+                    Log.d("TaskCompletionHandler", "Database update result: $result")
+                } catch (e: Exception) {
+                    Log.e("TaskCompletionHandler", "Error updating task completion: ${e.message}")
+                }
             }
             lastToggledCompleteTask = null
         }

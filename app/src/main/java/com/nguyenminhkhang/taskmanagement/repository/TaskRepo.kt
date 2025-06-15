@@ -3,6 +3,7 @@ package com.nguyenminhkhang.taskmanagement.repository
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 interface TaskRepo {
     suspend fun getTaskCollection(): List<TaskCollection>

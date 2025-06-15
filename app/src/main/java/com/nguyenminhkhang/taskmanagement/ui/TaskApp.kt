@@ -9,8 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.nguyenminhkhang.taskmanagement.ui.floataction.SetRepeatPage
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeLayout
+import com.nguyenminhkhang.taskmanagement.ui.floataction.RepeatPage
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeScreenRoute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailPage
 
 @Composable
@@ -22,8 +22,8 @@ fun TaskApp() {
             modifier = Modifier.fillMaxSize(),
             startDestination = NavScreen.HOME.route
         ) {
-            composable(route = NavScreen.HOME.route) {
-                HomeLayout(navController = navController)
+            composable(route = NavScreen.HOME.route) { backStackEntry ->
+                HomeScreenRoute(navController = navController, backStackEntry= backStackEntry)
             }
 
             composable(
@@ -36,7 +36,7 @@ fun TaskApp() {
             }
 
             composable(route = NavScreen.REPEAT.route) {
-                SetRepeatPage()
+                RepeatPage(navController = navController)
             }
         }
     }
