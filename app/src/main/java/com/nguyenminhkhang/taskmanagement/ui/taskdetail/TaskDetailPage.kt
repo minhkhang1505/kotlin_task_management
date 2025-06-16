@@ -39,6 +39,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -54,6 +57,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), navController: NavController) {
+
     var detailInput by remember { mutableStateOf("") }
     var isShowDatePickerModel by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
@@ -62,6 +66,9 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
     var isFavorite by remember { mutableStateOf(false) }
     val taskState by taskDetailViewModel.task.collectAsState()
     var repeatTime by remember { mutableStateOf("")}
+
+    var titleChange by remember { mutableStateOf("") }
+    titleChange = taskState.content
 
     Scaffold (
         topBar = {
@@ -118,10 +125,55 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                         onClick = { /* Handle edit task */ }
                     )
                 }
-                Text(
-                    modifier = Modifier.padding(8.dp),
-                    text = taskState.content,
-                    style = MaterialTheme.typography.titleLarge
+
+                var isInEditMode by remember { mutableStateOf(false) }
+                val focusRequester = remember { FocusRequester() }
+                OutlinedTextField(
+                    value = titleChange,
+                    onValueChange = { titleChange = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState ->
+                            if (!focusState.isFocused) {
+                                isInEditMode = false
+                            }
+                        },
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        disabledBorderColor = Color.Transparent
+                    ),
+                    textStyle = MaterialTheme.typography.titleLarge.copy(
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                    ),
+                    trailingIcon = {
+                        if (isInEditMode) {
+                            Icon(
+                                painter = painterResource(R.drawable.baseline_done_all_24),
+                                contentDescription = "Done Icon",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable {
+                                        isInEditMode = false
+                                    }
+                            )
+                        } else {
+                            Icon(
+                                painter = painterResource(R.drawable.baseline_edit_24),
+                                contentDescription = "Edit Icon",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable {
+                                        isInEditMode = true
+                                        focusRequester.requestFocus()
+                                    }
+                            )
+                        }
+                    },
+                    enabled = isInEditMode
                 )
                 // menu icon sub task detail
                 Row(
@@ -199,14 +251,14 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                             .clip(RoundedCornerShape(12.dp)),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    if(repeatTime.isEmpty()) {
-                        Text(text = "Set repeat times", modifier = Modifier.padding(horizontal = 16.dp),
+                    if(selectedTime.isEmpty()) {
+                        Text(text = "Add time", modifier = Modifier.padding(horizontal = 16.dp),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     } else {
                         RoundedOutlinedTextField(
-                            content = repeatTime,
-                            onClick = { repeatTime = "" },
+                            content = selectedTime,
+                            onClick = { selectedTime = "" },
                         )
                     }
                 }
@@ -215,7 +267,6 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
                         .height(50.dp)
                         .clickable { navController.navigate("Repeat") },
                     verticalAlignment = Alignment.CenterVertically
@@ -227,14 +278,14 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                             .clip(RoundedCornerShape(12.dp)),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    if(selectedTime.isEmpty()) {
-                        Text(text = "Add time", modifier = Modifier.padding(horizontal = 16.dp),
+                    if(repeatTime.isEmpty()) {
+                        Text(text = "Set repeat times", modifier = Modifier.padding(horizontal = 16.dp),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     } else {
                         RoundedOutlinedTextField(
-                            content = selectedTime,
-                            onClick = { selectedTime = "" },
+                            content = repeatTime,
+                            onClick = { repeatTime = "" },
                         )
                     }
                 }
