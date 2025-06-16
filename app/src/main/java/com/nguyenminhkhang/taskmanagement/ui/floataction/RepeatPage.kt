@@ -10,14 +10,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,9 +38,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -48,16 +57,16 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 @Composable
 fun RepeatPage(navController: NavController) {
     val dayItems = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-    var timeAndDay by remember { mutableStateOf("") }
+    val selectedDays = remember { mutableStateOf(setOf<String>()) }
     var isSelectedDay by remember { mutableStateOf(false) }
     var isShowStartDatePicker by remember { mutableStateOf(false) }
     var isShowEndDatePicker by remember { mutableStateOf(false) }
     var selectedStartDay by remember { mutableStateOf("DD/MM/YYYY") }
     var selectedEndDay by remember { mutableStateOf("DD/MM/YYYY") }
-    var selectedDays by remember { mutableStateOf("") }
     var isShowTimePicker by remember { mutableStateOf(false) }
     var selectedTime by remember { mutableStateOf("Set time") }
-    var repeatTimes by remember { mutableStateOf("1") }
+    var enterRepeatTimes by remember { mutableStateOf("") }
+    var repeatTimesEndCondition by remember { mutableStateOf("") }
     var isShowDropdownSelectedType by remember { mutableStateOf(false) }
     val repeatType = remember { mutableListOf("Day", "Week", "Month", "Year") }
     var selectedRepeatType by remember { mutableStateOf(repeatType[0]) }
@@ -98,24 +107,38 @@ fun RepeatPage(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(it)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Text(text = "Every")
             Row (
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
+                val focusManager = LocalFocusManager.current
                 OutlinedTextField(
-                    value = "",
+                    value = enterRepeatTimes,
                     placeholder = { Text("1") },
-                    onValueChange = { repeatTimes = it },
-                    keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number),
-                    modifier = Modifier.weight(0.2f).padding(end = 8.dp),
+                    onValueChange = { enterRepeatTimes = it },
+                    keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number, imeAction = ImeAction.Done),
+                    modifier = Modifier
+                        .weight(0.2f)
+                        .padding(end = 8.dp),
                     maxLines = 1,
                     singleLine = true,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    )
                 )
+                var textFieldWidth by remember { mutableStateOf(0.dp) }
+                val density = LocalDensity.current
                 Box (
-                    modifier = Modifier.padding(end = 8.dp).weight(0.8f).clickable {  }
+                    modifier = Modifier
+                        .onSizeChanged { size ->
+                            textFieldWidth = with(density) { size.width.toDp() }
+                        }
+                        .clickable { isShowDropdownSelectedType = !isShowDropdownSelectedType }
                 ) {
                     OutlinedTextField(
                         value = "",
@@ -125,26 +148,49 @@ fun RepeatPage(navController: NavController) {
                             selectedRepeatType = it },
                         trailingIcon = {
                             Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Dropdown",
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .clickable { isShowDropdownSelectedType = !isShowDropdownSelectedType }
+                                modifier = Modifier.padding(8.dp)
                             )
                         },
                         readOnly = true,
                         enabled = false,
                         colors = OUTLINETEXTFIELD_COLOR,
                     )
+                    DropdownMenu(
+                        expanded = isShowDropdownSelectedType,
+                        onDismissRequest = { isShowDropdownSelectedType = false },
+                        modifier = Modifier.width(textFieldWidth)
+                    ) {
+                        repeatType.forEach { type ->
+                            DropdownMenuItem(
+                                text = { Text(type) },
+                                onClick = {
+                                    selectedRepeatType = type
+                                    isShowDropdownSelectedType = false
+                                },
+                            )
+                        }
+                    }
                 }
             }
             Row(
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 dayItems.forEach { day ->
-                    DayItem(
+                    DayChip(
                         day = day,
-                        isSelected = false,
-                        onClick = { isSelectedDay = !isSelectedDay }
+                        isSelected = selectedDays.value.contains(day),
+                        onDayClick = {clickedDay->
+                            val currentSelection = selectedDays.value.toMutableSet()
+                            if( currentSelection.contains(clickedDay)) {
+                                currentSelection.remove(clickedDay)
+                            } else {
+                                currentSelection.add(clickedDay)
+                            }
+                            selectedDays.value = currentSelection
+                        }
                     )
                 }
             }
@@ -155,7 +201,6 @@ fun RepeatPage(navController: NavController) {
                     value = selectedTime,
                     onValueChange = {},
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .fillMaxWidth(),
                     trailingIcon = {
                         Icon(Icons.Default.Clear, contentDescription = "Clear",
@@ -177,7 +222,6 @@ fun RepeatPage(navController: NavController) {
                     value = selectedStartDay,
                     onValueChange = {},
                     modifier = Modifier
-                        .padding(end = 8.dp)
                         .fillMaxWidth(),
                     readOnly = true,
                     enabled = false,
@@ -215,7 +259,7 @@ fun RepeatPage(navController: NavController) {
                                     modifier = Modifier.padding(end = 8.dp),
                                     style = MaterialTheme.typography.bodyLarge
                                 )
-                                Box(modifier = Modifier.weight(1f).padding(end = 8.dp)
+                                Box(modifier = Modifier
                                     .selectable(
                                         selected = ("At" == selectedOption),
                                         onClick = {
@@ -240,9 +284,11 @@ fun RepeatPage(navController: NavController) {
                                     modifier = Modifier.padding(end = 8.dp),
                                     style = MaterialTheme.typography.bodyLarge
                                 )
+                                val focusManager = LocalFocusManager.current
                                 OutlinedTextField(
-                                    value = repeatTimes,
-                                    onValueChange = { repeatTimes = it },
+                                    value = repeatTimesEndCondition,
+                                    placeholder = { Text("1") },
+                                    onValueChange = { repeatTimesEndCondition = it },
                                     modifier = Modifier
                                         .weight(0.2f)
                                         .padding(end = 8.dp)
@@ -251,13 +297,15 @@ fun RepeatPage(navController: NavController) {
                                             onClick = { onOptionSelected("After") },
                                             role = Role.RadioButton
                                         ),
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
                                     enabled = ("After" == selectedOption),
                                     colors = OUTLINETEXTFIELD_COLOR,
                                     maxLines = 1,
                                     singleLine = true,
                                     keyboardActions = KeyboardActions(
-                                        onDone = { }
+                                        onDone = {
+                                            focusManager.clearFocus()
+                                        }
                                     )
                                 )
                                 Text(
@@ -298,21 +346,32 @@ fun RepeatPage(navController: NavController) {
 }
 
 @Composable
-fun DayItem(day: String, isSelected: Boolean, onClick: () -> Unit) {
+fun DayChip(
+    day: String,
+    isSelected: Boolean,
+    onDayClick: (String) -> Unit
+) {
+    val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
+    val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+
     Box(
-        modifier = Modifier.border(
-            width = 1.dp,
-            shape = RoundedCornerShape(50.dp),
-            color = MaterialTheme.colorScheme.primary,
-        ).size(45.dp)
-            .clickable { onClick() }
-            .then(if (isSelected) Modifier.background(shape = RoundedCornerShape(50.dp), color = MaterialTheme.colorScheme.primary) else Modifier),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(45.dp)
+            .clip(CircleShape)
+            .background(backgroundColor)
+            .border(
+                width = 1.dp,
+                color = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.outline,
+                shape = CircleShape
+            )
+            // Xử lý sự kiện click
+            .clickable { onDayClick(day) }
     ) {
-        Text(text = day,
-            modifier = Modifier
-                .padding(8.dp),
-            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+        Text(
+            text = day,
+            color = textColor,
+            fontWeight = FontWeight.Bold
         )
     }
 }
