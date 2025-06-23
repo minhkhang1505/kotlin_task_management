@@ -1,8 +1,15 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
 import android.util.Log
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,12 +18,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ID_ADD_NEW_LIST
 import com.nguyenminhkhang.taskmanagement.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, navController: NavController) {
     var pageCount by remember { mutableStateOf(0) }
@@ -29,6 +39,8 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, na
         it.tab.id != ID_ADD_NEW_LIST
     }
     val scope = rememberCoroutineScope()
+    var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { index ->
@@ -43,6 +55,7 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, na
         listTabs = state.map{ it.tab },
         onTabSelected = {index ->
             if(( state.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
+                isShowAddNewCollectionButton = true
                 taskDelegate.requestAddNewCollection()
             } else {
                 scope.launch {
@@ -56,5 +69,34 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, na
         pagerState, key = { it }, beyondViewportPageCount = 2
     ) { pageIndex ->
         TaskListPage(state = state[pageIndex], taskDelegate, navController)
+    }
+
+    if(isShowAddNewCollectionButton) {
+        var inputTaskCollection by remember { mutableStateOf("") }
+
+        ModalBottomSheet({
+            isShowAddNewCollectionButton = false
+        }) {
+            Text("Input task Collection",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth())
+            TextField(value=inputTaskCollection, onValueChange = { inputTaskCollection = it },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth())
+
+            Button({
+                if(inputTaskCollection.isNotEmpty()) {
+                    taskDelegate.addNewCollection(inputTaskCollection)
+                    inputTaskCollection = ""
+                }
+                isShowAddNewCollectionButton = false
+            }, modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()) {
+                Text("Add collection")
+            }
+        }
     }
 }

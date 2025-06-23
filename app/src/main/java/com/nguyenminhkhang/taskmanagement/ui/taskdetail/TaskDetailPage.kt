@@ -57,7 +57,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), navController: NavController) {
-
+    val taskDetailDelegate = taskDetailViewModel as TaskDetailDelegate
     var detailInput by remember { mutableStateOf("") }
     var isShowDatePickerModel by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
@@ -157,6 +157,7 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                                     .clip(RoundedCornerShape(12.dp))
                                     .clickable {
                                         isInEditMode = false
+                                        taskDetailDelegate.updateTaskContentById(titleChange)
                                     }
                             )
                         } else {

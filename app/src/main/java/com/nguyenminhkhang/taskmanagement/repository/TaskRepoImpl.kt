@@ -6,20 +6,19 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
 class TaskRepoImpl(
     private val taskDAO: TaskDAO
 ) : TaskRepo {
-    override suspend fun getTaskCollection(): List<TaskCollection> = withContext(Dispatchers.IO) {
-        taskDAO.getAllTaskCollection()
+    override fun getTaskCollection(): Flow<List<TaskCollection>>  {
+        return taskDAO.getAllTaskCollection()
     }
 
-    override suspend fun getAllTaskByCollectionId(collectionId: Long): List<TaskEntity> =
-        withContext(Dispatchers.IO) {
+    override fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>> =
         taskDAO.getAllTaskByCollectionId(collectionId)
-    }
 
     override suspend fun addTask(content: String, collectionId: Long): TaskEntity? =
         withContext(Dispatchers.IO) {
@@ -84,5 +83,11 @@ class TaskRepoImpl(
 
     override suspend fun getTaskById(taskId: Long): TaskEntity = withContext(Dispatchers.IO) {
         taskDAO.getTaskById(taskId)
+    }
+
+    override suspend fun updateTaskContentById(taskId: Long, newContent: String): Boolean  {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskContentById(taskId, newContent) > 0
+        }
     }
 }

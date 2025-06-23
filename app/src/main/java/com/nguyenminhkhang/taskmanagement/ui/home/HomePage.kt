@@ -61,7 +61,6 @@ fun HomeLayout(
     snackbarHostState: SnackbarHostState
 ) {
     var isShowAddNoteButtonSheet by remember { mutableStateOf(false) }
-    var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
     var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
     var isShowDetailTextField by remember { mutableStateOf(false) }
     var inputTaskContent by remember { mutableStateOf("") }
@@ -192,35 +191,6 @@ fun HomeLayout(
 
                 }
 
-            }
-        }
-
-        if(isShowAddNewCollectionButton) {
-            var inputTaskCollection by remember { mutableStateOf("") }
-
-            ModalBottomSheet({
-                isShowAddNewCollectionButton = false
-            }) {
-                Text("Input task Collection",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth())
-                TextField(value=inputTaskCollection, onValueChange = { inputTaskCollection = it },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth())
-
-                Button({
-                    if(inputTaskCollection.isNotEmpty()) {
-                        taskDelegate.addNewCollection(inputTaskCollection)
-                        inputTaskCollection = ""
-                    }
-                    isShowAddNewCollectionButton = false
-                }, modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()) {
-                    Text("Add collection")
-                }
             }
         }
 

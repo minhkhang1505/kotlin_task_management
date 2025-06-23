@@ -32,27 +32,18 @@ fun HomeScreenRoute(
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(key1 = true) {
 
-        // Coroutine con #1: Lắng nghe kết quả trả về từ màn hình khác
         launch {
             backStackEntry.savedStateHandle
                 .getStateFlow<Long?>("task_completed_id", null)
                 .collect { taskId ->
-                    // Chỉ xử lý khi nhận được ID hợp lệ
                     if (taskId != null) {
                         Log.d("DEBUG_FLOW", "2. NHẬN KẾT QUẢ: Collector đã chạy, nhận được ID = $taskId")
-
-                        // ✅ BƯỚC 1: XÓA KẾT QUẢ NGAY LẬP TỨC ĐỂ "TIÊU THỤ" NÓ
-                        //    Điều này ngăn coroutine này bị kích hoạt lại một cách không cần thiết.
                         backStackEntry.savedStateHandle.remove<Long>("task_completed_id")
-
-                        // ✅ BƯỚC 2: BÂY GIỜ MỚI GỌI VIEWMODEL ĐỂ XỬ LÝ
-                        //    Coroutine sẽ có đủ thời gian để chạy mà không bị hủy giữa chừng.
                         mainViewModel.handleTaskCompletionResult(taskId)
                     }
                 }
         }
 
-        // Coroutine con #2: Lắng nghe sự kiện Snackbar
         launch {
             mainViewModel.snackBarEvent.collect { event ->
                 Log.d("DEBUG_FLOW", "6. NHẬN LỆNH SNACKBAR: Collector đã nhận được sự kiện: ${event.message}")
@@ -61,7 +52,6 @@ fun HomeScreenRoute(
                     actionLabel = event.actionLabel,
                     duration = event.duration
                 )
-                // Xử lý kết quả từ Snackbar
                 if (result == SnackbarResult.ActionPerformed) {
                     if (event.actionType == SnackbarActionType.UNDO_TOGGLE_COMPLETE) {
                         mainViewModel.undoToggleComplete()
@@ -74,7 +64,6 @@ fun HomeScreenRoute(
             }
         }
 
-        // Coroutine con #3: Lắng nghe các sự kiện UI khác
         launch {
             mainViewModel.eventFlow.collect { event ->
                 when (event) {

@@ -1,12 +1,9 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
-import android.icu.util.Calendar
 import android.util.Log
-import androidx.compose.material3.SnackbarResult
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.handler.TaskCompletionHandler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
@@ -23,9 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
     private val taskRepo : TaskRepo,
-    private val completionHandler: TaskCompletionHandler,
     savedStateHandle: SavedStateHandle
-): ViewModel() {
+): ViewModel(), TaskDetailDelegate {
 
     private val _taskDetail = MutableStateFlow<TaskUiState>(TaskUiState(
         id = null,
@@ -58,26 +54,20 @@ class TaskDetailViewModel @Inject constructor (
         }
     }
 
-    fun invertTaskCompleted(taskUiState: TaskUiState) {
-        completionHandler.invertTaskCompletion(
-            scope = viewModelScope,
-            task = taskUiState,
-            onUpdateList = { updatedTask ->
-                _taskDetail.value = updatedTask
-            },
-            onShowSnackbar = { event ->
-                _snackbarEvent.emit(event)
+    override fun updateTaskContentById(newContent:String) {
+        viewModelScope.launch {
+            val taskId = _taskDetail.value.id ?: return@launch
+            val result = taskRepo.updateTaskContentById(taskId, newContent)
+            if(result) {
+                _taskDetail.value = _taskDetail.value.copy (content = newContent)
+                _snackbarEvent.emit(SnackbarEvent("Task content updated successfully"))
+            } else {
+                _snackbarEvent.emit(SnackbarEvent("Failed to update task content"))
             }
-        )
-    }
-
-    fun undoToggleComplete() {
-        completionHandler.undo { originalTask ->
-            _taskDetail.value = originalTask
         }
     }
+}
 
-    fun confirmToggleComplete() {
-        completionHandler.confirm(viewModelScope)
-    }
+interface TaskDetailDelegate {
+    fun updateTaskContentById(newContent: String)
 }

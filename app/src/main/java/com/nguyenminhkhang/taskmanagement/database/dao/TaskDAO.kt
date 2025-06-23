@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDAO {
@@ -20,10 +20,10 @@ interface TaskDAO {
     suspend fun insertTask(task: TaskEntity) : Long
 
     @Query("SELECT * FROM task_collection")
-    suspend fun getAllTaskCollection(): List<TaskCollection>
+    fun getAllTaskCollection(): Flow<List<TaskCollection>>
 
     @Query("SELECT * FROM task WHERE collection_id = :collectionId")
-    suspend fun getAllTaskByCollectionId(collectionId: Long): List<TaskEntity>
+    fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>>
 
     @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
     suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean) : Int
@@ -54,4 +54,7 @@ interface TaskDAO {
 
     @Query("SELECT * FROM task WHERE id = :taskId")
     suspend fun getTaskById(taskId: Long): TaskEntity
+
+    @Query("UPDATE task SET title =  :newContent WHERE id = :taskId")
+    suspend fun updateTaskContentById(taskId: Long, newContent: String) : Int
 }

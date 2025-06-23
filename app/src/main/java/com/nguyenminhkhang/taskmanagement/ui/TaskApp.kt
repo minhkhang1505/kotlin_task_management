@@ -32,6 +32,7 @@ fun TaskApp() {
             ) {
                 TaskDetailPage(
                     navController = navController,
+
                 )
             }
 

@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
+import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.handler.TaskCompletionHandler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
@@ -18,10 +19,20 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,41 +47,74 @@ class MainViewModel @Inject constructor(
     private val _eventFlow: MutableSharedFlow<MainEvent> = MutableSharedFlow()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private val _listTabGroup: MutableStateFlow<List<TaskGroupUiState>> = MutableStateFlow(emptyList())
-    val listTabGroup = _listTabGroup.map {
-        listOf(
-            TaskGroupUiState(
-                tab = TabUiState(ID_ADD_FAVORITE_LIST, "⭐️", sortedType = SortedType.SORTED_BY_DATE),
-                page = TaskPageUiState(
-                    mutableListOf<TaskUiState>().apply {
-                        it.forEach { tab ->
-                            addAll(tab.page.activeTaskList.filter { task -> task.isFavorite })
+    val persistentListGroup: StateFlow<List<TaskGroupUiState>> =
+        taskRepo.getTaskCollection()
+            .flatMapLatest { collections ->
+                if (collections.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    val taskFlows = collections.map { collection ->
+                        taskRepo.getAllTaskByCollectionId(collection.id!!)
+                    }
+                    combine(taskFlows) { arrayOfTaskLists ->
+                        collections.mapIndexed { index, collection ->
+                            val tasksForThisCollection = arrayOfTaskLists[index]
+                            val taskUiStates = tasksForThisCollection.map { it.toTaskUiState() }
+
+                            TaskGroupUiState(
+                                tab = collection.toTabUiState(),
+                                page = TaskPageUiState(
+                                    activeTaskList = taskUiStates.filter { !it.isCompleted },
+                                    completedTaskList = taskUiStates.filter { it.isCompleted }
+                                )
+                            )
                         }
-                    }.sortedByDescending { it.updatedAt }, emptyList()
+                    }
+                }
+            }
+            .map { taskGroupsFromDb ->
+                listOf(
+                    TaskGroupUiState(
+                        tab = TabUiState(ID_ADD_FAVORITE_LIST, "⭐️", sortedType = SortedType.SORTED_BY_DATE),
+                        page = TaskPageUiState(
+                            activeTaskList = taskGroupsFromDb.flatMap { it.page.activeTaskList }
+                                .filter { it.isFavorite }
+                                .sortedByDescending { it.updatedAt },
+                            completedTaskList = emptyList()
+                        )
+                    )
+                ) + taskGroupsFromDb.map { tabItem ->
+                    val sortedType = tabItem.tab.sortedType
+                    val activeTaskList = tabItem.page.activeTaskList
+                    tabItem.copy(
+                        tab = tabItem.tab,
+                        page = tabItem.page.copy(
+                            activeTaskList = if (sortedType == SortedType.SORTED_BY_FAVORITE) {
+                                activeTaskList.sortedByDescending { it.isFavorite }
+                            } else {
+                                activeTaskList.sortedByDescending { it.createdAt }
+                            },
+                            completedTaskList = tabItem.page.completedTaskList.sortedByDescending { it.updatedAt }
+                        )
+                    )
+                } + TaskGroupUiState( // Cuối cùng, thêm tab "+ New Tab"
+                    tab = TabUiState(ID_ADD_NEW_LIST, "+ New Tab", sortedType = SortedType.SORTED_BY_DATE),
+                    page = TaskPageUiState(
+                        activeTaskList = emptyList(),
+                        completedTaskList = emptyList()
+                    )
                 )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                initialValue = emptyList(),
+                started = SharingStarted.WhileSubscribed(5000L),
             )
-        ) + it.map{ tabItem ->
-            val sortedType = tabItem.tab.sortedType
-            val activeTaskList = tabItem.page.activeTaskList
-            tabItem.copy(
-                tab = tabItem.tab,
-                page = tabItem.page.copy(
-                    activeTaskList = if(sortedType == SortedType.SORTED_BY_FAVORITE) {
-                        activeTaskList.sortedByDescending { it.isFavorite }
-                    } else {
-                        activeTaskList.sortedByDescending { it.createdAt }
-                    },
-                    completedTaskList = tabItem.page.completedTaskList.sortedByDescending { it.updatedAt }
-                )
-            )
-        } + TaskGroupUiState(
-            tab = TabUiState(ID_ADD_NEW_LIST, "+ New Tab", sortedType = SortedType.SORTED_BY_DATE),
-            page = TaskPageUiState(
-                activeTaskList = emptyList(),
-                completedTaskList = emptyList()
-            )
-        )
-    }
+
+    private val _displayedListGroup = MutableStateFlow<List<TaskGroupUiState>>(emptyList())
+    val listTabGroup: StateFlow<List<TaskGroupUiState>> = _displayedListGroup.asStateFlow()
+
+
 
     private var _currentSelectedCollectionId:Long = -1L
 
@@ -79,51 +123,21 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val taskCollections = taskRepo.getTaskCollection()
+            // Lấy giá trị đầu tiên để kiểm tra, first() sẽ tự hủy coroutine
+            if (taskRepo.getTaskCollection().first().isEmpty()) {
+                taskRepo.addNewCollection("Personal")
+                taskRepo.addNewCollection("Work")
+            }
 
-                if (taskCollections.isEmpty()) {
-                    taskRepo.addNewCollection("Personal")
-                    taskRepo.addNewCollection("Work")
-                }
-
-                val updatedTaskCollections = taskRepo.getTaskCollection()
-
-                val listTabGroupUiState = updatedTaskCollections.map { taskCollection ->
-                    val tasks = taskRepo.getAllTaskByCollectionId(taskCollection.id!!)
-                    val taskUiStates = tasks.map { taskEntity -> taskEntity.toTaskUiState() }
-
-                    TaskGroupUiState(
-                        tab = taskCollection.toTabUiState(),
-                        page = TaskPageUiState(
-                            activeTaskList = taskUiStates.filter{task -> !task.isCompleted},
-                            completedTaskList = taskUiStates.filter{task -> task.isCompleted}
-                        )
-                    )
-                }
-                _listTabGroup.value = listTabGroupUiState
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "Error during init: ${e.message}", e)
+            persistentListGroup.collect { persistentState ->
+                _displayedListGroup.value = persistentState
             }
         }
     }
 
     override fun addNewTask(collectionId: Long, content: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(content, collectionId)?.let { taskEntity ->
-                val newTaskUiState = taskEntity.toTaskUiState()
-                val newTabGroup = _listTabGroup.value.map { tabGroup ->
-                    if (tabGroup.tab.id == collectionId) {
-                        val newPage = tabGroup.page.copy(
-                            activeTaskList = tabGroup.page.activeTaskList + newTaskUiState,
-                        )
-                        tabGroup.copy(page = newPage)
-                    } else {
-                        tabGroup
-                    }
-                }
-                _listTabGroup.value = newTabGroup
-            }
+            taskRepo.addTask(content, collectionId)
         }
     }
 
@@ -135,26 +149,6 @@ class MainViewModel @Inject constructor(
                 if(!isSuccess) {
                     return@launch
                 }
-            }
-            _listTabGroup.value.let{listTabGroup->
-                val newListTabGroup = listTabGroup.map { tabGroup ->
-                    val newPage = tabGroup.page.copy(
-                        activeTaskList = tabGroup.page.activeTaskList.map {task ->
-                            if(task.id == newTaskUiState.id) newTaskUiState.copy(
-                                updatedAt = Calendar.getInstance().timeInMillis,
-                                stringUpdateAt = Calendar.getInstance().time.toString()
-                            ) else {task}
-                        },
-                        completedTaskList = tabGroup.page.completedTaskList.map {task ->
-                            if(task.id == newTaskUiState.id) newTaskUiState.copy(
-                                updatedAt = Calendar.getInstance().timeInMillis,
-                                stringUpdateAt = Calendar.getInstance().time.toString()
-                            ) else task
-                        }
-                    )
-                    tabGroup.copy(page = newPage)
-                }
-                _listTabGroup.value = newListTabGroup
             }
         }
     }
@@ -176,7 +170,7 @@ class MainViewModel @Inject constructor(
     fun handleTaskCompletionResult(taskId: Long) {
         Log.d("INSTANCE_CHECK", "ViewModel đang XỬ LÝ KẾT QUẢ có HashCode: ${this.hashCode()}")
         Log.d("DEBUG_FLOW", "4. VIEWMODEL NHẬN LỆNH: Đang xử lý cho task ID = $taskId")
-        val taskToComplete = _listTabGroup.value.map { tabGroup ->
+        val taskToComplete = _displayedListGroup.value.map { tabGroup ->
                 tabGroup.page.activeTaskList.firstOrNull { task -> task.id == taskId }
                     ?: tabGroup.page.completedTaskList.firstOrNull { task -> task.id == taskId }
             }.firstOrNull { it != null
@@ -199,7 +193,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun _updateUiWithTask(taskToUpdate: TaskUiState) {
-        _listTabGroup.value.let{ listTabGroup->
+        _displayedListGroup.value.let{ listTabGroup->
             val newListTabGroup = listTabGroup.map { tabGroup ->
                 val sumList = tabGroup.page.completedTaskList + tabGroup.page.activeTaskList
                 val updateList = sumList.map{task ->
@@ -217,13 +211,13 @@ class MainViewModel @Inject constructor(
                 )
                 tabGroup.copy(page = newPage)
             }
-            _listTabGroup.value = newListTabGroup
+            _displayedListGroup.value = newListTabGroup
         }
     }
 
     override fun addNewTaskToCurrentCollection(content: String) {
         viewModelScope.launch {
-            _listTabGroup.value.firstOrNull { it.tab.id == _currentSelectedCollectionId }
+            persistentListGroup.value.firstOrNull { it.tab.id == _currentSelectedCollectionId }
                 ?.let { currentTab ->
                 val collectionId = currentTab.tab.id
                 if(collectionId > 0) addNewTask(collectionId, content)
@@ -241,14 +235,7 @@ class MainViewModel @Inject constructor(
 
     override fun addNewCollection(content: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addNewCollection(content)?.let{ taskCollection ->
-                val tabUiState = taskCollection.toTabUiState()
-                val newTabGroup = TaskGroupUiState(
-                    tabUiState,
-                    TaskPageUiState(emptyList(), emptyList())
-                )
-                _listTabGroup.value += newTabGroup
-            }
+            taskRepo.addNewCollection(content)
         }
     }
 
@@ -273,30 +260,13 @@ class MainViewModel @Inject constructor(
 
     fun deleteCollectionById(collectionId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            if(taskRepo.deleteTaskCollectionById(collectionId)) {
-                _listTabGroup.value.let { listTabs ->
-                    val newTabGroup = listTabs.filter { tabItem -> tabItem.tab.id != collectionId }
-                    _listTabGroup.value = newTabGroup
-                }
-            }
+            taskRepo.deleteTaskCollectionById(collectionId)
         }
     }
 
     private fun sortTaskCollection(collectionId: Long, sortedType: SortedType) {
         viewModelScope.launch {
-            if (taskRepo.updateCollectionSortedType(collectionId, sortedType)) {
-                _listTabGroup.value.let { listTabs ->
-                    val newListTab = listTabs.map { tabGroup ->
-                        if (tabGroup.tab.id == collectionId) {
-                           tabGroup.copy(tab = tabGroup.tab.copy(
-                               sortedType = sortedType))
-                        } else {
-                            tabGroup
-                        }
-                    }
-                    _listTabGroup.value = newListTab
-                }
-            }
+            taskRepo.updateCollectionSortedType(collectionId, sortedType)
         }
     }
 
