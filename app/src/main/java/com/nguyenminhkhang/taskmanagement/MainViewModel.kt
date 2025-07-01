@@ -114,8 +114,6 @@ class MainViewModel @Inject constructor(
     private val _displayedListGroup = MutableStateFlow<List<TaskGroupUiState>>(emptyList())
     val listTabGroup: StateFlow<List<TaskGroupUiState>> = _displayedListGroup.asStateFlow()
 
-
-
     private var _currentSelectedCollectionId:Long = -1L
 
     private var _snackBarEvent = MutableSharedFlow<SnackbarEvent>()
@@ -168,8 +166,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleTaskCompletionResult(taskId: Long) {
-        Log.d("INSTANCE_CHECK", "ViewModel đang XỬ LÝ KẾT QUẢ có HashCode: ${this.hashCode()}")
-        Log.d("DEBUG_FLOW", "4. VIEWMODEL NHẬN LỆNH: Đang xử lý cho task ID = $taskId")
         val taskToComplete = _displayedListGroup.value.map { tabGroup ->
                 tabGroup.page.activeTaskList.firstOrNull { task -> task.id == taskId }
                     ?: tabGroup.page.completedTaskList.firstOrNull { task -> task.id == taskId }

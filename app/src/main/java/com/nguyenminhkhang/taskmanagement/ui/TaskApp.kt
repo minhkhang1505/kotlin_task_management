@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,8 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.nguyenminhkhang.taskmanagement.ui.floataction.RepeatPage
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeScreenRoute
+import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatPage
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailPage
 
 @Composable
@@ -32,12 +33,15 @@ fun TaskApp() {
             ) {
                 TaskDetailPage(
                     navController = navController,
-
                 )
             }
 
-            composable(route = NavScreen.REPEAT.route) {
-                RepeatPage(navController = navController)
+            composable(route = NavScreen.REPEAT.route,
+                arguments = listOf(navArgument("taskId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                val id = backStackEntry.arguments?.getLong("taskId")
+
+                RepeatPage(navController = navController, taskId = id)
             }
         }
     }
@@ -46,5 +50,5 @@ fun TaskApp() {
 enum class NavScreen(val route: String) {
     HOME("Home"),
     TASK_DETAIL("TaskDetail/{taskId}"),
-    REPEAT("Repeat");
+    REPEAT("Repeat/{taskId}"),
 }

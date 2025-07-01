@@ -90,4 +90,52 @@ class TaskRepoImpl(
             taskDAO.updateTaskContentById(taskId, newContent) > 0
         }
     }
+
+    override suspend fun updateTaskStartDateById(taskId: Long, startDate: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskStartDateById(taskId, startDate) > 0
+        }
+    }
+
+    override suspend fun updateTaskDueDateById(taskId: Long, dueDate: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskDueDateById(taskId, dueDate) > 0
+        }
+    }
+
+    override suspend fun updateTaskReminderTimeById(taskId: Long, reminderTime: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskReminderTimeById(taskId, reminderTime) > 0
+        }
+    }
+
+    override suspend fun updateTaskPriorityById(taskId: Long, priority: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskPriorityById(taskId, priority) > 0
+        }
+    }
+
+    override suspend fun updateTaskRepeatById(
+        taskId: Long,
+        repeatEvery: Long,
+        repeatDaysOfWeek: String?,
+        repeatInterval: String?,
+        repeatEndType: String?,
+        repeatEndDate: Long?,
+        repeatEndCount: Int,
+        startTime: Long?
+    ): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskRepeatById(
+                taskId = taskId,
+                repeatEvery = repeatEvery,
+                repeatDaysOfWeek = repeatDaysOfWeek,
+                repeatInterval = repeatInterval,
+                repeatEndType = repeatEndType,
+                repeatEndDate = repeatEndDate,
+                repeatEndCount = repeatEndCount,
+                startTime = startTime,
+            ) > 0
+        }
+    }
 }

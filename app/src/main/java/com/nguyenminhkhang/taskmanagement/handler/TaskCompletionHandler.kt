@@ -1,14 +1,21 @@
 package com.nguyenminhkhang.taskmanagement.handler
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.material3.SnackbarDuration
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.nguyenminhkhang.taskmanagement.database.domain.ToggleCompleteUseCase
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
+import com.nguyenminhkhang.taskmanagement.worker.UpdateTaskWorker
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 

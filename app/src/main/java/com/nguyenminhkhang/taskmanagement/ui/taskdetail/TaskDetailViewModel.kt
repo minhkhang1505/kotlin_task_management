@@ -31,12 +31,18 @@ class TaskDetailViewModel @Inject constructor (
         collectionId = 0L,
         createdAt = System.currentTimeMillis(),
         updatedAt = System.currentTimeMillis(),
-        stringUpdateAt = System.currentTimeMillis().millisToDateString()
+        stringUpdateAt = System.currentTimeMillis().millisToDateString(),
+        repeatEvery = 1L,
+        repeatDaysOfWeek = null,
+        repeatInterval = null,
+        repeatEndType = null,
+        repeatEndDate = null,
+        startDate = null,
+        repeatEndCount = 1,
+        startTime = null
     ))
-    val taskDetail = _taskDetail.asStateFlow()
 
     private val _snackbarEvent = MutableSharedFlow<SnackbarEvent>()
-    val snackBarEvent = _snackbarEvent.asSharedFlow()
 
     var task = _taskDetail.asStateFlow()
 
@@ -48,7 +54,9 @@ class TaskDetailViewModel @Inject constructor (
             viewModelScope.launch {
                 val taskEntity = taskRepo.getTaskById(taskId)
                 _taskDetail.value = taskEntity.toTaskUiState()
+                Log.d("TaskDetailViewModel", "Task detail loaded for taskId: ${_taskDetail.value}")
             }
+
         } else {
             // Xử lý trường hợp lỗi không nhận được ID
         }

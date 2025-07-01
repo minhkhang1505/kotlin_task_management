@@ -46,6 +46,7 @@ import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
@@ -246,7 +247,7 @@ fun HomeLayout(
                 onDismiss = { isShowDatePickerModel = false },
                 onDateSelected = { date ->
                     // Handle the selected date here
-                    selectedDate = date
+                    selectedDate = convertMillisToDate(date)
                 }
             )
         }

@@ -19,4 +19,18 @@ interface TaskRepo {
     suspend fun updateCollectionSortedType(collectionId: Long, sortedType: SortedType) : Boolean
     suspend fun getTaskById(taskId: Long): TaskEntity
     suspend fun updateTaskContentById(taskId: Long, newContent: String): Boolean
+    suspend fun updateTaskStartDateById(taskId: Long, startDate: Long): Boolean
+    suspend fun updateTaskDueDateById(taskId: Long, dueDate: Long): Boolean
+    suspend fun updateTaskReminderTimeById(taskId: Long, reminderTime: Int): Boolean
+    suspend fun updateTaskPriorityById(taskId: Long, priority: Int): Boolean
+    suspend fun updateTaskRepeatById(
+        taskId: Long,
+        repeatEvery: Long,
+        repeatDaysOfWeek: String?,
+        repeatInterval: String?,
+        repeatEndType: String?,
+        repeatEndDate: Long?,
+        repeatEndCount: Int,
+        startTime: Long?
+    ): Boolean
 }

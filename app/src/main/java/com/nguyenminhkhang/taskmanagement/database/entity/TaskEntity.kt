@@ -16,8 +16,35 @@ data class TaskEntity(
     val isCompleted: Boolean,
     @ColumnInfo(name = "collection_id")
     val collectionId: Long,
+
+
+    @ColumnInfo(name = "start_date")
+    val startDate: Long? = null,
+    @ColumnInfo(name = "due_date")
+    val dueDate: Long? = null,
+    @ColumnInfo(name = "reminder_time")
+    val reminderTime: Int = 30,
+
+    @ColumnInfo(name = "priority")
+    val priority: Int = 0,
+
+    @ColumnInfo(name = "repeat_every")
+    val repeatEvery: Long = 1L,
+    @ColumnInfo(name = "repeat_days_of_week")
+    val repeatDaysOfWeek: Set<String>? = null,
+    @ColumnInfo(name = "repeat_interval")
+    val repeatInterval: String? = null,
+    @ColumnInfo(name = "repeat_end_type")
+    val repeatEndType: String? = null,
+    @ColumnInfo(name = "repeat_end_date")
+    val repeatEndDate: Long? = null,
+    @ColumnInfo(name = "repeat_end_count")
+    val repeatEndCount: Int = 1,
+    @ColumnInfo(name = "start_time")
+    val startTime: Long? = null,
+
     @ColumnInfo(name = "updated_at")
     val updatedAt: Long,
     @ColumnInfo(name = "created_at")
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
 )

@@ -14,7 +14,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerModal(
-    onDateSelected: (String) -> Unit,
+    onDateSelected: (Long) -> Unit,
     onDismiss: () -> Unit
 ) {
     val datePickerState = rememberDatePickerState(initialSelectedDateMillis = System.currentTimeMillis())
@@ -23,7 +23,7 @@ fun DatePickerModal(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                val selectedDate = convertMillisToDate(datePickerState.selectedDateMillis ?: System.currentTimeMillis())
+                val selectedDate = datePickerState.selectedDateMillis ?: System.currentTimeMillis()
                 onDateSelected(selectedDate)
                 onDismiss()
             }) {

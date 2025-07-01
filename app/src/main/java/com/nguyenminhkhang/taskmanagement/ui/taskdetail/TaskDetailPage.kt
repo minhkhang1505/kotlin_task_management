@@ -51,6 +51,7 @@ import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 
 
@@ -269,7 +270,7 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp)
-                        .clickable { navController.navigate("Repeat") },
+                        .clickable { navController.navigate("Repeat/${taskState.id}") },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Spacer(modifier = Modifier.width(8.dp))
@@ -295,7 +296,7 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
             if(isShowDatePickerModel) {
                 DatePickerModal(
                     onDateSelected = { date ->
-                        selectedDate = date
+                        selectedDate = convertMillisToDate(date)
                     },
                     onDismiss = { isShowDatePickerModel = false }
                 )
