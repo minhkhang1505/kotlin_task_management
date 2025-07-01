@@ -9,11 +9,6 @@
 - MVVM --> App architecture
 
 # Design Database
-
-# Task Table (`TaskEntity`)
-
-This document describes the structure and usage of the `task` table, as defined by the `TaskEntity` data class in your Kotlin-based task management application. The table is used to store tasks with various properties to support features like reminders, repeat scheduling, prioritization, and task collection grouping.
-
 ## Table: `task`
 
 Each row in the `task` table represents a single task with a variety of attributes.
