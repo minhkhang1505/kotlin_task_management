@@ -34,13 +34,6 @@ Each row in the `task` table represents a single task with a variety of attribut
 | `updated_at`          | Long (Epoch)   | Timestamp of the last update to the task.                                                     |
 | `created_at`          | Long (Epoch)   | Timestamp when the task was created (default: current system time).                           |
 
-## Notes
-
-- All timestamps are represented as milliseconds since the Unix epoch.
-- Repetition fields (`repeat_*`) allow flexible scheduling of recurring tasks.
-- Use `collection_id` to group tasks under a specific collection or project.
-- `reminder_time` is relative to either `start_date` or `due_date`, depending on your application's logic.
-
 ## Usage
 
 This table is suitable for task management applications that require:
@@ -51,11 +44,13 @@ This table is suitable for task management applications that require:
 - Advanced repeat scheduling (daily/weekly/monthly, custom days, etc.)
 - Tracking of creation and update times
 
----
+## Table: `task_collection`
 
-For more details, see the `TaskEntity` class definition in the codebase.
+Each row in the `task_collection` table represents a group or collection of tasks.
 
-- TaskCollection
-  - id: Long
-  - content: String
-  - updateAt: Long
+| Column Name      | Type        | Description                                                                 |
+|------------------|-------------|-----------------------------------------------------------------------------|
+| `id`             | Long (PK)   | Auto-generated unique identifier for the task collection.                   |
+| `content`        | String      | The name or description of the task collection.                             |
+| `updated_at`     | Long (Epoch)| Timestamp of the last update to the collection (milliseconds since epoch).  |
+| `sorted_type`    | Int         | Sorting type for tasks within the collection (default: 0).                  |
