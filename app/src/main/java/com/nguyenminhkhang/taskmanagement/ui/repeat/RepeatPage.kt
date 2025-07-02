@@ -67,7 +67,8 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
     } else {
         val repeatDelegate = repeatViewModel as RepeatDelegate
         val dayItems = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-        val setRepeatDaysOfWeek = remember { mutableStateOf(currentTask.repeatDaysOfWeek) }
+        var setRepeatDaysOfWeek by remember { mutableStateOf(currentTask.repeatDaysOfWeek.orEmpty().toMutableSet()) }
+        var isDaySelected by remember { mutableStateOf(false) }
         var isShowStartDatePicker by remember { mutableStateOf(false) }
         var isShowEndDatePicker by remember { mutableStateOf(false) }
         var selectedRepeatStartDay by remember { mutableStateOf(currentTask.startDate) }
@@ -108,17 +109,11 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                             modifier = Modifier
                                 .padding(8.dp)
                                 .clickable {
-                                    Log.d("RepeatPage", "Saving repeat settings for task ID: $taskId")
-                                    Log.d("RepeatPage", "Repeat Every: $setRepeatEvery")
-                                    Log.d("RepeatPage", "Repeat Days of Week: ${setRepeatDaysOfWeek.value?.joinToString(",")}")
-                                    Log.d("RepeatPage", "Repeat Interval: $selectedRepeatInterval")
-                                    Log.d("RepeatPage", "Repeat End Type: $selectedOption")
-                                    Log.d("RepeatPage", "Repeat End Date: $selectedRepeatEndDate")
-                                    Log.d("RepeatPage", "Repeat End Count: $selectedRepeatEndCount")
+                                    Log.d("RepeatPage", "Repeat Days of Week: ${setRepeatDaysOfWeek?.joinToString(",")}")
                                     repeatDelegate.updateTaskRepeatById(
                                         taskId = taskId!!,
                                         repeatEvery = setRepeatEvery.toLongOrNull() ?: 1L,
-                                        repeatDaysOfWeek = setRepeatDaysOfWeek.value?.joinToString(","),
+                                        repeatDaysOfWeek = setRepeatDaysOfWeek?.joinToString(","),
                                         repeatInterval = selectedRepeatInterval,
                                         repeatEndType = selectedOption,
                                         repeatEndDate = selectedRepeatEndDate,
@@ -206,17 +201,16 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     dayItems.forEach { day ->
+                        isDaySelected = setRepeatDaysOfWeek.contains(day)
                         DayChip(
                             day = day,
-                            isSelected = setRepeatDaysOfWeek.value?.contains(day) ?: false,
-                            onDayClick = {clickedDay->
-                                val currentSelection = setRepeatDaysOfWeek.value!!.toMutableSet()
-                                if( currentSelection.contains(clickedDay)) {
-                                    currentSelection.remove(clickedDay)
+                            setSelectedDayOfWeek = setRepeatDaysOfWeek,
+                            onDayClick = { clickedDay ->
+                                if( setRepeatDaysOfWeek.contains(clickedDay)) {
+                                    setRepeatDaysOfWeek.remove(clickedDay)
                                 } else {
-                                    currentSelection.add(clickedDay)
+                                    setRepeatDaysOfWeek.add(clickedDay)
                                 }
-                                setRepeatDaysOfWeek.value = currentSelection
                             }
                         )
                     }
@@ -378,9 +372,11 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
 @Composable
 fun DayChip(
     day: String,
-    isSelected: Boolean,
+    setSelectedDayOfWeek: Set<String>,
     onDayClick: (String) -> Unit
 ) {
+    var isSelected by remember { mutableStateOf(false) }
+    isSelected = setSelectedDayOfWeek.contains(day)
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
     val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
@@ -396,7 +392,10 @@ fun DayChip(
                 shape = CircleShape
             )
             // Xử lý sự kiện click
-            .clickable { onDayClick(day) }
+            .clickable {
+                onDayClick(day)
+                isSelected = !isSelected
+            } // Toggle selection state
     ) {
         Text(
             text = day,
