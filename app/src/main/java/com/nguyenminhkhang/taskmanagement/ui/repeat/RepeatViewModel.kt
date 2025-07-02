@@ -53,15 +53,18 @@ class RepeatViewModel @Inject constructor(
     ))
     init {
         val taskId: Long? = savedStateHandle.get("taskId")
+        Log.d("TaskDetailViewModel", "Received taskId: $taskId")
 
         if (taskId != null) {
             viewModelScope.launch {
-                val taskEntity  = taskRepo.getTaskById(taskId)
-                _taskDetail.value = taskEntity.toTaskUiState()
-                Log.d("TaskDetailViewModel", "Task loaded: ${_taskDetail.value.repeatEvery}")
+                taskRepo.getTaskById(taskId).collect() { taskEntity ->
+                    _taskDetail.value = taskEntity.toTaskUiState()
+                }
+                Log.d("TaskDetailViewModel", "Task detail loaded for taskId: ${_taskDetail.value}")
             }
+
         } else {
-            Log.e("TaskDetailViewModel", "Task ID is null")
+            // Xử lý trường hợp lỗi không nhận được ID
         }
     }
 

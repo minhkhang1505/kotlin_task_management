@@ -53,7 +53,7 @@ interface TaskDAO {
     suspend fun updateCollectionSortedType(collectionId: Long, sortType: Int) : Int
 
     @Query("SELECT * FROM task WHERE id = :taskId")
-    suspend fun getTaskById(taskId: Long): TaskEntity
+    fun getTaskById(taskId: Long): Flow<TaskEntity>
 
     @Query("UPDATE task SET title =  :newContent WHERE id = :taskId")
     suspend fun updateTaskContentById(taskId: Long, newContent: String) : Int

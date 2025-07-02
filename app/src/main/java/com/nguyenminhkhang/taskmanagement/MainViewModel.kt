@@ -121,7 +121,6 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            // Lấy giá trị đầu tiên để kiểm tra, first() sẽ tự hủy coroutine
             if (taskRepo.getTaskCollection().first().isEmpty()) {
                 taskRepo.addNewCollection("Personal")
                 taskRepo.addNewCollection("Work")

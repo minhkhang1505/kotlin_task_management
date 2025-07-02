@@ -1,6 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,8 +53,9 @@ class TaskDetailViewModel @Inject constructor (
 
         if (taskId != null) {
             viewModelScope.launch {
-                val taskEntity = taskRepo.getTaskById(taskId)
-                _taskDetail.value = taskEntity.toTaskUiState()
+                taskRepo.getTaskById(taskId).collect() { taskEntity ->
+                    _taskDetail.value = taskEntity.toTaskUiState()
+                }
                 Log.d("TaskDetailViewModel", "Task detail loaded for taskId: ${_taskDetail.value}")
             }
 

@@ -6,11 +6,12 @@ class Converters {
 
     @TypeConverter
     fun fromSetToString(set: Set<String>?): String? {
-        return set?.joinToString(separator = ",")
+        return if (set.isNullOrEmpty()) null else set.joinToString(",")
     }
 
+
     @TypeConverter
-    fun fromStringToSet(value: String?): Set<String>? {
-        return value?.split(",")?.toSet()
+    fun toSetFromString(value: String?): Set<String>? {
+        return value?.takeIf { it.isNotBlank() }?.split(",")?.toSet()
     }
 }

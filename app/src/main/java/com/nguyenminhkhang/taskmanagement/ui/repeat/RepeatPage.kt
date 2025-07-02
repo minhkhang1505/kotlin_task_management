@@ -110,6 +110,7 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                                 .padding(8.dp)
                                 .clickable {
                                     Log.d("RepeatPage", "Repeat Days of Week: ${setRepeatDaysOfWeek?.joinToString(",")}")
+                                    Log.d("RepeatPage", "Repeat Interval: $selectedOption")
                                     repeatDelegate.updateTaskRepeatById(
                                         taskId = taskId!!,
                                         repeatEvery = setRepeatEvery.toLongOrNull() ?: 1L,

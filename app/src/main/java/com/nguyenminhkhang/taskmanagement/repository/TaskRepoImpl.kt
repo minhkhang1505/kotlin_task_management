@@ -81,8 +81,8 @@ class TaskRepoImpl(
         }
     }
 
-    override suspend fun getTaskById(taskId: Long): TaskEntity = withContext(Dispatchers.IO) {
-        taskDAO.getTaskById(taskId)
+    override fun getTaskById(taskId: Long): Flow<TaskEntity>{
+        return taskDAO.getTaskById(taskId)
     }
 
     override suspend fun updateTaskContentById(taskId: Long, newContent: String): Boolean  {

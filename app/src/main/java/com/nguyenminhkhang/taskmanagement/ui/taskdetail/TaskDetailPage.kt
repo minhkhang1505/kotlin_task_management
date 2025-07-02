@@ -52,6 +52,7 @@ import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 
 
@@ -280,14 +281,33 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                             .clip(RoundedCornerShape(12.dp)),
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    if(repeatTime.isEmpty()) {
+                    if (taskState.startTime != null
+                        || taskState.repeatDaysOfWeek != null
+                        || taskState.repeatEndType != null
+                        || taskState.repeatInterval != null
+                        || taskState.repeatEndDate != null)  {
+                        val repeatContent = StringBuilder()
+
+                        if (taskState.repeatInterval != null) {
+                            repeatContent.append("Once every ${taskState.repeatEvery} ${taskState.repeatInterval?.lowercase()}")
+                        }
+                        if (!taskState.repeatDaysOfWeek.isNullOrEmpty()) {
+                            repeatContent.append(" on ${taskState.repeatDaysOfWeek?.toMutableSet()!!.joinToString(", ")}")
+                        }
+                        if (taskState.repeatEndDate != null && taskState.repeatEndType == "At") {
+                            repeatContent.append(", until ${convertMillisToDate(taskState.repeatEndDate!!)}")
+                        }
+                        if (taskState.repeatEndType == "After") {
+                            repeatContent.append(", ${taskState.repeatEndCount} occurrences")
+                        }
+                        RoundedOutlinedTextField(
+                            content = repeatContent.toString(),
+                            onClick = { navController.navigate("Repeat/${taskState.id}") },
+                        )
+                    }
+                    else {
                         Text(text = "Set repeat times", modifier = Modifier.padding(horizontal = 16.dp),
                             style = MaterialTheme.typography.bodyLarge
-                        )
-                    } else {
-                        RoundedOutlinedTextField(
-                            content = repeatTime,
-                            onClick = { repeatTime = "" },
                         )
                     }
                 }
@@ -310,6 +330,7 @@ fun TaskDetailPage(taskDetailViewModel: TaskDetailViewModel = hiltViewModel(), n
                     onDismiss = { isShowTimePicker = false }
                 )
             }
+
             FloatingActionButton(
                 onClick = {
                     taskState.id?.let { taskId ->
