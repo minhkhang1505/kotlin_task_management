@@ -25,8 +25,8 @@ class TaskDetailViewModel @Inject constructor (
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _uiState = MutableStateFlow(TaskDetailScreenUiState())
-    val uiState: StateFlow<TaskDetailScreenUiState> = _uiState.asStateFlow()
+    private val _taskUiState = MutableStateFlow(TaskDetailScreenUiState())
+    val uiState: StateFlow<TaskDetailScreenUiState> = _taskUiState.asStateFlow()
 
     private val _snackbarEvent = MutableSharedFlow<SnackbarEvent>()
     val snackbarEvent = _snackbarEvent.asSharedFlow()
@@ -39,7 +39,7 @@ class TaskDetailViewModel @Inject constructor (
     init {
         viewModelScope.launch {
             taskRepo.getTaskById(taskId).collect { taskEntity ->
-                _uiState.update { currentState ->
+                _taskUiState.update { currentState ->
                     val taskUiState = taskEntity.toTaskUiState()
                     currentState.copy(
                         task = taskEntity.toTaskUiState(),
@@ -59,7 +59,7 @@ class TaskDetailViewModel @Inject constructor (
 
     fun toggleFavorite() {
         viewModelScope.launch {
-            val currentTask = _uiState.value.task ?: return@launch
+            val currentTask = _taskUiState.value.task ?: return@launch
             val isFavorite = !currentTask.isFavorite
             taskRepo.updateTaskFavoriteById(taskId, isFavorite)
             _snackbarEvent.emit(SnackbarEvent("Task ${if (isFavorite) "added to" else "removed from"} favorites"))
@@ -68,38 +68,38 @@ class TaskDetailViewModel @Inject constructor (
 
     // Update task title
     fun onTitleChange(newContent: String) {
-        _uiState.update { currentState ->
+        _taskUiState.update { currentState ->
             currentState.copy(task = currentState.task?.copy(content = newContent))
         }
     }
 
     fun saveTitle() {
         viewModelScope.launch {
-            val currentTitle = _uiState.value.task?.content ?: return@launch
+            val currentTitle = _taskUiState.value.task?.content ?: return@launch
             taskRepo.updateTaskContentById(taskId, currentTitle)
             _snackbarEvent.emit(SnackbarEvent("Task updated"))
         }
     }
 
     fun onEnterEditMode() {
-        _uiState.update { it.copy(isInEditMode = true) }
+        _taskUiState.update { it.copy(isInEditMode = true) }
     }
 
     fun onExitEditMode() {
         saveTitle()
-        _uiState.update { it.copy(isInEditMode = false) }
+        _taskUiState.update { it.copy(isInEditMode = false) }
     }
 
     // Update task detail
     fun onDetailChange(contentDetail: String) {
-        _uiState.update { currentState ->
+        _taskUiState.update { currentState ->
             currentState.copy(task = currentState.task?.copy(taskDetail = contentDetail))
         }
     }
 
     fun saveDetail() {
         viewModelScope.launch {
-            val currentDetail = _uiState.value.task?.taskDetail ?: return@launch
+            val currentDetail = _taskUiState.value.task?.taskDetail ?: return@launch
             taskRepo.updateTaskDetailById(taskId, currentDetail)
             _snackbarEvent.emit(SnackbarEvent("Task detail updated"))
         }
@@ -120,11 +120,11 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     fun onShowDatePicker() {
-        _uiState.update { it.copy(isDatePickerVisible = true) }
+        _taskUiState.update { it.copy(isDatePickerVisible = true) }
     }
 
     fun onDismissDatePicker() {
-        _uiState.update { it.copy(isDatePickerVisible = false) }
+        _taskUiState.update { it.copy(isDatePickerVisible = false) }
     }
 
     // For time picker
@@ -142,11 +142,11 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     fun onShowTimePicker() {
-        _uiState.update { it.copy(isTimePickerVisible = true) }
+        _taskUiState.update { it.copy(isTimePickerVisible = true) }
     }
 
     fun onDismissTimePicker() {
-        _uiState.update {
+        _taskUiState.update {
             it.copy(isTimePickerVisible = false)
         }
     }

@@ -112,4 +112,10 @@ interface TaskDAO {
 
     @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
     suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Int
+
+    @Query("UPDATE task SET repeat_every = :repeatEvery WHERE id = :taskId")
+    suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Int
+
+    @Query("UPDATE task SET repeat_interval = :repeatInterval WHERE id = :taskId")
+    suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Int
 }

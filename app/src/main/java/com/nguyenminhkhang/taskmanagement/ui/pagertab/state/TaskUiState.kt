@@ -19,7 +19,7 @@ data class TaskUiState(
     val stringUpdateAt: String,
     val repeatEvery: Long,
     val repeatDaysOfWeek: Set<String>?,
-    val startDate: Long?,
+    var startDate: Long?,
     val repeatInterval: String?,
     val repeatEndType: String?,
     val repeatEndDate: Long?,

@@ -23,10 +23,9 @@ import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
-
 @Composable
 fun TaskTimeRow(
-    uiState: TaskDetailScreenUiState, // Nhận toàn bộ UiState
+    uiState: TaskDetailScreenUiState,
     onShowDatePicker: () -> Unit,
     onClearDate: () -> Unit
 ) {

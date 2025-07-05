@@ -1,16 +1,20 @@
 package com.nguyenminhkhang.taskmanagement.ui.repeat
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,7 +22,7 @@ import javax.inject.Inject
 class RepeatViewModel @Inject constructor(
     private  val taskRepo: TaskRepo,
     savedStateHandle: SavedStateHandle
-) : ViewModel(), RepeatDelegate {
+) : ViewModel() {
 
     /**
      * Update the repeat settings of a task by its ID.
@@ -31,83 +35,177 @@ class RepeatViewModel @Inject constructor(
      * @param repeatEndDate The date when the repeat should end, if applicable.
      * @param repeatEndCount The number of times the task should repeat, if applicable.
      */
+    private val taskId: Long = savedStateHandle.get<Long>("taskId") ?: 0L
 
-    private val _taskDetail = MutableStateFlow<TaskUiState>(
-        TaskUiState(
-        id = null,
-        content = "",
-        isFavorite = false,
-        isCompleted = false,
-        collectionId = 0L,
-        createdAt = System.currentTimeMillis(),
-        updatedAt = System.currentTimeMillis(),
-        stringUpdateAt = System.currentTimeMillis().millisToDateString(),
-        repeatEvery = 1L,
-        repeatDaysOfWeek = null,
-        repeatInterval = null,
-        repeatEndType = null,
-        repeatEndDate = null,
-        startDate = null,
-        repeatEndCount = 1,
-        startTime = null,
-        taskDetail = ""
-    ))
+    private val _taskUiState = MutableStateFlow(RepeatUiState())
+    val uiState: StateFlow<RepeatUiState> = _taskUiState.asStateFlow()
+
+    private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
     init {
-        val taskId: Long? = savedStateHandle.get("taskId")
-        Log.d("TaskDetailViewModel", "Received taskId: $taskId")
-
-        if (taskId != null) {
-            viewModelScope.launch {
-                taskRepo.getTaskById(taskId).collect() { taskEntity ->
-                    _taskDetail.value = taskEntity.toTaskUiState()
+        viewModelScope.launch {
+            taskRepo.getTaskById(taskId).collect { taskEntity ->
+                _taskUiState.update {currentState ->
+                    currentState.copy(
+                        task = taskEntity.toTaskUiState(),
+                        isLoading = false,
+                    )
                 }
-                Log.d("TaskDetailViewModel", "Task detail loaded for taskId: ${_taskDetail.value}")
             }
-
-        } else {
-            // Xử lý trường hợp lỗi không nhận được ID
         }
     }
 
-    var task = _taskDetail.asStateFlow()
+    fun onRepeatEveryChanged(repeatEvery: Long) {
+        viewModelScope.launch {
+            taskRepo.updateTaskRepeatEveryById(taskId, repeatEvery)
+        }
+    }
 
-    override fun updateTaskRepeatById(
-        taskId: Long,
-        repeatEvery: Long,
-        repeatDaysOfWeek: String?,
-        repeatInterval: String?,
-        repeatStartDay: Long?,
-        repeatEndType: String?,
-        repeatEndDate: Long?,
-        repeatEndCount: Int,
-        startTime: Long?
-    ) {
+    fun onIntervalSelected(interval: String) {
+        viewModelScope.launch {
+            taskRepo.updateTaskRepeatIntervalById(taskId, interval)
+        }
+    }
+
+    fun onIntervalDropdownDismiss() {
+        _taskUiState.update { currentState ->
+            currentState.copy(isIntervalDropdownVisible = false)
+        }
+    }
+
+    fun onIntervalDropdownClicked() {
+        _taskUiState.update { currentState ->
+            currentState.copy(isIntervalDropdownVisible = !currentState.isIntervalDropdownVisible)
+        }
+    }
+
+    fun onEvent(event: RepeatEvent) {
+        when (event) {
+            is RepeatEvent.MonthRepeatOptionChanged -> {
+                _taskUiState.update { it.copy(selectedMonthRepeatOption = event.option) }
+            }
+            is RepeatEvent.DayInMonthChanged -> {
+                _taskUiState.update { it.copy(selectedDayInMonth = event.day) }
+            }
+            is RepeatEvent.WeekOrderChanged -> {
+                _taskUiState.update { it.copy(selectedWeekOrder = event.order) }
+            }
+            is RepeatEvent.WeekDayChanged -> {
+                _taskUiState.update { it.copy(selectedWeekDay = event.day) }
+            }
+            is RepeatEvent.EndConditionChanged -> {
+                _taskUiState.update { it.copy(selectedEndCondition = event.option) }
+            }
+            is RepeatEvent.ShowEndDatePicker -> {
+                _taskUiState.update { it.copy(isEndDatePickerVisible = true) }
+            }
+            is RepeatEvent.DismissEndDatePicker -> {
+                _taskUiState.update { it.copy(isEndDatePickerVisible = false) }
+            }
+            is RepeatEvent.OccurrenceCountChanged -> {
+                if( event.count.all { it.isDigit()} ) {
+                    _taskUiState.update { it.copy(occurrenceCount = event.count) }
+                } else {
+                    // Ignore non-digit input
+                    _taskUiState.update { it.copy(occurrenceCount = "1") }
+                }
+            }
+            is RepeatEvent.WeekDayClicked -> {
+                _taskUiState.update {currentState ->
+                    val updatedDays = currentState.selectedWeekDays.toMutableSet()
+                    if (updatedDays.contains(event.day)) {
+                        updatedDays.remove(event.day)
+                    } else {
+                        updatedDays.add(event.day)
+                    }
+                    currentState.copy(selectedWeekDays = updatedDays)
+                }
+            }
+        }
+    }
+
+    // date picker
+    fun onDateSelected(dateInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy( task = currentTask.task?.copy(startDate = dateInMillis), isDatePickerVisible = false)
+        }
+    }
+
+    fun onEndDateSelected(dateInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(repeatEndDate = dateInMillis), isEndDatePickerVisible = false)
+        }
+    }
+
+    fun onClearDateSelected() {
+        viewModelScope.launch {
+            taskRepo.clearDateSelected(taskId)
+        }
+    }
+
+    fun onShowDatePicker() {
+        _taskUiState.update { it.copy(isDatePickerVisible = true) }
+    }
+
+    fun onDismissDatePicker() {
+        _taskUiState.update { it.copy(isDatePickerVisible = false) }
+    }
+
+    // time picker
+    fun onTimeSelected(timeInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(startTime = timeInMillis), isTimePickerVisible = false)
+        }
+    }
+
+    fun onShowTimePicker() {
+        _taskUiState.update { it.copy(isTimePickerVisible = true) }
+    }
+
+    fun onDismissTimePicker() {
+        _taskUiState.update {
+            it.copy(isTimePickerVisible = false)
+        }
+    }
+
+    fun onClearTimeSelected() {
+        viewModelScope.launch {
+            taskRepo.clearTimeSelected(taskId)
+        }
+    }
+
+    fun updateTaskRepeatById() {
+        val currentState = uiState.value
+        val taskToUpdate = currentState.task ?: return // Nếu task null thì không làm gì
+
         viewModelScope.launch {
             taskRepo.updateTaskRepeatById(
                 taskId = taskId,
-                repeatEvery = repeatEvery,
-                repeatDaysOfWeek = repeatDaysOfWeek,
-                repeatInterval = repeatInterval,
-                repeatStartDay = repeatStartDay,
-                repeatEndType = repeatEndType,
-                repeatEndDate = repeatEndDate,
-                repeatEndCount = repeatEndCount,
-                startTime = startTime
+                repeatEvery = currentState.task.repeatEvery,
+                repeatDaysOfWeek = currentState.task.repeatDaysOfWeek?.joinToString(",") ?: "",
+                repeatInterval = currentState.task.repeatInterval,
+                repeatStartDay = currentState.task.startDate,
+                repeatEndType = currentState.selectedEndCondition,
+                repeatEndDate = currentState.task.repeatEndDate,
+                repeatEndCount = currentState.occurrenceCount.toIntOrNull() ?: 1,
+                startTime = currentState.task.startTime ?: 0L
             )
+            _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }
 }
 
-interface RepeatDelegate {
-    fun updateTaskRepeatById(
-        taskId: Long,
-        repeatEvery: Long,
-        repeatDaysOfWeek: String?,
-        repeatInterval: String?,
-        repeatStartDay: Long?,
-        repeatEndType: String?,
-        repeatEndDate: Long?,
-        repeatEndCount: Int,
-        startTime: Long?
-    )
+sealed class RepeatEvent {
+    data class MonthRepeatOptionChanged(val option: String) : RepeatEvent()
+    data class DayInMonthChanged(val day: Int) : RepeatEvent()
+    data class WeekOrderChanged(val order: String) : RepeatEvent()
+    data class WeekDayChanged(val day: String) : RepeatEvent()
+
+    data class WeekDayClicked(val day: String) : RepeatEvent()
+
+    data class EndConditionChanged(val option: String) : RepeatEvent()
+    object ShowEndDatePicker : RepeatEvent()
+    object DismissEndDatePicker : RepeatEvent()
+    data class OccurrenceCountChanged(val count: String) : RepeatEvent()
 }

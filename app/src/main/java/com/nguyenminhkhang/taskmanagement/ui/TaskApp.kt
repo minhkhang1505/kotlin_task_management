@@ -39,7 +39,7 @@ fun TaskApp() {
                 arguments = listOf(navArgument("taskId") { type = NavType.LongType })
             ) { backStackEntry ->
                 val id = backStackEntry.arguments?.getLong("taskId")
-                RepeatPage(navController = navController, taskId = id)
+                RepeatPage(navController = navController)
             }
         }
     }

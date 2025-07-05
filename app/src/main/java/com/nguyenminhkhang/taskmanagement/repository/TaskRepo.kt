@@ -40,4 +40,6 @@ interface TaskRepo {
     suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean
     suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean
     suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean
+    suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Boolean
+    suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean
 }

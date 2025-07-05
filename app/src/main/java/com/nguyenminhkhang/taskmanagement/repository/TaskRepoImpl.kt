@@ -4,7 +4,6 @@ import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -174,6 +173,18 @@ class TaskRepoImpl(
     override suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean {
         return withContext(Dispatchers.IO) {
             taskDAO.updateTaskFavoriteById(taskId, isFavorite) > 0
+        }
+    }
+
+    override suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskRepeatEveryById(taskId, repeatEvery) > 0
+        }
+    }
+
+    override suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskRepeatIntervalById(taskId, repeatInterval) > 0
         }
     }
 }

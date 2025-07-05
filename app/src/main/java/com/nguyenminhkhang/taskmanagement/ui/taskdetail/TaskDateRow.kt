@@ -53,7 +53,7 @@ fun TaskDateRow(
             )
         } else {
             RoundedOutlinedTextField(
-                content = convertMillisToDate(uiState.task.startDate),
+                content = convertMillisToDate(uiState.task.startDate!!),
                 onClick = { onClearDate() }, // <-- Thông báo sự kiện
             )
         }
