@@ -31,6 +31,9 @@ class TaskDetailViewModel @Inject constructor (
     private val _snackbarEvent = MutableSharedFlow<SnackbarEvent>()
     val snackbarEvent = _snackbarEvent.asSharedFlow()
 
+    private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
+    val navigationEvent = _navigationEvent.asSharedFlow()
+
     private val taskId: Long = savedStateHandle.get<Long>("taskId")!!
 
     init {
@@ -48,12 +51,19 @@ class TaskDetailViewModel @Inject constructor (
         }
     }
 
-    fun onFavoriteClick() {
-
+    fun onMarkAsDoneClicked() {
+        viewModelScope.launch {
+            _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
+        }
     }
 
-    fun onFavoriteChange() {
-
+    fun toggleFavorite() {
+        viewModelScope.launch {
+            val currentTask = _uiState.value.task ?: return@launch
+            val isFavorite = !currentTask.isFavorite
+            taskRepo.updateTaskFavoriteById(taskId, isFavorite)
+            _snackbarEvent.emit(SnackbarEvent("Task ${if (isFavorite) "added to" else "removed from"} favorites"))
+        }
     }
 
     // Update task title
@@ -164,4 +174,8 @@ class TaskDetailViewModel @Inject constructor (
 
         return repeatContent.toString()
     }
+}
+
+sealed class NavigationEvent {
+    data class NavigateBackWithResult(val taskId: Long) : NavigationEvent()
 }

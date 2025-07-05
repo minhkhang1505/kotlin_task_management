@@ -13,31 +13,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
-
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailLayout(
     uiState: TaskDetailScreenUiState,
-    taskDetailViewModel: TaskDetailViewModel = hiltViewModel(),
-    navController: NavController,
+    toggleFavorite: () -> Unit,
+    onTitleChange: (String) -> Unit,
+    onEnterEditMode: () -> Unit,
+    onExitEditMode: () -> Unit,
+    saveTitle: () -> Unit,
+    onDetailChange: (String) -> Unit,
+    saveDetail: () -> Unit,
+    onShowDatePicker: () -> Unit,
+    onClearDateSelected: () -> Unit,
+    onShowTimePicker: () -> Unit,
+    onClearTimeSelected: () -> Unit,
+    onDateSelected: (Long) -> Unit,
+    onDismissDatePicker: () -> Unit,
+    onTimeSelected: (Long) -> Unit,
+    onDismissTimePicker: () -> Unit,
+    onNavigateBack: () -> Unit,
+    onMarkAsDone: () -> Unit,
+    onNavigateTo: (String) -> Unit,
 ) {
     Scaffold(
         topBar = {
             TaskDetailTopAppBar(
-                isFavorite = uiState.isFavorite,
-                onFavoriteClick = {
-                    taskDetailViewModel.onFavoriteChange()
-                    taskDetailViewModel.onFavoriteClick()
-                },
-                onNavigateBack = {
-                    navController.popBackStack()
-                }
+                isFavorite = uiState.task?.isFavorite ?: false,
+                onFavoriteClick = { toggleFavorite() },
+                onNavigateBack = { onNavigateBack() },
             )
         },
     ) {
@@ -48,66 +57,58 @@ fun TaskDetailLayout(
                 .fillMaxSize()
         ) {
             Column {
+                // task title and edit icon
                 TaskTitleField(
                     title = uiState.task!!.content,
                     isInEditMode = uiState.isInEditMode,
-                    onTitleChange = taskDetailViewModel::onTitleChange,
-                    onEnterEditMode = taskDetailViewModel::onEnterEditMode,
-                    onExitEditMode = taskDetailViewModel::onExitEditMode,
-                    onSave = { taskDetailViewModel.saveTitle() }
+                    onTitleChange = onTitleChange,
+                    onEnterEditMode = onEnterEditMode,
+                    onExitEditMode = onExitEditMode,
+                    onSave = { saveTitle() }
                 )
                 // menu icon sub task detail
                 TaskDetailInputRow(
                     detailValue = uiState.task.taskDetail,
-                    onDetailChange = taskDetailViewModel::onDetailChange,
-                    onSave = { taskDetailViewModel.saveDetail() }
+                    onDetailChange = onDetailChange,
+                    onSave = { saveDetail() }
                 )
                 // date icon and text field
                 TaskDateRow(
                     uiState = uiState,
-                    onShowDatePicker = taskDetailViewModel::onShowDatePicker,
-                    onClearDate = taskDetailViewModel::onClearDateSelected
+                    onShowDatePicker = onShowDatePicker,
+                    onClearDate = onClearDateSelected
                 )
                 // time icon and text field
                 TaskTimeRow(
                     uiState = uiState,
-                    onShowDatePicker = taskDetailViewModel::onShowTimePicker,
-                    onClearDate = taskDetailViewModel::onClearTimeSelected
+                    onShowDatePicker = onShowTimePicker,
+                    onClearDate = onClearTimeSelected
                 )
                 // repeat icon and text field
                 RepeatInfoRow(
                     summaryText = uiState.repeatSummaryText,
                     onClick = {
-                        uiState.task?.id?.let { taskId ->
-                            navController.navigate("Repeat/$taskId")
-                        }
+                        onNavigateTo("Repeat/${uiState.task.id}")
                     }
                 )
             }
 
             if (uiState.isDatePickerVisible) {
                 DatePickerModal(
-                    onDateSelected = { taskDetailViewModel.onDateSelected(it) },
-                    onDismiss = { taskDetailViewModel.onDismissDatePicker() },
+                    onDateSelected = { onDateSelected(it) },
+                    onDismiss = { onDismissDatePicker() },
                 )
             }
 
             if (uiState.isTimePickerVisible) {
                 TimePickerModal(
-                    onConfirm = { taskDetailViewModel.onTimeSelected(it.toHourMinute()) },
-                    onDismiss = { taskDetailViewModel.onDismissTimePicker() }
+                    onConfirm = { onTimeSelected(it.toHourMinute()) },
+                    onDismiss = { onDismissTimePicker() }
                 )
             }
 
             FloatingActionButton(
-                onClick = {
-                    uiState.task?.id?.let { taskId ->
-                        navController.previousBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("task_completed_id", taskId)
-                        navController.popBackStack()
-                    }
-                },
+                onClick = onMarkAsDone,
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.BottomEnd),

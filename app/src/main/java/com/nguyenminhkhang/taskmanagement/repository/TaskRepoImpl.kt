@@ -170,4 +170,10 @@ class TaskRepoImpl(
             taskDAO.updateTaskDetailById(taskId, detail) > 0
         }
     }
+
+    override suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskFavoriteById(taskId, isFavorite) > 0
+        }
+    }
 }

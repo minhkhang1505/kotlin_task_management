@@ -3,7 +3,6 @@ package com.nguyenminhkhang.taskmanagement.repository
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepo {
@@ -40,4 +39,5 @@ interface TaskRepo {
     suspend fun clearTimeSelected(taskId : Long) : Boolean
     suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean
     suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean
+    suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean
 }

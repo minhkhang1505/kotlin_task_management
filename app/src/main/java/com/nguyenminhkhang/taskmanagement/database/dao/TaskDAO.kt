@@ -109,4 +109,7 @@ interface TaskDAO {
 
     @Query("UPDATE task SET task_detail = :detail WHERE id = :taskId")
     suspend fun updateTaskDetailById(taskId: Long, detail: String): Int
+
+    @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
+    suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Int
 }
