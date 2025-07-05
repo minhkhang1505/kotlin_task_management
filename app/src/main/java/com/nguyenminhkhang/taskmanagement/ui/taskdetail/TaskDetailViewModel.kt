@@ -8,6 +8,7 @@ import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,17 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-data class TaskDetailScreenUiState(
-    val task: TaskUiState? = null, // Data can be null initially
-    val repeatSummaryText: String = "",
-    val isFavorite: Boolean = false,
-    val isLoading: Boolean = true,
-    val isDatePickerVisible: Boolean = false,
-    val isTimePickerVisible: Boolean = false,
-    val isInEditMode: Boolean = false,
-)
-
 
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
