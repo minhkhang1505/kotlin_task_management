@@ -1,6 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -75,6 +77,7 @@ fun HomeLayout(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         floatingActionButton = {
             AppFloatActionButton{
                 isShowAddNoteButtonSheet = taskDelegate.currentCollectionId() > 0
@@ -89,7 +92,7 @@ fun HomeLayout(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopBar(taskDelegate)
+            TopBar()
             PagerTabLayout( listTabGroup, taskDelegate, navController)
         }
 

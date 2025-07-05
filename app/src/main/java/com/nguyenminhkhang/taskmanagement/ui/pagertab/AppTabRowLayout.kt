@@ -1,7 +1,9 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -31,6 +33,7 @@ fun AppTabRowLayout(
                     )
                 },
                 edgePadding = 12.dp,
+                modifier = Modifier.background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
             ) {
                 repeat(listTabs.size) { tabIndex ->
 
@@ -44,7 +47,7 @@ fun AppTabRowLayout(
         } else {
             TabRow(
                 selectedTabIndex,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
                 indicator = { tabPositions ->
                     TabRowDefaults.PrimaryIndicator(
                         Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),

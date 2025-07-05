@@ -76,6 +76,7 @@ interface TaskDAO {
         repeat_every = :repeatEvery,
         repeat_days_of_week = :repeatDaysOfWeek,
         repeat_interval = :repeatInterval,
+        start_date = :repeatStartDay,
         repeat_end_type = :repeatEndType,
         repeat_end_date = :repeatEndDate,
         repeat_end_count = :repeatEndCount,
@@ -87,9 +88,25 @@ interface TaskDAO {
         repeatEvery: Long,
         repeatDaysOfWeek: String?,
         repeatInterval: String?,
+        repeatStartDay: Long?,
         repeatEndType: String?,
         repeatEndDate: Long?,
         repeatEndCount: Int,
         startTime: Long?
     ): Int
+
+    @Query("UPDATE task SET start_date = :startDate WHERE id = :taskId")
+    suspend fun updateTaskStartDate(taskId: Long, startDate: Long): Int
+
+    @Query("UPDATE task SET start_date = NULL WHERE id = :taskId")
+    suspend fun clearDateSelected(taskId: Long): Int
+
+    @Query("UPDATE task SET start_time = NULL WHERE id = :taskId")
+    suspend fun clearTimeSelected(taskId: Long) : Int
+
+    @Query("UPDATE task SET start_time = :time WHERE id = :taskId")
+    suspend fun updateTaskStartTime(taskId: Long, time: Long): Int
+
+    @Query("UPDATE task SET task_detail = :detail WHERE id = :taskId")
+    suspend fun updateTaskDetailById(taskId: Long, detail: String): Int
 }

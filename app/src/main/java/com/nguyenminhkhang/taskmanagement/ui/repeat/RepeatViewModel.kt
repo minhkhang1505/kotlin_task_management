@@ -47,9 +47,10 @@ class RepeatViewModel @Inject constructor(
         repeatInterval = null,
         repeatEndType = null,
         repeatEndDate = null,
-            startDate = null,
+        startDate = null,
         repeatEndCount = 1,
-            startTime = null
+        startTime = null,
+        taskDetail = ""
     ))
     init {
         val taskId: Long? = savedStateHandle.get("taskId")
@@ -75,6 +76,7 @@ class RepeatViewModel @Inject constructor(
         repeatEvery: Long,
         repeatDaysOfWeek: String?,
         repeatInterval: String?,
+        repeatStartDay: Long?,
         repeatEndType: String?,
         repeatEndDate: Long?,
         repeatEndCount: Int,
@@ -86,6 +88,7 @@ class RepeatViewModel @Inject constructor(
                 repeatEvery = repeatEvery,
                 repeatDaysOfWeek = repeatDaysOfWeek,
                 repeatInterval = repeatInterval,
+                repeatStartDay = repeatStartDay,
                 repeatEndType = repeatEndType,
                 repeatEndDate = repeatEndDate,
                 repeatEndCount = repeatEndCount,
@@ -101,6 +104,7 @@ interface RepeatDelegate {
         repeatEvery: Long,
         repeatDaysOfWeek: String?,
         repeatInterval: String?,
+        repeatStartDay: Long?,
         repeatEndType: String?,
         repeatEndDate: Long?,
         repeatEndCount: Int,

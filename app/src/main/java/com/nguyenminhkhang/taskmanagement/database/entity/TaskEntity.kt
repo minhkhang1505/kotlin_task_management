@@ -17,6 +17,9 @@ data class TaskEntity(
     @ColumnInfo(name = "collection_id")
     val collectionId: Long,
 
+    @ColumnInfo(name = "task_detail")
+    val taskDetail: String = "",
+
 
     @ColumnInfo(name = "start_date")
     val startDate: Long? = null,

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -52,6 +53,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.ui.common.DateDropDownMenu
+import com.nguyenminhkhang.taskmanagement.ui.common.DayDropDownMenu
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
@@ -67,7 +70,7 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
     } else {
         val repeatDelegate = repeatViewModel as RepeatDelegate
         val dayItems = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-        var setRepeatDaysOfWeek by remember { mutableStateOf(currentTask.repeatDaysOfWeek.orEmpty().toMutableSet()) }
+        val setRepeatDaysOfWeek by remember { mutableStateOf(currentTask.repeatDaysOfWeek.orEmpty().toMutableSet()) }
         var isDaySelected by remember { mutableStateOf(false) }
         var isShowStartDatePicker by remember { mutableStateOf(false) }
         var isShowEndDatePicker by remember { mutableStateOf(false) }
@@ -79,10 +82,20 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
         var selectedRepeatEndCount by remember { mutableStateOf(currentTask.repeatEndCount.toString()) }
         var isShowDropdownSelectedType by remember { mutableStateOf(false) }
         val repeatIntervalList = remember { mutableListOf("Day", "Week", "Month", "Year") }
-        var selectedRepeatInterval by remember { mutableStateOf(currentTask.repeatInterval) }
+        var selectedRepeatInterval by remember { mutableStateOf(currentTask.repeatInterval ?: repeatIntervalList.getOrNull(1)) }
+        val radioOptionForMonthInterval = listOf("OnDate", "OnDay")
         val radioOptions = listOf("Never", "At", "After")
         val (selectedOption, onOptionSelected) = remember { mutableStateOf(currentTask.repeatEndType) }
 
+        //handle dropdown menu if month interval is selected
+        val (selectedOptionOfMonth, onOptionSelectedOfMonth) = remember { mutableStateOf(radioOptionForMonthInterval[0]) }
+        var selectedDayInMonth by remember { mutableStateOf<Int?>(null) }
+
+        //onDay selected
+        val listFirst by remember { mutableStateOf(listOf("First", "Second", "Third", "Fourth", "Last")) }
+        val listSecond by remember { mutableStateOf(listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")) }
+        var selectedOnDayFirst by remember { mutableStateOf<String?>(null) }
+        var selectedOnDaySeccond by remember { mutableStateOf<String?>(null) }
         val OUTLINETEXTFIELD_COLOR = OutlinedTextFieldDefaults.colors(
             disabledTextColor = MaterialTheme.colorScheme.onSurface,
             disabledContainerColor = Color.Transparent,
@@ -96,6 +109,7 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
         Scaffold(
             topBar = {
                 TopAppBar(
+                    modifier = Modifier.padding(start = 8.dp, end = 12.dp),
                     title = { Text("Repeat") },
                     navigationIcon = {
                         Icon(Icons.Default.Clear, contentDescription = "Back",
@@ -116,11 +130,15 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                                         repeatEvery = setRepeatEvery.toLongOrNull() ?: 1L,
                                         repeatDaysOfWeek = setRepeatDaysOfWeek?.joinToString(","),
                                         repeatInterval = selectedRepeatInterval,
+                                        repeatStartDay = selectedRepeatStartDay,
                                         repeatEndType = selectedOption,
                                         repeatEndDate = selectedRepeatEndDate,
                                         repeatEndCount = selectedRepeatEndCount.toInt(),
                                         startTime = selectedTime?.toHourMinute()
                                     )
+                                    navController.previousBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("reload", true)
                                     navController.popBackStack()
                                 }
                         )
@@ -131,16 +149,16 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
             Column(
                 modifier = Modifier
                     .padding(it)
-                    .padding(12.dp),
+                    .padding(horizontal = 24.dp),
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(text = "Every")
                 Row (
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 ) {
                     val focusManager = LocalFocusManager.current
                     OutlinedTextField(
-                        value = setRepeatEvery.toString(),
+                        value = setRepeatEvery,
                         placeholder = { Text("1") },
                         onValueChange = { setRepeatEvery = it },
                         keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number, imeAction = ImeAction.Done),
@@ -165,7 +183,7 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                             .clickable { isShowDropdownSelectedType = !isShowDropdownSelectedType }
                     ) {
                         OutlinedTextField(
-                            value = selectedRepeatInterval ?: "Select Interval",
+                            value = selectedRepeatInterval!!,
                             onValueChange = {
                                 isShowDropdownSelectedType = true
                                 selectedRepeatInterval = it },
@@ -195,30 +213,86 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                         }
                     }
                 }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    dayItems.forEach { day ->
-                        isDaySelected = setRepeatDaysOfWeek.contains(day)
-                        DayChip(
-                            day = day,
-                            setSelectedDayOfWeek = setRepeatDaysOfWeek,
-                            onDayClick = { clickedDay ->
-                                if( setRepeatDaysOfWeek.contains(clickedDay)) {
-                                    setRepeatDaysOfWeek.remove(clickedDay)
-                                } else {
-                                    setRepeatDaysOfWeek.add(clickedDay)
+                if (selectedRepeatInterval == "Week") {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        dayItems.forEach { day ->
+                            isDaySelected = setRepeatDaysOfWeek.contains(day)
+                            DayChip(
+                                day = day,
+                                setSelectedDayOfWeek = setRepeatDaysOfWeek,
+                                onDayClick = { clickedDay ->
+                                    if( setRepeatDaysOfWeek.contains(clickedDay)) {
+                                        setRepeatDaysOfWeek.remove(clickedDay)
+                                    } else {
+                                        setRepeatDaysOfWeek.add(clickedDay)
+                                    }
+                                }
+                            )
+                        }
+                    }
+                } else if (selectedRepeatInterval == "Month") {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().selectableGroup()
+                    ) {
+                        radioOptionForMonthInterval.forEach { option ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = (option == selectedOptionOfMonth),
+                                    onClick = { onOptionSelectedOfMonth(option) },
+                                    modifier = Modifier.padding(end = 8.dp)
+                                )
+                                when(option) {
+                                    "OnDate" -> {
+                                        Box(modifier = Modifier.fillMaxWidth()
+                                            .selectable(
+                                                selected = ("OnDate" == selectedOptionOfMonth),
+                                                onClick = {
+                                                    onOptionSelectedOfMonth("OnDate")
+                                                },
+                                                role = Role.RadioButton
+                                            )
+                                        ) {
+                                            DateDropDownMenu(
+                                                selectedDay = selectedDayInMonth,
+                                                onDaySelected = { selectedDayInMonth = it },
+                                            )
+                                        }
+                                    }
+                                    "OnDay" -> {
+                                        Row(
+                                            horizontalArrangement = Arrangement.SpaceEvenly,
+                                        ) {
+                                            DayDropDownMenu(
+                                                selectedDay = selectedOnDayFirst,
+                                                onDaySelected = { selectedOnDayFirst = it },
+                                                data = listFirst
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            DayDropDownMenu(
+                                                selectedDay = selectedOnDaySeccond,
+                                                onDaySelected = { selectedOnDaySeccond = it },
+                                                data = listSecond
+                                            )
+                                        }
+                                    }
                                 }
                             }
-                        )
+                        }
                     }
                 }
 
                 // Time Selection
-                Box(modifier = Modifier.clickable { isShowTimePicker = true }) {
+                Box(modifier = Modifier.padding(vertical = 6.dp).clickable { isShowTimePicker = true }) {
                     OutlinedTextField(
                         value = if (selectedTime != null) selectedTime!! else "Select Time",
                         onValueChange = {},
@@ -238,10 +312,10 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                 }
 
                 // Start Date Selection
-                Text(text = "Start Date", modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
+                Text(text = "Start Date", modifier = Modifier.padding(vertical = 8.dp))
                 Box(modifier = Modifier.clickable { isShowStartDatePicker = true }) {
                     OutlinedTextField(
-                        value = if(selectedRepeatStartDay != null) convertMillisToDate(selectedRepeatStartDay!!) else "",
+                        value = if(selectedRepeatStartDay != null) convertMillisToDate(selectedRepeatStartDay!!) else convertMillisToDate(System.currentTimeMillis()),
                         placeholder = { Text("Select Start Date") },
                         onValueChange = {selectedRepeatStartDay = it.toLongOrNull()},
                         modifier = Modifier
@@ -258,15 +332,12 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                 ) {
                     radioOptions.forEach { option ->
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
+                            modifier = Modifier.padding(vertical = 6.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
                                 selected = (option == selectedOption),
                                 onClick = { onOptionSelected(option) },
-                                modifier = Modifier.padding(end = 8.dp)
                             )
                             when (option) {
                                 "Never" -> {
@@ -293,7 +364,7 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
                                         )
                                     ) {
                                         OutlinedTextField(
-                                            value = if(selectedRepeatEndDate != null) convertMillisToDate(selectedRepeatEndDate!!) else "",
+                                            value = if(selectedRepeatEndDate != null) convertMillisToDate(selectedRepeatEndDate!!) else convertMillisToDate(System.currentTimeMillis() + 1L * 30 * 24 * 60 * 60 * 1000),
                                             placeholder = { Text("Select End Date") },
                                             onValueChange = {},
                                             readOnly = true,

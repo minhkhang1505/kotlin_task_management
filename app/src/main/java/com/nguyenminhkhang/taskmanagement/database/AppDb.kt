@@ -2,6 +2,7 @@ package com.nguyenminhkhang.taskmanagement.database
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.Query
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -13,7 +14,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 
 private const val DB_NAME = "task_db"
-private const val DB_VERSION = 5
+private const val DB_VERSION = 6
 
 @Database(entities = [TaskEntity::class, TaskCollection::class], version = DB_VERSION)
 @TypeConverters(Converters::class)
@@ -38,6 +39,7 @@ abstract class AppDb : RoomDatabase()  {
             .addMigrations(Migration_2_3)
             .addMigrations(MIGRATION_3_4)
             .addMigrations(MIGRATION_4_5)
+            .addMigrations(MIGRATION_5_6)
             .build()
     }
 }
@@ -131,5 +133,11 @@ private val MIGRATION_4_5 = object : Migration(4, 5) {
         )
 
         db.execSQL("DROP TABLE task_temp")
+    }
+}
+
+private val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE task ADD COLUMN task_detail TEXT NOT NULL DEFAULT ''")
     }
 }

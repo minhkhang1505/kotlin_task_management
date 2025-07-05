@@ -28,16 +28,14 @@ fun HomeScreenRoute(
     val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList())
     var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
     var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
-    Log.d("INSTANCE_CHECK", "ViewModel đang LẮNG NGHE SNACKBAR có HashCode: ${mainViewModel.hashCode()}")
     val snackbarHostState = remember { SnackbarHostState() }
-    LaunchedEffect(key1 = true) {
 
+    LaunchedEffect(key1 = true) {
         launch {
             backStackEntry.savedStateHandle
                 .getStateFlow<Long?>("task_completed_id", null)
                 .collect { taskId ->
                     if (taskId != null) {
-                        Log.d("DEBUG_FLOW", "2. NHẬN KẾT QUẢ: Collector đã chạy, nhận được ID = $taskId")
                         backStackEntry.savedStateHandle.remove<Long>("task_completed_id")
                         mainViewModel.handleTaskCompletionResult(taskId)
                     }
@@ -46,7 +44,6 @@ fun HomeScreenRoute(
 
         launch {
             mainViewModel.snackBarEvent.collect { event ->
-                Log.d("DEBUG_FLOW", "6. NHẬN LỆNH SNACKBAR: Collector đã nhận được sự kiện: ${event.message}")
                 val result = snackbarHostState.showSnackbar(
                     message = event.message,
                     actionLabel = event.actionLabel,

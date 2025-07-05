@@ -28,9 +28,16 @@ interface TaskRepo {
         repeatEvery: Long,
         repeatDaysOfWeek: String?,
         repeatInterval: String?,
+        repeatStartDay: Long?,
         repeatEndType: String?,
         repeatEndDate: Long?,
         repeatEndCount: Int,
         startTime: Long?
     ): Boolean
+
+    suspend fun updateTaskStartDate(taskId : Long, startDate : Long): Boolean
+    suspend fun clearDateSelected(taskId : Long): Boolean
+    suspend fun clearTimeSelected(taskId : Long) : Boolean
+    suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean
+    suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean
 }

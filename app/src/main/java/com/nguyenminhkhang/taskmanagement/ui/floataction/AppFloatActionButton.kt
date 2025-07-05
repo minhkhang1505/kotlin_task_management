@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.ID_ADD_FAVORITE_LIST
@@ -24,8 +25,14 @@ fun AppFloatActionButton(
 ) {
     Box (
         modifier = Modifier
+            .shadow(
+                elevation = 8.dp,
+                shape = RoundedCornerShape(16.dp),
+                ambientColor = Color.Black.copy(alpha = 0.75f),
+                spotColor = Color.Black.copy(alpha = 0.5f)
+            )
             .background(
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(16.dp)
             )
             .size(58.dp)
@@ -34,7 +41,7 @@ fun AppFloatActionButton(
                 onClick.invoke()
             },
     ) {
-        Text("+", style =  MaterialTheme.typography.titleLarge, color = Color.White, modifier = Modifier.align(
+        Text("+", style =  MaterialTheme.typography.titleLarge, color = Color.Black, modifier = Modifier.align(
             Alignment.Center))
     }
 }

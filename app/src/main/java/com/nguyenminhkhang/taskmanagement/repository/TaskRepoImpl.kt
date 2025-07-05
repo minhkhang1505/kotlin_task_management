@@ -28,7 +28,7 @@ class TaskRepoImpl(
             isFavorite = false,
             isCompleted = false,
             collectionId = collectionId,
-            updatedAt = now
+            updatedAt = now,
         )
         val id = taskDAO.insertTask(task)
         if (id > 0) {
@@ -120,6 +120,7 @@ class TaskRepoImpl(
         repeatEvery: Long,
         repeatDaysOfWeek: String?,
         repeatInterval: String?,
+        repeatStartDay: Long?,
         repeatEndType: String?,
         repeatEndDate: Long?,
         repeatEndCount: Int,
@@ -131,11 +132,42 @@ class TaskRepoImpl(
                 repeatEvery = repeatEvery,
                 repeatDaysOfWeek = repeatDaysOfWeek,
                 repeatInterval = repeatInterval,
+                repeatStartDay = repeatStartDay,
                 repeatEndType = repeatEndType,
                 repeatEndDate = repeatEndDate,
                 repeatEndCount = repeatEndCount,
                 startTime = startTime,
             ) > 0
+        }
+    }
+
+    override suspend fun updateTaskStartDate(taskId: Long, startDate: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskStartDate(taskId, startDate) > 0
+        }
+    }
+
+    override suspend fun clearDateSelected(taskId: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.clearDateSelected(taskId) > 0
+        }
+    }
+
+    override suspend fun clearTimeSelected(taskId: Long) : Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.clearTimeSelected(taskId) > 0
+        }
+    }
+
+    override suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskStartTime(taskId, time) > 0
+        }
+    }
+
+    override suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskDetailById(taskId, detail) > 0
         }
     }
 }

@@ -24,7 +24,8 @@ data class TaskUiState(
     val repeatEndType: String?,
     val repeatEndDate: Long?,
     val repeatEndCount: Int,
-    val startTime: Long?
+    val startTime: Long?,
+    val taskDetail: String
 
 )
 
@@ -45,13 +46,22 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
         startDate = this.startDate,
         repeatEndDate = this.repeatEndDate,
         repeatEndCount = this.repeatEndCount,
-        startTime = this.startTime
+        startTime = this.startTime,
+        taskDetail = this.taskDetail
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun TimePickerState.toHourMinuteString(): String {
     return String.format("%02d:%02d", this.hour, this.minute)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+fun TimePickerState.toHourMinute(): Long {
+    val calendar = Calendar.getInstance()
+    calendar.set(Calendar.HOUR_OF_DAY, this.hour)
+    calendar.set(Calendar.MINUTE, this.minute)
+    return calendar.timeInMillis
 }
 
 fun String.toHourMinute(): Long {
