@@ -4,6 +4,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,8 @@ fun HomeScreenRoute(
     navController: NavController,
     backStackEntry: NavBackStackEntry
 ) {
+    val uiState by mainViewModel.uiState.collectAsState()
+    val taskDelegate = mainViewModel as TaskDelegate
     val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList())
     var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
     var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
@@ -75,9 +78,11 @@ fun HomeScreenRoute(
     }
 
     HomeLayout(
-        navController = navController,
-        snackbarHostState = snackbarHostState,
         listTabGroup = listTabGroup,
-        taskDelegate = mainViewModel,
+        taskDelegate = taskDelegate,
+        uiState = uiState,
+        onEvent = mainViewModel::onEvent,
+        snackbarHostState = snackbarHostState,
+        navController = navController
     )
 }

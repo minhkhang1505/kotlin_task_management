@@ -8,6 +8,9 @@ import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.handler.TaskCompletionHandler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
+import com.nguyenminhkhang.taskmanagement.ui.home.state.NewTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
@@ -30,6 +33,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -43,6 +47,9 @@ class MainViewModel @Inject constructor(
 ) : ViewModel(), TaskDelegate {
     private val _eventFlow: MutableSharedFlow<MainEvent> = MutableSharedFlow()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    private val _uiState = MutableStateFlow(NewTaskUiState())
+    val uiState: StateFlow<NewTaskUiState> = _uiState.asStateFlow()
 
     val persistentListGroup: StateFlow<List<TaskGroupUiState>> =
         taskRepo.getTaskCollection()
@@ -129,9 +136,9 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    override fun addNewTask(collectionId: Long, content: String) {
+    override fun addNewTask(collectionId: Long, content: String, taskDetail: String, isFavorite: Boolean , startDate: Long, startTime: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(content, collectionId)
+            taskRepo.addTask(content, collectionId, taskDetail, isFavorite, startDate, startTime)
         }
     }
 
@@ -155,7 +162,6 @@ class MainViewModel @Inject constructor(
                 _updateUiWithTask(updatedTask)
             },
             onShowSnackbar = { event ->
-                Log.d("DEBUG_FLOW", "5. VIEWMODEL PHÁT SỰ KIỆN: Chuẩn bị phát Snackbar: ${event.message}")
                 _snackBarEvent.emit(event)
             }
         )
@@ -181,7 +187,6 @@ class MainViewModel @Inject constructor(
 
     fun confirmToggleComplete() {
         completionHandler.confirm(viewModelScope)
-        Log.d("DEBUG_FLOW", "7. VIEWMODEL Hoàn Tất: Da luu thay doi trong CSDL")
     }
 
     private fun _updateUiWithTask(taskToUpdate: TaskUiState) {
@@ -207,12 +212,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    override fun addNewTaskToCurrentCollection(content: String) {
+    override fun addNewTaskToCurrentCollection(content: String, taskDetail: String, isFavorite: Boolean, startDate: Long, startTime: Long) {
         viewModelScope.launch {
             persistentListGroup.value.firstOrNull { it.tab.id == _currentSelectedCollectionId }
                 ?.let { currentTab ->
                 val collectionId = currentTab.tab.id
-                if(collectionId > 0) addNewTask(collectionId, content)
+                if(collectionId > 0) addNewTask(collectionId, content, taskDetail, isFavorite, startDate, startTime)
+                else {
+                    _eventFlow.emit(MainEvent.RequestAddNewCollection)
+                }
             }
         }
     }
@@ -276,19 +284,56 @@ class MainViewModel @Inject constructor(
             ))
         }
     }
-}
 
-interface TaskDelegate {
-    fun invertTaskFavorite(taskUiState: TaskUiState) = Unit
-    fun invertTaskCompleted(taskUiState: TaskUiState) = Unit
-    fun addNewTask(collectionId: Long, content: String) = Unit
-    fun addNewTaskToCurrentCollection(content: String) = Unit
-    fun updateCurrentCollectionId(collectionId: Long) = Unit
-    fun currentCollectionId(): Long = -1L
-    fun addNewCollection(content: String) = Unit
-    fun requestAddNewCollection() = Unit
-    fun requestUpdateCollection(collectionId: Long) = Unit
-    fun requestSortTasks(collectionId: Long) = Unit
+    fun onEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.ShowAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = true) }
+            is HomeEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
+            is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTaskContent = event.content) }
+            is HomeEvent.TaskDetailChanged -> _uiState.update { it.copy(newTaskDetail = event.detail) }
+            is HomeEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTaskIsFavorite = !it.newTaskIsFavorite) }
+            is HomeEvent.ShowAddDetailTextField -> _uiState.update { it.copy(isShowAddDetailTextField = true) }
+            is HomeEvent.ShowDatePicker -> _uiState.update { it.copy(isDatePickerVisible = true) }
+            is HomeEvent.HideDatePicker -> _uiState.update { it.copy(isDatePickerVisible = false) }
+            is HomeEvent.DateSelected -> _uiState.update { it.copy(selectedDate = event.date) }
+            is HomeEvent.ShowTimePicker -> _uiState.update { it.copy(isTimePickerVisible = true) }
+            is HomeEvent.HideTimePicker -> _uiState.update { it.copy(isTimePickerVisible = false) }
+            is HomeEvent.TimeSelected -> _uiState.update { it.copy(selectedTime = event.time) }
+            is HomeEvent.ClearSelectedDateTime -> _uiState.update {
+                it.copy(
+                    selectedDate = null,
+                    selectedTime = null
+                )
+            }
+            is HomeEvent.SaveNewTask -> {
+                if (_uiState.value.newTaskContent.isNotBlank()) {
+                    viewModelScope.launch {
+                        taskRepo.addTask(
+                            content = _uiState.value.newTaskContent,
+                            collectionId = _currentSelectedCollectionId,
+                            taskDetail = _uiState.value.newTaskDetail,
+                            isFavorite = _uiState.value.newTaskIsFavorite,
+                            startDate = _uiState.value.selectedDate,
+                            startTime = _uiState.value.selectedTime
+                        )
+                    }
+                }
+            }
+            is HomeEvent.ClearNewTask -> _uiState.update {
+                it.copy(
+                    newTaskContent = "",
+                    newTaskDetail = "",
+                    newTaskIsFavorite = false,
+                    isAddTaskSheetVisible = false,
+                    isShowAddDetailTextField = false,
+                    isDatePickerVisible = false,
+                    isTimePickerVisible = false,
+                    selectedDate = null,
+                    selectedTime = null
+                )
+            }
+        }
+    }
 }
 
 sealed class MainEvent {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface TaskRepo {
     fun getTaskCollection(): Flow<List<TaskCollection>>
     fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>>
-    suspend fun addTask(content:String, collectionId: Long): TaskEntity?
+    suspend fun addTask(content:String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?): TaskEntity?
     suspend fun addNewCollection(content: String): TaskCollection?
     suspend fun updateTask(task: TaskEntity): Boolean
     suspend fun updateTaskCollection(taskCollection: TaskCollection): Boolean
