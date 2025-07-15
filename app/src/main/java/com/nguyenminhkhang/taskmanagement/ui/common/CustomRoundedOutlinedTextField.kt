@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui
+package com.nguyenminhkhang.taskmanagement.ui.common
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

@@ -1,6 +1,5 @@
 package com.nguyenminhkhang.taskmanagement.ui.floataction
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -15,8 +14,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ID_ADD_FAVORITE_LIST
-import com.nguyenminhkhang.taskmanagement.TaskDelegate
 
 @Composable
 fun AppFloatActionButton(

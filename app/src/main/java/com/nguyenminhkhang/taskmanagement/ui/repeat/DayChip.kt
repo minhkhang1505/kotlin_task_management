@@ -9,10 +9,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,11 +19,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DayChip(
     day: String,
-    setSelectedDayOfWeek: Set<String>,
-    onDayClick: (String) -> Unit
+    isSelected: Boolean,
+    onDayClick: () -> Unit
 ) {
-    var isSelected by remember { mutableStateOf(false) }
-    isSelected = setSelectedDayOfWeek.contains(day)
     val backgroundColor = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent
     val textColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
@@ -42,11 +36,7 @@ fun DayChip(
                 color = if (isSelected) Color.Transparent else MaterialTheme.colorScheme.outline,
                 shape = CircleShape
             )
-            // Xử lý sự kiện click
-            .clickable {
-                onDayClick(day)
-                isSelected = !isSelected
-            } // Toggle selection state
+            .clickable { onDayClick() }
     ) {
         Text(
             text = day,

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @Composable
 fun WeekDaySelector(
@@ -24,7 +23,7 @@ fun WeekDaySelector(
         allDays.forEach { day ->
             DayChip(
                 day = day,
-                setSelectedDayOfWeek = selectedDays,
+                isSelected = selectedDays.contains(day),
                 onDayClick = { onDayClick(day) }
             )
         }

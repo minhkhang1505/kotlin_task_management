@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
@@ -23,18 +22,6 @@ class RepeatViewModel @Inject constructor(
     private  val taskRepo: TaskRepo,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
-    /**
-     * Update the repeat settings of a task by its ID.
-     *
-     * @param taskId The ID of the task to update.
-     * @param repeatEvery The frequency of the repeat (e.g., daily, weekly).
-     * @param repeatDaysOfWeek The days of the week on which the task should repeat.
-     * @param repeatInterval The interval for the repeat (e.g., every 2 weeks).
-     * @param repeatEndType The type of end condition for the repeat (e.g., after a certain date or count).
-     * @param repeatEndDate The date when the repeat should end, if applicable.
-     * @param repeatEndCount The number of times the task should repeat, if applicable.
-     */
     private val taskId: Long = savedStateHandle.get<Long>("taskId") ?: 0L
 
     private val _taskUiState = MutableStateFlow(RepeatUiState())
@@ -92,7 +79,7 @@ class RepeatViewModel @Inject constructor(
                 _taskUiState.update { it.copy(selectedWeekOrder = event.order) }
             }
             is RepeatEvent.WeekDayChanged -> {
-                _taskUiState.update { it.copy(selectedWeekDay = event.day) }
+                _taskUiState.update { it.copy( selectedWeekDay = event.day) }
             }
             is RepeatEvent.EndConditionChanged -> {
                 _taskUiState.update { it.copy(selectedEndCondition = event.option) }
@@ -113,13 +100,15 @@ class RepeatViewModel @Inject constructor(
             }
             is RepeatEvent.WeekDayClicked -> {
                 _taskUiState.update {currentState ->
-                    val updatedDays = currentState.selectedWeekDays.toMutableSet()
+                    val updatedDays = currentState.task?.repeatDaysOfWeek.orEmpty().toMutableSet()
                     if (updatedDays.contains(event.day)) {
                         updatedDays.remove(event.day)
                     } else {
                         updatedDays.add(event.day)
                     }
-                    currentState.copy(selectedWeekDays = updatedDays)
+                    currentState.copy(
+                        task = currentState.task?.copy(repeatDaysOfWeek = updatedDays)
+                    )
                 }
             }
         }
@@ -173,6 +162,10 @@ class RepeatViewModel @Inject constructor(
         viewModelScope.launch {
             taskRepo.clearTimeSelected(taskId)
         }
+    }
+
+    fun callHelloWorld(){
+        println("Hello World from RepeatViewModel")
     }
 
     fun updateTaskRepeatById() {

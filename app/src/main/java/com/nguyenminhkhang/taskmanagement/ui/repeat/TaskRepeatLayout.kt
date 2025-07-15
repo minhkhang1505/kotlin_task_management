@@ -54,13 +54,13 @@ fun TaskRepeatLayout(
                 onIntervalDropdownDismiss = onIntervalDropdownDismiss,
                 onIntervalDropdownClicked = onIntervalDropdownClicked,
             )
-            if (currentTask.selectedRepeatInterval == "Week") {
+            if (currentTask.task!!.repeatInterval == "Week") {
                 WeekDaySelector(
                     allDays = currentTask.dayItems,
-                    selectedDays = currentTask.selectedWeekDays,
+                    selectedDays = currentTask.task.repeatDaysOfWeek ?: emptySet(),
                     onDayClick = { day -> onEvent(RepeatEvent.WeekDayClicked(day))  }
                 )
-            } else if (currentTask.selectedRepeatInterval == "Month") {
+            } else if (currentTask.task.repeatInterval == "Month") {
                 MonthlyRepeatOptions(
                     uiState = currentTask,
                     onEvent = onEvent

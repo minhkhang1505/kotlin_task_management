@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.RoundedOutlinedTextField
+import com.nguyenminhkhang.taskmanagement.ui.common.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 

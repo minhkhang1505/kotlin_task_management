@@ -10,7 +10,6 @@ data class RepeatUiState(
     val isDatePickerVisible: Boolean = false,
     val isTimePickerVisible: Boolean = false,
     val availableIntervals: List<String> = listOf("Day", "Week", "Month", "Year"),
-    val selectedRepeatInterval: String = "Week",
 
     val isIntervalDropdownVisible: Boolean = false,
     var textFieldWidth: Dp = 0.dp,
@@ -18,6 +17,7 @@ data class RepeatUiState(
     val selectedMonthRepeatOption: String = "OnDate",
 
     val dayItems: List<String> = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"),
+    val isSelectedDayOfWeek: Boolean = false,
     val selectedWeekDays: Set<String> = emptySet(),
     // State cho lựa chọn "OnDate"
     val selectedDayInMonth: Int = 1,
