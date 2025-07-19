@@ -13,15 +13,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.MainEvent
-import com.nguyenminhkhang.taskmanagement.MainViewModel
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreenRoute(
-    mainViewModel: MainViewModel = hiltViewModel(),
+    mainViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
     backStackEntry: NavBackStackEntry
 ) {

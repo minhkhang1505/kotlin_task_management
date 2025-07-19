@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement
+package com.nguyenminhkhang.taskmanagement.ui.home
 
 import android.icu.util.Calendar
 import android.util.Log
@@ -8,8 +8,6 @@ import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.handler.TaskCompletionHandler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
-import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.home.state.NewTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
@@ -41,7 +39,7 @@ const val ID_ADD_NEW_LIST = -999L
 const val ID_ADD_FAVORITE_LIST = -1000L
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
+class HomeViewModel @Inject constructor(
     private val taskRepo: TaskRepo,
     private val completionHandler: TaskCompletionHandler
 ) : ViewModel(), TaskDelegate {
