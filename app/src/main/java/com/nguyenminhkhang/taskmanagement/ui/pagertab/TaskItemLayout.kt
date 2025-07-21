@@ -18,13 +18,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 @Composable
 fun LazyItemScope.TaskItemLayout(
     state: TaskUiState,
-    taskDelegate: TaskDelegate,
+    onEvent: (HomeEvent)-> Unit,
     onTaskClick: (Long) -> Unit
 ){
     Row(
@@ -39,7 +39,7 @@ fun LazyItemScope.TaskItemLayout(
         Checkbox(
             checked = state.isCompleted,
             onCheckedChange = {isChecked ->
-                taskDelegate.invertTaskCompleted(state)
+                onEvent(HomeEvent.handleToggleComplete(state))
             }
         )
         Column(
@@ -63,7 +63,7 @@ fun LazyItemScope.TaskItemLayout(
                 painter = painterResource(if(state.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
                 contentDescription = "Favorite Icon",
                 modifier = Modifier.padding(end = 10.dp).clickable {
-                    taskDelegate.invertTaskFavorite(state)
+                    onEvent(HomeEvent.handleToggleFavorite(state))
                 }
             )
         }

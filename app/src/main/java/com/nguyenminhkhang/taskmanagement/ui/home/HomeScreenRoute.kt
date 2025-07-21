@@ -25,7 +25,6 @@ fun HomeScreenRoute(
 ) {
     val uiState by mainViewModel.uiState.collectAsState()
     val taskDelegate = mainViewModel as TaskDelegate
-    val listTabGroup by mainViewModel.listTabGroup.collectAsStateWithLifecycle(emptyList())
     var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
     var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -37,25 +36,25 @@ fun HomeScreenRoute(
                 .collect { taskId ->
                     if (taskId != null) {
                         backStackEntry.savedStateHandle.remove<Long>("task_completed_id")
-                        mainViewModel.handleTaskCompletionResult(taskId)
                     }
                 }
         }
 
         launch {
             mainViewModel.snackBarEvent.collect { event ->
+                snackbarHostState.currentSnackbarData?.dismiss()
                 val result = snackbarHostState.showSnackbar(
                     message = event.message,
                     actionLabel = event.actionLabel,
                     duration = event.duration
                 )
-                if (result == SnackbarResult.ActionPerformed) {
-                    if (event.actionType == SnackbarActionType.UNDO_TOGGLE_COMPLETE) {
-                        mainViewModel.undoToggleComplete()
-                    }
-                } else if (result == SnackbarResult.Dismissed) {
-                    if (event.actionType == SnackbarActionType.UNDO_TOGGLE_COMPLETE) {
-                        mainViewModel.confirmToggleComplete()
+
+                if(result == SnackbarResult.ActionPerformed) {
+                    when (event.actionType) {
+                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
+                            mainViewModel.undoToggleComplete()
+                        }
+                        null -> {}
                     }
                 }
             }
@@ -76,7 +75,7 @@ fun HomeScreenRoute(
     }
 
     HomeLayout(
-        listTabGroup = listTabGroup,
+        listTabGroup = uiState.listTabGroup,
         taskDelegate = taskDelegate,
         uiState = uiState,
         onEvent = mainViewModel::onEvent,

@@ -43,15 +43,3 @@ fun RoundedOutlinedTextField(content : String, onClick: () -> Unit = {}) {
         }
     }
 }
-
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewRoundedOutlinedTextField() {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            RoundedOutlinedTextField("DD/MM/YYYY")
-        }
-    }
-}

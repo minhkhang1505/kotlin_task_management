@@ -31,6 +31,7 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.TaskItemLayout
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
@@ -100,7 +101,7 @@ fun LazyListScope.bottomCorner(key: String? = null) {
     }
 }
 
-fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDelegate: TaskDelegate) {
+fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit) {
     item(key = key) {
         if( state.tab.id > 0) {
             Row(
@@ -118,7 +119,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDe
                     modifier = Modifier
                         .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
                         .clickable {
-                            taskDelegate.requestSortTasks(state.tab.id)
+                            onEvent(HomeEvent.requestSortTasks(state.tab.id))
                         },
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -127,7 +128,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, taskDe
                     modifier = Modifier
                         .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
                         .clickable {
-                            taskDelegate.requestUpdateCollection(state.tab.id)
+                            onEvent(HomeEvent.requestUpdateCollection(state.tab.id))
                         },
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -164,7 +165,7 @@ fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onTo
     }
 }
 
-fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDelegate: TaskDelegate, navController: NavController) {
+fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, onEvent: (HomeEvent) -> Unit, navController: NavController) {
     itemsIndexed(
         state,
         key = { _, item -> "$key${item.id}" },
@@ -174,7 +175,7 @@ fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, taskDel
                 .fillMaxWidth()
                 .background(color = itemBgColor)
         ) {
-            TaskItemLayout(item, taskDelegate, onTaskClick = {navController.navigate("TaskDetail/${it}") })
+            TaskItemLayout(item, onEvent = onEvent, onTaskClick = {navController.navigate("TaskDetail/${it}") })
         }
     }
 }

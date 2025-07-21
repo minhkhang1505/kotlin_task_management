@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.activeTasksHeader
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.bottomCorner
@@ -26,7 +27,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.topCorner
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 @Composable
-fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate, navController: NavController) {
+fun TaskListPage(state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit, navController: NavController) {
     var isExpandedCompletedTask by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
@@ -37,9 +38,9 @@ fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate, navControl
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         topCorner()
-        activeTasksHeader(state.tab.title, state, taskDelegate)
+        activeTasksHeader(state.tab.title, state, onEvent)
         emptyState("empty", state.page)
-        listTaskItems("active", state.page.activeTaskList, taskDelegate, navController)
+        listTaskItems("active", state.page.activeTaskList, onEvent, navController)
         bottomCorner()
 
         spacer(12)
@@ -47,7 +48,7 @@ fun TaskListPage(state: TaskGroupUiState, taskDelegate: TaskDelegate, navControl
             topCorner()
             completeTasksHeader("Completed", state, onToggleExpand = { isExpandedCompletedTask = !isExpandedCompletedTask })
             if( isExpandedCompletedTask) {
-                listTaskItems("completed", state.page.completedTaskList, taskDelegate, navController)
+                listTaskItems("completed", state.page.completedTaskList, onEvent, navController)
             }
             bottomCorner()
         }

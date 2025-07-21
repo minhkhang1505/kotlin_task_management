@@ -43,7 +43,10 @@ fun AddTaskBottomSheet(
     uiState: NewTaskUiState,
     onEvent: (HomeEvent) -> Unit
 ) {
-    ModalBottomSheet(onDismissRequest = { onEvent(HomeEvent.HideAddTaskSheet) }) {
+    ModalBottomSheet(onDismissRequest = {
+        onEvent(HomeEvent.HideAddTaskSheet)
+        onEvent(HomeEvent.ClearNewTask)
+    }) {
         TextField(
             value= uiState.newTaskContent,
             onValueChange = { onEvent(HomeEvent.TaskContentChanged(it)) },

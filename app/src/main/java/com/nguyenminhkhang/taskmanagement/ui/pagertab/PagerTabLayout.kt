@@ -20,14 +20,15 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.ID_ADD_NEW_LIST
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
 import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, navController: NavController) {
+fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, onEvent: (HomeEvent) -> Unit, navController: NavController) {
     var pageCount by remember { mutableStateOf(0) }
     val pagerState = rememberPagerState(pageCount = { pageCount })
     var internalState by remember {
@@ -67,7 +68,7 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, na
     HorizontalPager(
         pagerState, key = { it }, beyondViewportPageCount = 2
     ) { pageIndex ->
-        TaskListPage(state = state[pageIndex], taskDelegate, navController)
+        TaskListPage(state = state[pageIndex], onEvent, navController)
     }
 
     if(isShowAddNewCollectionButton) {

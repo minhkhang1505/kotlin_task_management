@@ -1,5 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+
 sealed class HomeEvent {
     object ShowAddTaskSheet : HomeEvent()
     object HideAddTaskSheet : HomeEvent()
@@ -16,4 +18,8 @@ sealed class HomeEvent {
     data class TimeSelected(val time: Long) : HomeEvent()
     data class ClearSelectedDateTime(val date: Long?, val time: Long?) : HomeEvent()
     object ClearNewTask : HomeEvent()
+    data class handleToggleFavorite(val task: TaskUiState) : HomeEvent()
+    data class handleToggleComplete(val task: TaskUiState) : HomeEvent()
+    data class requestSortTasks(val tabId: Long) : HomeEvent()
+    data class requestUpdateCollection(val tabId: Long) : HomeEvent()
 }

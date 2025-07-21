@@ -4,7 +4,8 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 
 data class NewTaskUiState(
-    val listTabGroup: List<TaskGroupUiState> = emptyList(),
+    var listTabGroup: List<TaskGroupUiState> = emptyList(),
+    val isLoading: Boolean = false,
     val isShowAddDetailTextField: Boolean = false,
     val isAddTaskSheetVisible: Boolean = false,
     val newTaskContent: String = "",

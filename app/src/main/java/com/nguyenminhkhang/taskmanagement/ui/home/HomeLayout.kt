@@ -57,7 +57,7 @@ fun HomeLayout(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopBar()
-            PagerTabLayout( listTabGroup, taskDelegate, navController)
+            PagerTabLayout( listTabGroup, taskDelegate, onEvent, navController)
         }
 
         if(uiState.isAddTaskSheetVisible) {

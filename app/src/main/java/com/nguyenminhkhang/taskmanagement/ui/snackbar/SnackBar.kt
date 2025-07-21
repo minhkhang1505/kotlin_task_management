@@ -10,5 +10,6 @@ data class SnackbarEvent(
     val message: String,
     val duration: SnackbarDuration = SnackbarDuration.Short,
     val actionLabel: String? = null,
-    val actionType: SnackbarActionType? = null
+    val actionType: SnackbarActionType? = null,
+    val onAction: (() -> Unit)? = null
 )
