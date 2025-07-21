@@ -32,7 +32,6 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
-import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.TaskItemLayout
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
@@ -119,7 +118,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                     modifier = Modifier
                         .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
                         .clickable {
-                            onEvent(HomeEvent.requestSortTasks(state.tab.id))
+                            onEvent(HomeEvent.RequestSortTasks(state.tab.id))
                         },
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -128,7 +127,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                     modifier = Modifier
                         .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
                         .clickable {
-                            onEvent(HomeEvent.requestUpdateCollection(state.tab.id))
+                            onEvent(HomeEvent.UpdateCollectionRequested(state.tab.id))
                         },
                     tint = MaterialTheme.colorScheme.primary
                 )

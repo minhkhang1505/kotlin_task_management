@@ -6,27 +6,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreenRoute(
-    mainViewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
     backStackEntry: NavBackStackEntry
 ) {
-    val uiState by mainViewModel.uiState.collectAsState()
-    val taskDelegate = mainViewModel as TaskDelegate
-    var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
-    var menuListButtonSheet by remember{mutableStateOf<List<AppMenuItem>?>(null) }
+    val uiState by homeViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
@@ -41,7 +34,7 @@ fun HomeScreenRoute(
         }
 
         launch {
-            mainViewModel.snackBarEvent.collect { event ->
+            homeViewModel.snackBarEvent.collect { event ->
                 snackbarHostState.currentSnackbarData?.dismiss()
                 val result = snackbarHostState.showSnackbar(
                     message = event.message,
@@ -52,22 +45,9 @@ fun HomeScreenRoute(
                 if(result == SnackbarResult.ActionPerformed) {
                     when (event.actionType) {
                         SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
-                            mainViewModel.undoToggleComplete()
+                            homeViewModel.onEvent(HomeEvent.UndoToggleComplete)
                         }
                         null -> {}
-                    }
-                }
-            }
-        }
-
-        launch {
-            mainViewModel.eventFlow.collect { event ->
-                when (event) {
-                    MainEvent.RequestAddNewCollection -> {
-                        isShowAddNewCollectionButton = true
-                    }
-                    is MainEvent.RequestShowButtonSheetOption -> {
-                        menuListButtonSheet = event.list
                     }
                 }
             }
@@ -75,10 +55,8 @@ fun HomeScreenRoute(
     }
 
     HomeLayout(
-        listTabGroup = uiState.listTabGroup,
-        taskDelegate = taskDelegate,
         uiState = uiState,
-        onEvent = mainViewModel::onEvent,
+        onEvent = homeViewModel::onEvent,
         snackbarHostState = snackbarHostState,
         navController = navController
     )

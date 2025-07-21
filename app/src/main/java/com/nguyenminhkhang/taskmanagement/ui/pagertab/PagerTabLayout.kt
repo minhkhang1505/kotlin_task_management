@@ -22,41 +22,39 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
-import com.nguyenminhkhang.taskmanagement.ui.home.TaskDelegate
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, onEvent: (HomeEvent) -> Unit, navController: NavController) {
+fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navController: NavController) {
     var pageCount by remember { mutableStateOf(0) }
     val pagerState = rememberPagerState(pageCount = { pageCount })
     var internalState by remember {
-        mutableStateOf(state)
+        mutableStateOf(state.listTabGroup)
     }
-    internalState = state
-    pageCount = state.count{
+    internalState = state.listTabGroup
+    pageCount = state.listTabGroup.count{
         it.tab.id != ID_ADD_NEW_LIST
     }
-    val scope = rememberCoroutineScope()
-    var isShowAddNewCollectionButton by remember { mutableStateOf(false) }
 
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { index ->
             internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
-                taskDelegate.updateCurrentCollectionId(currentCollectionId)
+                onEvent(HomeEvent.CurrentCollectionId(currentCollectionId))
             }
         }
     }
 
     AppTabRowLayout(
         selectedTabIndex = pagerState.currentPage,
-        listTabs = state.map{ it.tab },
+        listTabs = state.listTabGroup.map{ it.tab },
         onTabSelected = {index ->
-            if(( state.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
-                isShowAddNewCollectionButton = true
-                taskDelegate.requestAddNewCollection()
+            if(( state.listTabGroup.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
+                onEvent(HomeEvent.ShowAddNewCollectionButton)
+                onEvent(HomeEvent.AddNewCollectionRequested)
             } else {
                 scope.launch {
                     pagerState.scrollToPage(index)
@@ -68,35 +66,35 @@ fun PagerTabLayout(state: List<TaskGroupUiState>, taskDelegate: TaskDelegate, on
     HorizontalPager(
         pagerState, key = { it }, beyondViewportPageCount = 2
     ) { pageIndex ->
-        TaskListPage(state = state[pageIndex], onEvent, navController)
+        TaskListPage(state = state.listTabGroup[pageIndex], onEvent, navController)
     }
 
-    if(isShowAddNewCollectionButton) {
-        var inputTaskCollection by remember { mutableStateOf("") }
+    if(state.isShowAddNewCollectionSheetVisible) {
 
         ModalBottomSheet({
-            isShowAddNewCollectionButton = false
+            onEvent(HomeEvent.HideAddNewCollectionButton)
         }) {
             Text("Input task Collection",
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth())
-            TextField(value=inputTaskCollection, onValueChange = { inputTaskCollection = it },
+            TextField(
+                value = state.newTaskCollectionName,
+                onValueChange = { newValue -> onEvent(HomeEvent.NewCollectionNameChanged(newValue)) },
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth())
 
-            Button({
-                if(inputTaskCollection.isNotEmpty()) {
-                    taskDelegate.addNewCollection(inputTaskCollection)
-                    inputTaskCollection = ""
-                }
-                isShowAddNewCollectionButton = false
-            }, modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()) {
-                Text("Add collection")
-            }
+            Button(
+                onClick = {
+                    onEvent(HomeEvent.AddNewCollectionRequested)
+                    onEvent(HomeEvent.HideAddNewCollectionButton)
+                    onEvent(HomeEvent.NewCollectionNameCleared)
+                },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) { Text("Add collection") }
         }
     }
 }

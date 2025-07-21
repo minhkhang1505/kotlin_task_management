@@ -1,9 +1,12 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.state
 
+import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
-
-data class NewTaskUiState(
+data class HomeUiState(
+    val isShowAddNewCollectionSheetVisible : Boolean = false,
+    val newTaskCollectionName: String = "",
+    val menuListButtonSheet: List<AppMenuItem>? = null,
     var listTabGroup: List<TaskGroupUiState> = emptyList(),
     val isLoading: Boolean = false,
     val isShowAddDetailTextField: Boolean = false,

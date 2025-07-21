@@ -39,7 +39,7 @@ fun LazyItemScope.TaskItemLayout(
         Checkbox(
             checked = state.isCompleted,
             onCheckedChange = {isChecked ->
-                onEvent(HomeEvent.handleToggleComplete(state))
+                onEvent(HomeEvent.ToggleComplete(state))
             }
         )
         Column(
@@ -63,7 +63,7 @@ fun LazyItemScope.TaskItemLayout(
                 painter = painterResource(if(state.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
                 contentDescription = "Favorite Icon",
                 modifier = Modifier.padding(end = 10.dp).clickable {
-                    onEvent(HomeEvent.handleToggleFavorite(state))
+                    onEvent(HomeEvent.ToggleFavorite(state))
                 }
             )
         }

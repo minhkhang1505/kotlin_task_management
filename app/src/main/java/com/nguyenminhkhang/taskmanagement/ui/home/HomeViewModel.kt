@@ -1,12 +1,11 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
-import com.nguyenminhkhang.taskmanagement.ui.home.state.NewTaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
@@ -44,12 +43,9 @@ const val ID_ADD_FAVORITE_LIST = -1000L
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val taskRepo: TaskRepo
-) : ViewModel(), TaskDelegate{
-    private val _eventFlow: MutableSharedFlow<MainEvent> = MutableSharedFlow()
-    val eventFlow = _eventFlow.asSharedFlow()
-
-    private val _uiState = MutableStateFlow(NewTaskUiState())
-    val uiState: StateFlow<NewTaskUiState> = _uiState.asStateFlow()
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     private var _snackBarEvent = MutableSharedFlow<SnackbarEvent>()
     val snackBarEvent = _snackBarEvent.asSharedFlow()
@@ -141,19 +137,35 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    override fun addNewTask(collectionId: Long, content: String, taskDetail: String, isFavorite: Boolean , startDate: Long, startTime: Long) {
+    private fun addNewTask() {
+        val state = _uiState.value
+        if (state.newTaskContent.isBlank() || _currentSelectedCollectionId <= 0) return
+
+        val content = state.newTaskContent
+        val detail = state.newTaskDetail
+        val isFavorite = state.newTaskIsFavorite
+        val startDate = state.selectedDate
+        val startTime = state.selectedTime
+
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(content, collectionId, taskDetail, isFavorite, startDate, startTime)
+            taskRepo.addTask(
+                content = content,
+                collectionId = _currentSelectedCollectionId,
+                taskDetail = detail,
+                isFavorite = isFavorite,
+                startDate = startDate,
+                startTime = startTime
+            )
         }
     }
 
-    fun handleToggleFavorite(task: TaskUiState) {
+    private fun handleToggleFavorite(task: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
             taskRepo.updateTaskFavorite(taskId = task.id!!, isFavorite = !task.isFavorite)
         }
     }
 
-    fun handleToggleComplete(task: TaskUiState) {
+    private fun handleToggleComplete(task: TaskUiState) {
         pendingCompleteAction?.cancel()
         taskToConfirm = null
 
@@ -179,7 +191,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun undoToggleComplete() {
+    private fun undoToggleComplete() {
         pendingCompleteAction?.cancel()
         val taskToRestore = taskToConfirm ?: return
 
@@ -189,7 +201,7 @@ class HomeViewModel @Inject constructor(
         taskToConfirm = null
     }
 
-    fun confirmToggleComplete() {
+    private fun confirmToggleComplete() {
         val task = taskToConfirm ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -228,40 +240,33 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    override fun updateCurrentCollectionId(collectionId: Long) {
+    private fun updateCurrentCollectionId(collectionId: Long) {
         _currentSelectedCollectionId = collectionId
     }
 
-    override fun currentCollectionId(): Long {
-        return _currentSelectedCollectionId
-    }
-
-    override fun addNewCollection(content: String) {
+    private fun deleteCollectionById(collectionId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addNewCollection(content)
+            taskRepo.deleteTaskCollectionById(collectionId)
         }
     }
 
-    override fun requestAddNewCollection() {
+    private fun requestAddNewCollection() {
+        val currentName = _uiState.value.newTaskCollectionName.trim()
+        if (currentName.isBlank()) return
+
         viewModelScope.launch {
-            _eventFlow.emit(MainEvent.RequestAddNewCollection)
+            taskRepo.addNewCollection(currentName)
         }
     }
 
-    override fun requestUpdateCollection(collectionId: Long) {
+    private fun requestUpdateCollection(collectionId: Long) {
         val actionsList = listOf(
             AppMenuItem(title = "Delete Collection") {
                 deleteCollectionById(collectionId) },
             AppMenuItem(title = "Rename Collection") {}
         )
-        viewModelScope.launch {
-            _eventFlow.emit(MainEvent.RequestShowButtonSheetOption(actionsList))
-        }
-    }
-
-    fun deleteCollectionById(collectionId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.deleteTaskCollectionById(collectionId)
+        _uiState.update {
+            it.copy(menuListButtonSheet = actionsList)
         }
     }
 
@@ -271,24 +276,31 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    override fun requestSortTasks(collectionId: Long) {
-        viewModelScope.launch {
-            _eventFlow.emit(MainEvent.RequestShowButtonSheetOption(
-                listOf(
-                    AppMenuItem(title = "Sort by Favorite") {
-                        sortTaskCollection(collectionId, sortedType = SortedType.SORTED_BY_FAVORITE)
-                    },
-                    AppMenuItem(title = "Sort by Date") {
-                        sortTaskCollection(collectionId, sortedType = SortedType.SORTED_BY_DATE)
-                    }
-                )
-            ))
+    private fun requestSortTasks(collectionId: Long) {
+        val menuItems = listOf(
+            AppMenuItem(title = "Sort by Date") {
+                sortTaskCollection(collectionId, SortedType.SORTED_BY_DATE)
+            },
+            AppMenuItem(title = "Sort by Favorite") {
+                sortTaskCollection(collectionId, SortedType.SORTED_BY_FAVORITE)
+            }
+        )
+        _uiState.update {
+            it.copy(menuListButtonSheet = menuItems)
         }
+    }
+
+    private fun NewCollectionNameChanged(name: String) {
+        _uiState.update { it.copy(newTaskCollectionName = name) }
     }
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.ShowAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = true) }
+            is HomeEvent.ShowAddTaskSheet -> _uiState.update {
+                if ( _currentSelectedCollectionId>0L ) {
+                    it.copy(isAddTaskSheetVisible = true)
+                } else it
+            }
             is HomeEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
             is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTaskContent = event.content) }
             is HomeEvent.TaskDetailChanged -> _uiState.update { it.copy(newTaskDetail = event.detail) }
@@ -300,14 +312,14 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ShowTimePicker -> _uiState.update { it.copy(isTimePickerVisible = true) }
             is HomeEvent.HideTimePicker -> _uiState.update { it.copy(isTimePickerVisible = false) }
             is HomeEvent.TimeSelected -> _uiState.update { it.copy(selectedTime = event.time) }
-            is HomeEvent.ClearSelectedDateTime -> _uiState.update {
+            is HomeEvent.SelectedDateTimeCleared -> _uiState.update {
                 it.copy(
                     selectedDate = null,
                     selectedTime = null
                 )
             }
             is HomeEvent.SaveNewTask -> addNewTask()
-            is HomeEvent.ClearNewTask -> _uiState.update {
+            is HomeEvent.NewTaskCleared -> _uiState.update {
                 it.copy(
                     newTaskContent = "",
                     newTaskDetail = "",
@@ -320,37 +332,19 @@ class HomeViewModel @Inject constructor(
                     selectedTime = null
                 )
             }
-            is HomeEvent.handleToggleFavorite -> handleToggleFavorite(event.task)
-            is HomeEvent.handleToggleComplete -> handleToggleComplete(event.task)
-            is HomeEvent.requestSortTasks -> {}
-            is HomeEvent.requestUpdateCollection -> {}
+            is HomeEvent.ToggleFavorite -> handleToggleFavorite(event.task)
+            is HomeEvent.ToggleComplete -> handleToggleComplete(event.task)
+            is HomeEvent.RequestSortTasks -> requestSortTasks(event.collectionId)
+            is HomeEvent.UpdateCollectionRequested -> requestUpdateCollection(event.collectionId)
+            is HomeEvent.ResetMenuListButtonSheet -> _uiState.update { it.copy(menuListButtonSheet = null) }
+            is HomeEvent.ShowAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = true) }
+            is HomeEvent.HideAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = false) }
+            is HomeEvent.CurrentCollectionId -> updateCurrentCollectionId(event.collectionId)
+            is HomeEvent.AddNewCollectionRequested -> requestAddNewCollection()
+            is HomeEvent.NewCollectionNameChanged -> NewCollectionNameChanged(event.name)
+            is HomeEvent.NewCollectionNameCleared -> _uiState.update { it.copy(newTaskCollectionName = "") }
+            is HomeEvent.RequestShowButtonSheetOption -> _uiState.update { it.copy(menuListButtonSheet = event.list) }
+            is HomeEvent.UndoToggleComplete -> undoToggleComplete()
         }
     }
-
-    private fun addNewTask() {
-        val state = _uiState.value
-        if (state.newTaskContent.isBlank() || _currentSelectedCollectionId <= 0) return
-
-        val content = state.newTaskContent
-        val detail = state.newTaskDetail
-        val isFavorite = state.newTaskIsFavorite
-        val startDate = state.selectedDate
-        val startTime = state.selectedTime
-
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(
-                content = content,
-                collectionId = _currentSelectedCollectionId,
-                taskDetail = detail,
-                isFavorite = isFavorite,
-                startDate = startDate,
-                startTime = startTime
-            )
-        }
-    }
-}
-
-sealed class MainEvent {
-    data object RequestAddNewCollection : MainEvent()
-    data class RequestShowButtonSheetOption(val list: List<AppMenuItem>) : MainEvent()
 }

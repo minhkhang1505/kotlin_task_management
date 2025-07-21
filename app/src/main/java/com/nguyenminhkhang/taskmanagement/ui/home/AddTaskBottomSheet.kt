@@ -33,19 +33,19 @@ import com.nguyenminhkhang.taskmanagement.ui.common.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
-import com.nguyenminhkhang.taskmanagement.ui.home.state.NewTaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTaskBottomSheet(
-    uiState: NewTaskUiState,
+    uiState: HomeUiState,
     onEvent: (HomeEvent) -> Unit
 ) {
     ModalBottomSheet(onDismissRequest = {
         onEvent(HomeEvent.HideAddTaskSheet)
-        onEvent(HomeEvent.ClearNewTask)
+        onEvent(HomeEvent.NewTaskCleared)
     }) {
         TextField(
             value= uiState.newTaskContent,
@@ -156,7 +156,7 @@ fun AddTaskBottomSheet(
                 onClick = {
                     onEvent(HomeEvent.SaveNewTask)
                     onEvent(HomeEvent.HideAddTaskSheet)
-                    onEvent(HomeEvent.ClearNewTask)
+                    onEvent(HomeEvent.NewTaskCleared)
                 }
             ) {
                 Text("Save")
