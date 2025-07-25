@@ -19,10 +19,12 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 @Composable
 fun LazyItemScope.TaskItemLayout(
+    taskState: HomeUiState,
     state: TaskUiState,
     onEvent: (HomeEvent)-> Unit,
     onTaskClick: (Long) -> Unit
@@ -64,6 +66,15 @@ fun LazyItemScope.TaskItemLayout(
                 contentDescription = "Favorite Icon",
                 modifier = Modifier.padding(end = 10.dp).clickable {
                     onEvent(HomeEvent.ToggleFavorite(state))
+                }
+            )
+        }
+        if (taskState.isShowDeleteButtonVisible) {
+            Icon(
+                painter = painterResource(R.drawable.baseline_delete_outline_24),
+                contentDescription = "Delete Icon",
+                modifier = Modifier.padding(end = 10.dp).clickable {
+                    onEvent(HomeEvent.DeleteTask(state.id!!))
                 }
             )
         }

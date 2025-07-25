@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,7 +49,7 @@ fun AddTaskBottomSheet(
         onEvent(HomeEvent.NewTaskCleared)
     }) {
         TextField(
-            value= uiState.newTaskContent,
+            value= uiState.newTask?.content ?: "",
             onValueChange = { onEvent(HomeEvent.TaskContentChanged(it)) },
             placeholder = { Text("What’s your next task?", style = TextStyle(color = Color.Gray.copy(0.5f))) },
             modifier = Modifier
@@ -67,7 +68,7 @@ fun AddTaskBottomSheet(
         if(uiState.isShowAddDetailTextField) {
             Text("Detail", modifier = Modifier.padding(horizontal = 16.dp))
             TextField(
-                value=uiState.newTaskDetail,
+                value=uiState.newTask?.taskDetail ?: "",
                 onValueChange = { onEvent(HomeEvent.TaskDetailChanged(it)) },
                 placeholder = { Text("Add detail", style = TextStyle(fontSize = 12.sp, color = Color.Gray.copy(0.5f))) },
                 modifier = Modifier
@@ -83,17 +84,17 @@ fun AddTaskBottomSheet(
                 textStyle = TextStyle(fontSize = 12.sp)
             )
         }
-        if(uiState.selectedDate != null || uiState.selectedTime != null) {
+        if(uiState.newTask?.startDate != null || uiState.newTask?.startTime != null) {
             Row(
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .fillMaxWidth(),
             ) {
                 val contentDateTime = StringBuilder()
-                if (uiState.selectedDate != null) { contentDateTime.append(convertMillisToDate(uiState.selectedDate)) }
-                if (uiState.selectedTime != null) {
+                if (uiState.newTask.startDate != null) { contentDateTime.append(convertMillisToDate(uiState.newTask.startDate)) }
+                if (uiState.newTask.startTime != null) {
                     contentDateTime.append(" on ")
-                    contentDateTime.append(uiState.selectedTime.toHourMinuteString())
+                    contentDateTime.append(uiState.newTask.startTime.toHourMinuteString())
                 }
                 RoundedOutlinedTextField(
                     contentDateTime.toString(),
@@ -141,7 +142,7 @@ fun AddTaskBottomSheet(
                     )
                 }
                 IconButton(onClick = { onEvent(HomeEvent.ToggleNewTaskFavorite) }) {
-                    Icon(painter = if(uiState.newTaskIsFavorite) {
+                    Icon(painter = if(uiState.newTask?.isFavorite == true) {
                         painterResource(R.drawable.baseline_star_24)
                     } else {
                         painterResource(R.drawable.baseline_star_outline_24)
@@ -154,6 +155,11 @@ fun AddTaskBottomSheet(
             }
             Button(
                 onClick = {
+                    onEvent(HomeEvent.CombineDateAndTime(
+                        date = uiState.newTask?.startDate ?: 0L,
+                        hour = uiState.selectedReminderHour,
+                        minute = uiState.selectedReminderMinute
+                    ))
                     onEvent(HomeEvent.SaveNewTask)
                     onEvent(HomeEvent.HideAddTaskSheet)
                     onEvent(HomeEvent.NewTaskCleared)
@@ -173,7 +179,11 @@ fun AddTaskBottomSheet(
         if (uiState.isTimePickerVisible) {
             TimePickerModal(
                 onDismiss = { onEvent(HomeEvent.HideTimePicker) },
-                onConfirm = { onEvent(HomeEvent.TimeSelected(it.toHourMinute()))  },
+                onConfirm = {time ->
+                    val hour = time.hour
+                    val minute = time.minute
+                    onEvent(HomeEvent.OnReminderTimeSelected(hour, minute))
+                    onEvent(HomeEvent.TimeSelected(time.toHourMinute()))  },
             )
         }
     }

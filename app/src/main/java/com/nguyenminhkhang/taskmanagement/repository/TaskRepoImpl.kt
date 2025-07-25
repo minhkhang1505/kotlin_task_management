@@ -19,7 +19,7 @@ class TaskRepoImpl(
     override fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>> =
         taskDAO.getAllTaskByCollectionId(collectionId)
 
-    override suspend fun addTask(content: String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?): TaskEntity? =
+    override suspend fun addTask(content: String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long?): TaskEntity? =
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val task = TaskEntity(
@@ -31,6 +31,7 @@ class TaskRepoImpl(
             updatedAt = now,
             startDate = startDate,
             startTime = startTime,
+            reminderTimeMillis = reminderTimeMillis,
         )
         val id = taskDAO.insertTask(task)
         if (id > 0) {
@@ -188,6 +189,12 @@ class TaskRepoImpl(
     override suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean {
         return withContext(Dispatchers.IO) {
             taskDAO.updateTaskRepeatIntervalById(taskId, repeatInterval) > 0
+        }
+    }
+
+    override suspend fun deleteTaskById(taskId: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.deleteTaskById(taskId) > 0
         }
     }
 }

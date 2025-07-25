@@ -3,6 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
@@ -22,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
     private val taskRepo : TaskRepo,
+    private val scheduler: TaskScheduler,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 

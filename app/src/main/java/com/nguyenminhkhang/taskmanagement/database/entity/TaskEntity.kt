@@ -11,11 +11,11 @@ data class TaskEntity(
     @ColumnInfo(name = "title")
     val content: String,
     @ColumnInfo(name = "is_favorite")
-    val isFavorite: Boolean,
+    val isFavorite: Boolean = false,
     @ColumnInfo(name = "is_completed")
-    val isCompleted: Boolean,
+    val isCompleted: Boolean = false,
     @ColumnInfo(name = "collection_id")
-    val collectionId: Long,
+    val collectionId: Long = 0L,
 
     @ColumnInfo(name = "task_detail")
     val taskDetail: String = "",
@@ -47,7 +47,10 @@ data class TaskEntity(
     val startTime: Long? = null,
 
     @ColumnInfo(name = "updated_at")
-    val updatedAt: Long,
+    val updatedAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "created_at")
     val createdAt: Long = System.currentTimeMillis(),
+
+    @ColumnInfo(name = "reminder_time_millis")
+    val reminderTimeMillis: Long? = null,
 )

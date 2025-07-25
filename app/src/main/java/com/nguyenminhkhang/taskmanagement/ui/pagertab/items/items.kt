@@ -32,6 +32,7 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.TaskItemLayout
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
@@ -164,7 +165,7 @@ fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onTo
     }
 }
 
-fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, onEvent: (HomeEvent) -> Unit, navController: NavController) {
+fun LazyListScope.listTaskItems(taskState: HomeUiState, key: String, state : List<TaskUiState>, onEvent: (HomeEvent) -> Unit, navController: NavController) {
     itemsIndexed(
         state,
         key = { _, item -> "$key${item.id}" },
@@ -174,7 +175,7 @@ fun LazyListScope.listTaskItems( key: String, state : List<TaskUiState>, onEvent
                 .fillMaxWidth()
                 .background(color = itemBgColor)
         ) {
-            TaskItemLayout(item, onEvent = onEvent, onTaskClick = {navController.navigate("TaskDetail/${it}") })
+            TaskItemLayout(taskState= taskState,item, onEvent = onEvent, onTaskClick = {navController.navigate("TaskDetail/${it}") })
         }
     }
 }

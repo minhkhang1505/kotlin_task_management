@@ -26,7 +26,6 @@ data class TaskUiState(
     val repeatEndCount: Int,
     val startTime: Long?,
     val taskDetail: String
-
 )
 
 fun TaskEntity.toTaskUiState(): TaskUiState {

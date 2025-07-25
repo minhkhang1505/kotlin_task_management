@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.activeTasksHeader
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.bottomCorner
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.completeTasksHeader
@@ -25,7 +26,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.items.topCorner
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 @Composable
-fun TaskListPage(state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit, navController: NavController) {
+fun TaskListPage(taskState: HomeUiState, state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit, navController: NavController) {
     var isExpandedCompletedTask by remember { mutableStateOf(false) }
     LazyColumn(
         modifier = Modifier
@@ -38,7 +39,7 @@ fun TaskListPage(state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit, navContr
         topCorner()
         activeTasksHeader(state.tab.title, state, onEvent)
         emptyState("empty", state.page)
-        listTaskItems("active", state.page.activeTaskList, onEvent, navController)
+        listTaskItems(taskState ,"active", state.page.activeTaskList, onEvent, navController)
         bottomCorner()
 
         spacer(12)
@@ -46,7 +47,7 @@ fun TaskListPage(state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit, navContr
             topCorner()
             completeTasksHeader("Completed", state, onToggleExpand = { isExpandedCompletedTask = !isExpandedCompletedTask })
             if( isExpandedCompletedTask) {
-                listTaskItems("completed", state.page.completedTaskList, onEvent, navController)
+                listTaskItems(taskState,"completed", state.page.completedTaskList, onEvent, navController)
             }
             bottomCorner()
         }

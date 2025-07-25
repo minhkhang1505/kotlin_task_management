@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface TaskRepo {
     fun getTaskCollection(): Flow<List<TaskCollection>>
     fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>>
-    suspend fun addTask(content:String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?): TaskEntity?
+    suspend fun addTask(content:String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long? ): TaskEntity?
     suspend fun addNewCollection(content: String): TaskCollection?
     suspend fun updateTask(task: TaskEntity): Boolean
     suspend fun updateTaskCollection(taskCollection: TaskCollection): Boolean
@@ -42,4 +42,5 @@ interface TaskRepo {
     suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean
     suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Boolean
     suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean
+    suspend fun deleteTaskById(taskId: Long): Boolean
 }

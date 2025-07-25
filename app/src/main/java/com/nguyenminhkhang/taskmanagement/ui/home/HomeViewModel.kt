@@ -1,8 +1,12 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
+import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.notice.AlarmManagerTaskScheduler
+import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
@@ -35,6 +39,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 const val ID_ADD_NEW_LIST = -999L
@@ -42,7 +47,8 @@ const val ID_ADD_FAVORITE_LIST = -1000L
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val taskRepo: TaskRepo
+    private val taskRepo: TaskRepo,
+    private val scheduler: TaskScheduler,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -138,24 +144,52 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun addNewTask() {
-        val state = _uiState.value
-        if (state.newTaskContent.isBlank() || _currentSelectedCollectionId <= 0) return
+        val taskToSave = _uiState.value
+        if (taskToSave.newTask!!.content.isBlank() || _currentSelectedCollectionId <= 0) return
 
-        val content = state.newTaskContent
-        val detail = state.newTaskDetail
-        val isFavorite = state.newTaskIsFavorite
-        val startDate = state.selectedDate
-        val startTime = state.selectedTime
+        val content = taskToSave.newTask.content.trim()
+        val detail = taskToSave.newTask.taskDetail
+        val isFavorite = taskToSave.newTask.isFavorite
+        val startDate = taskToSave.newTask.startDate
+        val startTime = taskToSave.newTask.startTime
+        Log.d("HomeViewModel", "Time millis: ${_uiState.value.newTask?.reminderTimeMillis}" )
+        val reminderTimeMillis = taskToSave.newTask.reminderTimeMillis
 
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.addTask(
+            Log.d("HomeViewModel", "Adding new task: $content, collectionId: ${_currentSelectedCollectionId}, detail: $detail, isFavorite: $isFavorite, startDate: $startDate, startTime: $startTime")
+            val insertedTask =taskRepo.addTask(
                 content = content,
                 collectionId = _currentSelectedCollectionId,
                 taskDetail = detail,
                 isFavorite = isFavorite,
                 startDate = startDate,
-                startTime = startTime
+                startTime = startTime,
+                reminderTimeMillis = reminderTimeMillis
             )
+
+            if(insertedTask != null) {
+
+                Log.d("HomeViewModel", "Final reminder time millis: ${_uiState.value.newTask?.reminderTimeMillis}" )
+                val updatedTask = insertedTask.copy(
+                    content = content,
+                    taskDetail = detail,
+                    isFavorite = isFavorite,
+                    startDate = startDate,
+                    startTime = startTime,
+                    reminderTimeMillis = reminderTimeMillis
+                )
+
+                if (taskToSave.newTask.reminderTimeMillis != null) {
+                    scheduler.schedule(updatedTask)
+                    Log.d(
+                        "HomeViewModel",
+                        "Task scheduled with reminder time: ${taskToSave.newTask.reminderTimeMillis}"
+                    )
+                } else {
+                    scheduler.cancel(updatedTask)
+                    Log.d("HomeViewModel", "Task reminder cancelled")
+                }
+            }
         }
     }
 
@@ -251,7 +285,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun requestAddNewCollection() {
-        val currentName = _uiState.value.newTaskCollectionName.trim()
+        val currentName = _uiState.value.newTask!!.content.trim()
         if (currentName.isBlank()) return
 
         viewModelScope.launch {
@@ -259,8 +293,17 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun DeleteSelectedTask(taskId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            taskRepo.deleteTaskById(taskId)
+        }
+    }
+
     private fun requestUpdateCollection(collectionId: Long) {
         val actionsList = listOf(
+            if(!_uiState.value.isShowDeleteButtonVisible) AppMenuItem(title = "Delete Task") { onEvent(HomeEvent.ShowDeleteButton) } else {
+                AppMenuItem(title = "Done") { onEvent(HomeEvent.HideDeleteButton) }
+            },
             AppMenuItem(title = "Delete Collection") {
                 deleteCollectionById(collectionId) },
             AppMenuItem(title = "Rename Collection") {}
@@ -294,6 +337,31 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(newTaskCollectionName = name) }
     }
 
+    fun onReminderTimeSelected(hour: Int, minute: Int) {
+        _uiState.update { it.copy(selectedReminderHour = hour, selectedReminderMinute = minute) }
+    }
+
+    private fun combineDateAndTime(
+        dateMillis: Long?,
+        hour: Int?,
+        minute: Int?
+    ): Long? {
+        if (dateMillis == null) return null
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = dateMillis
+
+        if (hour != null && minute != null) {
+            calendar.set(Calendar.HOUR_OF_DAY, hour)
+            calendar.set(Calendar.MINUTE, minute)
+        }
+
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
+
+        return calendar.timeInMillis
+    }
+
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.ShowAddTaskSheet -> _uiState.update {
@@ -302,34 +370,27 @@ class HomeViewModel @Inject constructor(
                 } else it
             }
             is HomeEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
-            is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTaskContent = event.content) }
-            is HomeEvent.TaskDetailChanged -> _uiState.update { it.copy(newTaskDetail = event.detail) }
-            is HomeEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTaskIsFavorite = !it.newTaskIsFavorite) }
+            is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(content = event.content)) }
+            is HomeEvent.TaskDetailChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(taskDetail = event.detail)) }
+            is HomeEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTask = it.newTask!!.copy(isFavorite = !it.newTask.isFavorite)) }
             is HomeEvent.ShowAddDetailTextField -> _uiState.update { it.copy(isShowAddDetailTextField = true) }
             is HomeEvent.ShowDatePicker -> _uiState.update { it.copy(isDatePickerVisible = true) }
             is HomeEvent.HideDatePicker -> _uiState.update { it.copy(isDatePickerVisible = false) }
-            is HomeEvent.DateSelected -> _uiState.update { it.copy(selectedDate = event.date) }
+            is HomeEvent.DateSelected -> _uiState.update { it.copy(newTask = it.newTask!!.copy(startDate = event.date)) }
             is HomeEvent.ShowTimePicker -> _uiState.update { it.copy(isTimePickerVisible = true) }
             is HomeEvent.HideTimePicker -> _uiState.update { it.copy(isTimePickerVisible = false) }
-            is HomeEvent.TimeSelected -> _uiState.update { it.copy(selectedTime = event.time) }
+            is HomeEvent.TimeSelected -> _uiState.update { it.copy(newTask = it.newTask!!.copy(startTime = event.time)) }
             is HomeEvent.SelectedDateTimeCleared -> _uiState.update {
                 it.copy(
-                    selectedDate = null,
-                    selectedTime = null
+                    newTask = it.newTask!!.copy(startDate = null, startTime = null),
+                    selectedReminderHour = null,
+                    selectedReminderMinute = null
                 )
             }
             is HomeEvent.SaveNewTask -> addNewTask()
             is HomeEvent.NewTaskCleared -> _uiState.update {
                 it.copy(
-                    newTaskContent = "",
-                    newTaskDetail = "",
-                    newTaskIsFavorite = false,
-                    isAddTaskSheetVisible = false,
-                    isShowAddDetailTextField = false,
-                    isDatePickerVisible = false,
-                    isTimePickerVisible = false,
-                    selectedDate = null,
-                    selectedTime = null
+                    newTask = TaskEntity(content = "Empty Task")
                 )
             }
             is HomeEvent.ToggleFavorite -> handleToggleFavorite(event.task)
@@ -345,6 +406,14 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.NewCollectionNameCleared -> _uiState.update { it.copy(newTaskCollectionName = "") }
             is HomeEvent.RequestShowButtonSheetOption -> _uiState.update { it.copy(menuListButtonSheet = event.list) }
             is HomeEvent.UndoToggleComplete -> undoToggleComplete()
+            is HomeEvent.UpdateReminderTimeMillis -> _uiState.update{ it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = event.reminder)) }
+            is HomeEvent.OnReminderTimeSelected -> onReminderTimeSelected(event.hour, event.minute)
+            is HomeEvent.CombineDateAndTime -> combineDateAndTime(dateMillis = event.date, hour = event.hour, minute = event.minute)?.let { reminderTimeMillis ->
+                _uiState.update { it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = reminderTimeMillis)) }
+            }
+            is HomeEvent.ShowDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = true) }
+            is HomeEvent.HideDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = false) }
+            is HomeEvent.DeleteTask -> DeleteSelectedTask(event.taskId)
         }
     }
 }

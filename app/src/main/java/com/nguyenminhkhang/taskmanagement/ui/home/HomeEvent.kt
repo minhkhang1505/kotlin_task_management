@@ -37,4 +37,11 @@ sealed class HomeEvent {
 
     object ShowAddDetailTextField : HomeEvent()
     data class TaskDetailChanged(val detail: String) : HomeEvent()
+    data class UpdateReminderTimeMillis(val reminder: Long) : HomeEvent()
+    data class OnReminderTimeSelected(val hour: Int, val minute: Int) : HomeEvent()
+    data class CombineDateAndTime(val date: Long, val hour: Int?, val minute: Int?) : HomeEvent()
+
+    object ShowDeleteButton : HomeEvent()
+    object HideDeleteButton : HomeEvent()
+    data class DeleteTask(val taskId: Long) : HomeEvent()
 }

@@ -71,7 +71,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
     HorizontalPager(
         pagerState, key = { it }, beyondViewportPageCount = 2
     ) { pageIndex ->
-        TaskListPage(state = state.listTabGroup[pageIndex], onEvent, navController)
+        TaskListPage(state,state = state.listTabGroup[pageIndex], onEvent, navController)
     }
 
     if(state.isShowAddNewCollectionSheetVisible) {
