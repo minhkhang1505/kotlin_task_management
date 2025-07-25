@@ -98,7 +98,7 @@ fun AddTaskBottomSheet(
                 RoundedOutlinedTextField(
                     contentDateTime.toString(),
                     onClick = {
-                        onEvent(HomeEvent.ClearSelectedDateTime(uiState.selectedDate, uiState.selectedTime))
+                        onEvent(HomeEvent.SelectedDateTimeCleared)
                     }
                 )
             }

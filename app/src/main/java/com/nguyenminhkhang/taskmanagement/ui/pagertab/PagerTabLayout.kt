@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -48,20 +49,24 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
         }
     }
 
-    AppTabRowLayout(
-        selectedTabIndex = pagerState.currentPage,
-        listTabs = state.listTabGroup.map{ it.tab },
-        onTabSelected = {index ->
-            if(( state.listTabGroup.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
-                onEvent(HomeEvent.ShowAddNewCollectionButton)
-                onEvent(HomeEvent.AddNewCollectionRequested)
-            } else {
-                scope.launch {
-                    pagerState.scrollToPage(index)
+    Row(
+        modifier = Modifier.padding(horizontal = 12.dp).fillMaxWidth()
+    ) {
+        AppTabRowLayout(
+            selectedTabIndex = pagerState,
+            listTabs = state.listTabGroup.map{ it.tab },
+            onTabSelected = {index ->
+                if(( state.listTabGroup.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
+                    onEvent(HomeEvent.ShowAddNewCollectionButton)
+                    onEvent(HomeEvent.AddNewCollectionRequested)
+                } else {
+                    scope.launch {
+                        pagerState.scrollToPage(index)
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 
     HorizontalPager(
         pagerState, key = { it }, beyondViewportPageCount = 2
