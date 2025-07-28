@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.notice.AlarmManagerTaskScheduler
 import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
@@ -168,8 +167,6 @@ class HomeViewModel @Inject constructor(
             )
 
             if(insertedTask != null) {
-
-                Log.d("HomeViewModel", "Final reminder time millis: ${_uiState.value.newTask?.reminderTimeMillis}" )
                 val updatedTask = insertedTask.copy(
                     content = content,
                     taskDetail = detail,
@@ -181,13 +178,8 @@ class HomeViewModel @Inject constructor(
 
                 if (taskToSave.newTask.reminderTimeMillis != null) {
                     scheduler.schedule(updatedTask)
-                    Log.d(
-                        "HomeViewModel",
-                        "Task scheduled with reminder time: ${taskToSave.newTask.reminderTimeMillis}"
-                    )
                 } else {
                     scheduler.cancel(updatedTask)
-                    Log.d("HomeViewModel", "Task reminder cancelled")
                 }
             }
         }
@@ -284,12 +276,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun requestAddNewCollection() {
-        val currentName = _uiState.value.newTask!!.content.trim()
-        if (currentName.isBlank()) return
+    private fun requestAddNewCollection(name: String) {
+        val newCollectionName = name
+        if (newCollectionName.isBlank()) return
 
         viewModelScope.launch {
-            taskRepo.addNewCollection(currentName)
+            taskRepo.addNewCollection(newCollectionName)
         }
     }
 
@@ -401,7 +393,7 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ShowAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = true) }
             is HomeEvent.HideAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = false) }
             is HomeEvent.CurrentCollectionId -> updateCurrentCollectionId(event.collectionId)
-            is HomeEvent.AddNewCollectionRequested -> requestAddNewCollection()
+            is HomeEvent.AddNewCollectionRequested -> requestAddNewCollection(event.name)
             is HomeEvent.NewCollectionNameChanged -> NewCollectionNameChanged(event.name)
             is HomeEvent.NewCollectionNameCleared -> _uiState.update { it.copy(newTaskCollectionName = "") }
             is HomeEvent.RequestShowButtonSheetOption -> _uiState.update { it.copy(menuListButtonSheet = event.list) }

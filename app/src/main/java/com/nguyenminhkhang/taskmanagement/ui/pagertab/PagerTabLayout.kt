@@ -58,7 +58,6 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
             onTabSelected = {index ->
                 if(( state.listTabGroup.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
                     onEvent(HomeEvent.ShowAddNewCollectionButton)
-                    onEvent(HomeEvent.AddNewCollectionRequested)
                 } else {
                     scope.launch {
                         pagerState.scrollToPage(index)
@@ -92,7 +91,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
 
             Button(
                 onClick = {
-                    onEvent(HomeEvent.AddNewCollectionRequested)
+                    onEvent(HomeEvent.AddNewCollectionRequested(state.newTaskCollectionName))
                     onEvent(HomeEvent.HideAddNewCollectionButton)
                     onEvent(HomeEvent.NewCollectionNameCleared)
                 },

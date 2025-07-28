@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -21,6 +22,7 @@ fun TaskDetailPage(
     navController: NavController
 ) {
     val uiState by taskDetailViewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         taskDetailViewModel.navigationEvent.collect { event ->
@@ -48,6 +50,7 @@ fun TaskDetailPage(
         }
     } else {
         TaskDetailLayout(
+            context = context,
             uiState = uiState,
             toggleFavorite = { taskDetailViewModel.toggleFavorite() },
             onTitleChange = { taskDetailViewModel.onTitleChange(it) },
@@ -66,7 +69,8 @@ fun TaskDetailPage(
             onDismissTimePicker = { taskDetailViewModel.onDismissTimePicker() },
             onNavigateBack = { navController.popBackStack() },
             onMarkAsDone = { taskDetailViewModel.onMarkAsDoneClicked() },
-            onNavigateTo = { route -> navController.navigate(route) }
+            onNavigateTo = { route -> navController.navigate(route) },
+            onEvent = taskDetailViewModel::onEvent
         )
     }
 }

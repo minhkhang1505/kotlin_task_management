@@ -9,7 +9,7 @@ sealed class HomeEvent {
 
     object ShowAddNewCollectionButton : HomeEvent()
     object HideAddNewCollectionButton : HomeEvent()
-    object AddNewCollectionRequested : HomeEvent()
+    data class AddNewCollectionRequested(val name: String) : HomeEvent()
     object NewCollectionNameCleared : HomeEvent()
     data class UpdateCollectionRequested(val collectionId: Long) : HomeEvent()
     data class CurrentCollectionId(val collectionId: Long) : HomeEvent()

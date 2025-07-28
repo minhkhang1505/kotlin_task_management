@@ -25,8 +25,31 @@ data class TaskUiState(
     val repeatEndDate: Long?,
     val repeatEndCount: Int,
     val startTime: Long?,
-    val taskDetail: String
+    val taskDetail: String,
+    val reminderTimeMillis: Long?
 )
+
+fun TaskUiState.toTaskEntity(): TaskEntity {
+    return TaskEntity(
+        id = this.id,
+        content = this.content,
+        isFavorite = this.isFavorite,
+        isCompleted = this.isCompleted,
+        collectionId = this.collectionId,
+        createdAt = this.createdAt,
+        updatedAt = this.updatedAt,
+        repeatEvery = this.repeatEvery,
+        repeatDaysOfWeek = this.repeatDaysOfWeek,
+        startDate = this.startDate,
+        repeatInterval = this.repeatInterval,
+        repeatEndType = this.repeatEndType,
+        repeatEndDate = this.repeatEndDate,
+        repeatEndCount = this.repeatEndCount,
+        startTime = this.startTime,
+        taskDetail = this.taskDetail,
+        reminderTimeMillis = this.reminderTimeMillis
+    )
+}
 
 fun TaskEntity.toTaskUiState(): TaskUiState {
     return TaskUiState(
@@ -46,13 +69,9 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
         repeatEndDate = this.repeatEndDate,
         repeatEndCount = this.repeatEndCount,
         startTime = this.startTime,
-        taskDetail = this.taskDetail
+        taskDetail = this.taskDetail,
+        reminderTimeMillis = this.reminderTimeMillis
     )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-fun TimePickerState.toHourMinuteString(): String {
-    return String.format("%02d:%02d", this.hour, this.minute)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,18 +81,6 @@ fun TimePickerState.toHourMinute(): Long {
     calendar.set(Calendar.MINUTE, this.minute)
     return calendar.timeInMillis
 }
-
-fun String.toHourMinute(): Long {
-    val parts = this.split(":")
-    if (parts.size != 2) throw IllegalArgumentException("Invalid time format. Expected HH:mm")
-    val hour = parts[0].toIntOrNull() ?: throw IllegalArgumentException("Invalid hour value")
-    val minute = parts[1].toIntOrNull() ?: throw IllegalArgumentException("Invalid minute value")
-    val calendar = Calendar.getInstance()
-    calendar.set(Calendar.HOUR_OF_DAY, hour)
-    calendar.set(Calendar.MINUTE, minute)
-    return calendar.timeInMillis
-}
-
 fun Long.toHourMinuteString(): String {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = this

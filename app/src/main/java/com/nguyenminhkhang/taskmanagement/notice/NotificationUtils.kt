@@ -11,29 +11,37 @@ import androidx.core.app.NotificationManagerCompat
 import com.nguyenminhkhang.taskmanagement.MainActivity
 import com.nguyenminhkhang.taskmanagement.R
 
-fun showNotification(context: Context, notificationId: Int, title: String, message: String) {
-    val intent = Intent(context, MainActivity::class.java).apply {
-        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-    }
+object NotificationUtils {
 
-    val pendingIntent = PendingIntent.getActivity(
-        context,
-        0,
-        intent,
-        PendingIntent.FLAG_IMMUTABLE
-    )
+    fun showNotification(context: Context, notificationId: Int, title: String, message: String) {
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("TASK_ID_FROM_NOTIFICATION", notificationId)
+        }
 
-    val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_ID)
-        .setSmallIcon(R.drawable.baseline_notification_important_24)
-        .setContentTitle(title)
-        .setContentText(message)
-        .setPriority(NotificationCompat.PRIORITY_HIGH)
-        .setContentIntent(pendingIntent)
-        .setAutoCancel(true)
-        .build()
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            notificationId,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
 
-    val notificationManager = NotificationManagerCompat.from(context)
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-        notificationManager.notify(notificationId, notification)
+        val notification = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_ID)
+            .setSmallIcon(R.drawable.baseline_notification_important_24)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        val notificationManager = NotificationManagerCompat.from(context)
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(notificationId, notification)
+        }
     }
 }

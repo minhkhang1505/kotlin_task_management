@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,11 +17,13 @@ import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailLayout(
+    context: Context,
     uiState: TaskDetailScreenUiState,
     toggleFavorite: () -> Unit,
     onTitleChange: (String) -> Unit,
@@ -40,6 +43,7 @@ fun TaskDetailLayout(
     onNavigateBack: () -> Unit,
     onMarkAsDone: () -> Unit,
     onNavigateTo: (String) -> Unit,
+    onEvent: (TaskDetailEvent) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -90,6 +94,10 @@ fun TaskDetailLayout(
                     onClick = {
                         onNavigateTo("Repeat/${uiState.task.id}")
                     }
+                )
+                AddToCalendarButton(
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp),
+                    onClick = { onEvent(TaskDetailEvent.AddToCalendar(context, uiState.task.toTaskEntity())) }
                 )
             }
 

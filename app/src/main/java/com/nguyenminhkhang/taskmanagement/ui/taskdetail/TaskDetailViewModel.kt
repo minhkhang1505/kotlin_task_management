@@ -1,9 +1,13 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
+import android.content.Context
+import android.content.Intent
+import android.provider.CalendarContract
+import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
+import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
@@ -23,7 +27,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
     private val taskRepo : TaskRepo,
-    private val scheduler: TaskScheduler,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -153,6 +156,34 @@ class TaskDetailViewModel @Inject constructor (
         }
     }
 
+    fun addTaskToCalendar(context: Context, task: TaskEntity) {
+        val startTimeMillis = uiState.value.task?.reminderTimeMillis
+
+        if(startTimeMillis == null) {
+            Toast.makeText(context, "Please set a reminder time for the task", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val endTimeMillis = (uiState.value.task?.reminderTimeMillis ?: 0L) + 3600 * 1000
+
+        val intent = Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+
+            putExtra(CalendarContract.Events.TITLE, task.content)
+            putExtra(CalendarContract.Events.DESCRIPTION, task.taskDetail)
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTimeMillis)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTimeMillis)
+
+        }
+
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+            Toast.makeText(context, "Task added to calendar", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "No calendar app found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     // For repeat summary text
     private fun buildRepeatSummaryText(task: TaskUiState?): String {
         if (task == null || (task.repeatInterval == null && task.repeatDaysOfWeek.isNullOrEmpty())) {
@@ -175,6 +206,12 @@ class TaskDetailViewModel @Inject constructor (
         }
 
         return repeatContent.toString()
+    }
+
+    fun onEvent(event: TaskDetailEvent) {
+        when(event) {
+            is TaskDetailEvent.AddToCalendar -> addTaskToCalendar(event.context, event.task)
+        }
     }
 }
 

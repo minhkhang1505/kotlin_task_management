@@ -3,6 +3,7 @@ package com.nguyenminhkhang.taskmanagement.notice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.nguyenminhkhang.taskmanagement.notice.NotificationUtils.showNotification
 
 class NotificationReceiver : BroadcastReceiver() {
 

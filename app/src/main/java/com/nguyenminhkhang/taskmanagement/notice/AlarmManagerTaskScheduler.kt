@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
@@ -21,6 +22,10 @@ class AlarmManagerTaskScheduler @Inject constructor(
         val intent = Intent(context, NotificationReceiver::class.java).apply {
             putExtra("TASK_ID",task.id)
             putExtra("TASK_TITLE", task.content)
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!alarmManager.canScheduleExactAlarms()) return
         }
 
         alarmManager.setExact(
