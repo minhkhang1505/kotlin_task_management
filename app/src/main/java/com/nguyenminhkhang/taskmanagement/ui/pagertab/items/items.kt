@@ -121,7 +121,6 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                         .clickable {
                             onEvent(HomeEvent.RequestSortTasks(state.tab.id))
                         },
-                    tint = MaterialTheme.colorScheme.primary
                 )
                 Icon(
                     Icons.Default.MoreVert, contentDescription = "More options",
@@ -130,7 +129,6 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                         .clickable {
                             onEvent(HomeEvent.UpdateCollectionRequested(state.tab.id))
                         },
-                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -154,10 +152,6 @@ fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onTo
                         Icons.Default.KeyboardArrowDown, contentDescription = "More options",
                         modifier = Modifier
                             .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
-                            .clickable {
-
-                            },
-                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }

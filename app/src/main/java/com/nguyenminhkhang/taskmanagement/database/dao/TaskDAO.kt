@@ -58,6 +58,9 @@ interface TaskDAO {
     @Query("SELECT * FROM task WHERE id = :taskId")
     fun getTaskById(taskId: Long): Flow<TaskEntity>
 
+    @Query("SELECT * FROM task_collection")
+    fun getCollection() : List<TaskCollection>
+
     @Query("UPDATE task SET title =  :newContent WHERE id = :taskId")
     suspend fun updateTaskContentById(taskId: Long, newContent: String) : Int
 
@@ -121,4 +124,7 @@ interface TaskDAO {
 
     @Query("UPDATE task SET repeat_interval = :repeatInterval WHERE id = :taskId")
     suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Int
+
+    @Query("UPDATE task SET collection_id = :collectionId WHERE id = :taskId")
+    suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Int
 }

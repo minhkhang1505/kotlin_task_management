@@ -197,4 +197,16 @@ class TaskRepoImpl(
             taskDAO.deleteTaskById(taskId) > 0
         }
     }
+
+    override suspend fun getCollectionById(): List<TaskCollection> {
+        return withContext(Dispatchers.IO) {
+            taskDAO.getCollection()
+        }
+    }
+
+    override suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateTaskCollectionById(taskId, collectionId) > 0
+        }
+    }
 }

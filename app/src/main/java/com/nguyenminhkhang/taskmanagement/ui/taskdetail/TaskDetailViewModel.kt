@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,16 +43,27 @@ class TaskDetailViewModel @Inject constructor (
     private val taskId: Long = savedStateHandle.get<Long>("taskId")!!
 
     init {
+        val taskFlow = taskRepo.getTaskById(taskId)
+        val collectionsFlow = taskRepo.getTaskCollection()
+
         viewModelScope.launch {
-            taskRepo.getTaskById(taskId).collect { taskEntity ->
-                _taskUiState.update { currentState ->
+            combine(taskFlow, collectionsFlow) { taskEntity, collections ->
+                if (taskEntity == null) {
+                    TaskDetailScreenUiState(isLoading = false, task = null, collection = collections)
+                } else {
                     val taskUiState = taskEntity.toTaskUiState()
-                    currentState.copy(
-                        task = taskEntity.toTaskUiState(),
-                        isLoading = false,
-                        repeatSummaryText = buildRepeatSummaryText(taskUiState)
+                    val currentCollectionName = collections.find { it.id == taskUiState.collectionId }?.content ?: ""
+
+                    TaskDetailScreenUiState(
+                        task = taskUiState,
+                        collection = collections,
+                        currentCollection = currentCollectionName,
+                        repeatSummaryText = buildRepeatSummaryText(taskUiState),
+                        isLoading = false
                     )
                 }
+            }.collect { combinedUiState ->
+                _taskUiState.value = combinedUiState
             }
         }
     }
@@ -173,7 +185,6 @@ class TaskDetailViewModel @Inject constructor (
             putExtra(CalendarContract.Events.DESCRIPTION, task.taskDetail)
             putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTimeMillis)
             putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTimeMillis)
-
         }
 
         if (intent.resolveActivity(context.packageManager) != null) {
@@ -211,6 +222,33 @@ class TaskDetailViewModel @Inject constructor (
     fun onEvent(event: TaskDetailEvent) {
         when(event) {
             is TaskDetailEvent.AddToCalendar -> addTaskToCalendar(event.context, event.task)
+            is TaskDetailEvent.GetCurrentCollectionNameById -> {
+                _taskUiState.update { currentState ->
+                    currentState.copy(
+                        currentCollection = currentState.collection.find { it.id == event.collectionId }?.content ?: ""
+                    )
+                }
+            }
+            is TaskDetailEvent.ShowChangeCollectionSheet -> {
+                _taskUiState.update { currentState ->
+                    currentState.copy(isChangeCollectionSheetVisible = true)
+                }
+            }
+            is TaskDetailEvent.CloseChangeCollectionSheet -> {
+                _taskUiState.update { currentState ->
+                    currentState.copy(isChangeCollectionSheetVisible = false)
+                }
+            }
+            is TaskDetailEvent.CurrentCollectionChanged -> {
+                viewModelScope.launch {
+                    taskRepo.updateTaskCollectionById(taskId, event.collectionId)
+                    _taskUiState.update { currentState ->
+                        currentState.copy(
+                            currentCollection = currentState.collection.find { it.id == event.collectionId }?.content ?: ""
+                        )
+                    }
+                }
+            }
         }
     }
 }

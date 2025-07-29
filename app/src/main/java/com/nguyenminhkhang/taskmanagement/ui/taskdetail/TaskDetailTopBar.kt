@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
@@ -35,16 +36,17 @@ fun TaskDetailTopAppBar (
                                 R.drawable.baseline_star_24
                             } else {
                                 R.drawable.baseline_star_outline_24
-                            }
+                            },
                         ),
-                        contentDescription = "Favorite"
+                        contentDescription = "Favorite",
+                        tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                     )
                 }
             )
         },
         navigationIcon = {
             Icon(
-                imageVector =  Icons.Default.Clear,
+                painter = painterResource(R.drawable.baseline_arrow_back_ios_24),
                 contentDescription = "Back",
                 modifier = Modifier
                     .padding(8.dp)

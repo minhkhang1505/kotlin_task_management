@@ -64,6 +64,7 @@ fun LazyItemScope.TaskItemLayout(
             Icon(
                 painter = painterResource(if(state.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
                 contentDescription = "Favorite Icon",
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                 modifier = Modifier.padding(end = 10.dp).clickable {
                     onEvent(HomeEvent.ToggleFavorite(state))
                 }

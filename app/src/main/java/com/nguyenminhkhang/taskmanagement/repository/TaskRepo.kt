@@ -43,4 +43,6 @@ interface TaskRepo {
     suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Boolean
     suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean
     suspend fun deleteTaskById(taskId: Long): Boolean
+    suspend fun getCollectionById(): List<TaskCollection>
+    suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean
 }

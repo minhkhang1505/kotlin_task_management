@@ -1,8 +1,11 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -31,19 +35,27 @@ fun TaskDetailInputRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(horizontal = 8.dp)
+            .height(100.dp)
+            .background(Color(0xFFCBE6F7), shape = RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             Icons.Default.Menu, contentDescription = "Menu Icon",
             modifier = Modifier
                 .size(24.dp)
+                .padding(start = 12.dp)
                 .clip(RoundedCornerShape(12.dp))
         )
         OutlinedTextField(
             value = detailValue,
             onValueChange = onDetailChange,
-            placeholder = { Text(text = "Add some detail") },
+            placeholder = {
+                Text(
+                    text = "Add some detail of task",
+                    color = Color.Gray,
+                    fontSize = MaterialTheme.typography.bodyMedium.fontSize)
+                          },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp)
@@ -67,4 +79,5 @@ fun TaskDetailInputRow(
             )
         )
     }
+    Spacer(modifier = Modifier.height(8.dp))
 }
