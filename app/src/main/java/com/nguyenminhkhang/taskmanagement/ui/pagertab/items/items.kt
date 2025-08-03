@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -103,21 +104,22 @@ fun LazyListScope.bottomCorner(key: String? = null) {
 
 fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEvent: (HomeEvent) -> Unit) {
     item(key = key) {
-        if( state.tab.id > 0) {
-            Row(
-                modifier = Modifier.background(color = itemBgColor,)
-            ) {
-                Text(
-                    text = key, style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 12.dp, top = 8.dp, bottom = 8.dp), textAlign = TextAlign.Start
-                )
+        Row(
+            modifier = Modifier.background(color = itemBgColor,)
+        ) {
+            Text(
+                text = if(state.tab.id > 0) key else "Favorite $key", style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 12.dp, top = 8.dp, bottom = 8.dp), textAlign = TextAlign.Start
+            )
+            if( state.tab.id > 0) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_filter_alt_24),
                     contentDescription = "Filter",
                     modifier = Modifier
                         .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             onEvent(HomeEvent.RequestSortTasks(state.tab.id))
                         },
@@ -126,6 +128,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                     Icons.Default.MoreVert, contentDescription = "More options",
                     modifier = Modifier
                         .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
+                        .clip(RoundedCornerShape(8.dp))
                         .clickable {
                             onEvent(HomeEvent.UpdateCollectionRequested(state.tab.id))
                         },

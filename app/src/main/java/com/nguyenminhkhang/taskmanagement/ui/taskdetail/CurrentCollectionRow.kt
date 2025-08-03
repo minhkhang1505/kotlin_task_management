@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -92,14 +91,6 @@ fun ModelButtonChangeCollection(
             ) {
                 Text(text = collection.content, modifier = Modifier.padding(horizontal = 16.dp))
             }
-//            Button(
-//                onClick = {
-//
-//                },
-//                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp).fillMaxWidth(),
-//            ) {
-//
-//            }
         }
     }
 }

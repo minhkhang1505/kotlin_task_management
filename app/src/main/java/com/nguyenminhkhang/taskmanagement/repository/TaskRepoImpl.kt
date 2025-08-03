@@ -209,4 +209,10 @@ class TaskRepoImpl(
             taskDAO.updateTaskCollectionById(taskId, collectionId) > 0
         }
     }
+
+    override suspend fun updateCollectionNameById(collectionId: Long, newCollectionName: String) : Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.updateCollectionName(collectionId, newCollectionName) > 0
+        }
+    }
 }

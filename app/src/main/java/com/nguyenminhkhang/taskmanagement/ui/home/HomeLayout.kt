@@ -50,6 +50,13 @@ fun HomeLayout(
             PagerTabLayout( uiState, onEvent, navController)
         }
 
+        if(uiState.isNewCollectionNameDialogVisible) {
+            RenameCollectionDialog(
+                newCollectionName = uiState.newCollectionName,
+                onEvent = onEvent
+            )
+        }
+
         if(uiState.isAddTaskSheetVisible) {
             AddTaskBottomSheet(uiState = uiState, onEvent = onEvent,)
         }

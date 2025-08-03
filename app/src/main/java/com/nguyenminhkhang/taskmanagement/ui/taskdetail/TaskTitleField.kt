@@ -2,6 +2,7 @@ package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -35,6 +36,7 @@ fun TaskTitleField(
         onValueChange = onTitleChange,
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 8.dp)
             .focusRequester(focusRequester)
             .onFocusChanged { focusState ->
                 if (!focusState.isFocused) {

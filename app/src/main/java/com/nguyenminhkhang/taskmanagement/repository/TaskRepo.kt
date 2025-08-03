@@ -45,4 +45,5 @@ interface TaskRepo {
     suspend fun deleteTaskById(taskId: Long): Boolean
     suspend fun getCollectionById(): List<TaskCollection>
     suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean
+    suspend fun updateCollectionNameById(collectionId: Long, newCollectionName: String): Boolean
 }

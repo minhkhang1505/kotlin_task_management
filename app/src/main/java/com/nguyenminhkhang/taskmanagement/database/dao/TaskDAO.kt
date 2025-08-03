@@ -127,4 +127,7 @@ interface TaskDAO {
 
     @Query("UPDATE task SET collection_id = :collectionId WHERE id = :taskId")
     suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Int
+
+    @Query("UPDATE task_collection Set content = :newCollectionName WHERE id = :collectionId")
+    suspend fun updateCollectionName(collectionId: Long, newCollectionName: String) : Int
 }

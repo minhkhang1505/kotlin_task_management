@@ -298,7 +298,11 @@ class HomeViewModel @Inject constructor(
             },
             AppMenuItem(title = "Delete Collection") {
                 deleteCollectionById(collectionId) },
-            AppMenuItem(title = "Rename Collection") {}
+            AppMenuItem(title = "Rename Collection") {
+                onEvent(HomeEvent.ClearRenameCollectionName)
+                onEvent(HomeEvent.ShowRenameCollectionDialog)
+                Log.d("HomeViewModel", "Requesting rename collection for id: ${uiState.value.isNewCollectionNameDialogVisible}")
+            }
         )
         _uiState.update {
             it.copy(menuListButtonSheet = actionsList)
@@ -354,6 +358,28 @@ class HomeViewModel @Inject constructor(
         return calendar.timeInMillis
     }
 
+    private fun CloseRenameCollectionDialog() {
+        _uiState.update { it.copy(isNewCollectionNameDialogVisible = false) }
+    }
+
+    private fun ShowRenameCollectionDialog() {
+        _uiState.update { it.copy(isNewCollectionNameDialogVisible = true) }
+    }
+
+    private fun ClearRenameCollectionName() {
+        _uiState.update { it.copy(newCollectionName = "") }
+    }
+
+    private fun OnCollectionNameChange(newCollectionName: String) {
+        _uiState.update { it.copy(newCollectionName = newCollectionName) }
+    }
+
+    private fun RenameCollection(newCollectionName: String) {
+        viewModelScope.launch {
+            taskRepo.updateCollectionNameById(_currentSelectedCollectionId, newCollectionName)
+        }
+    }
+
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.ShowAddTaskSheet -> _uiState.update {
@@ -406,6 +432,11 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ShowDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = true) }
             is HomeEvent.HideDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = false) }
             is HomeEvent.DeleteTask -> DeleteSelectedTask(event.taskId)
+            is HomeEvent.ShowRenameCollectionDialog -> ShowRenameCollectionDialog()
+            is HomeEvent.HideRenameCollectionDialog -> CloseRenameCollectionDialog()
+            is HomeEvent.ClearRenameCollectionName -> ClearRenameCollectionName()
+            is HomeEvent.OnCollectionNameChange -> OnCollectionNameChange(event.newCollectionName)
+            is HomeEvent.RenameCollection -> RenameCollection(event.newCollectionName)
         }
     }
 }

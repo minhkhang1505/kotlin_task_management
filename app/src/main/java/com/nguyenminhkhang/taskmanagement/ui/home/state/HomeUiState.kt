@@ -8,6 +8,8 @@ data class HomeUiState(
     val isShowAddNewCollectionSheetVisible : Boolean = false,
     val newTask: TaskEntity? = TaskEntity(content = "Empty Task"),
     val menuListButtonSheet: List<AppMenuItem>? = null,
+    val newCollectionName: String = "",
+    val isNewCollectionNameDialogVisible: Boolean = false,
     var listTabGroup: List<TaskGroupUiState> = emptyList(),
     val isLoading: Boolean = false,
     val isShowAddDetailTextField: Boolean = false,
