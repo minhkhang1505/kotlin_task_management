@@ -215,4 +215,8 @@ class TaskRepoImpl(
             taskDAO.updateCollectionName(collectionId, newCollectionName) > 0
         }
     }
+
+    override fun SearchTasks(query: String): Flow<List<TaskEntity>> {
+        return taskDAO.SearchTasks(query)
+    }
 }

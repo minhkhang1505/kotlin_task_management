@@ -3,8 +3,10 @@ package com.nguyenminhkhang.taskmanagement.ui.home
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,14 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
+import com.nguyenminhkhang.taskmanagement.ui.home.state.SearchState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLayout(
+    searchResults: List<TaskEntity>,
+    searchState: SearchState,
     uiState: HomeUiState,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
@@ -46,8 +52,16 @@ fun HomeLayout(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopBar()
+            TopBar(onEvent)
             PagerTabLayout( uiState, onEvent, navController)
+        }
+
+        if (uiState.isSearchBarVisible) {
+            CustomSearchBar(
+                searchResult = searchResults,
+                searchState = searchState,
+                onEvent = onEvent
+            )
         }
 
         if(uiState.isNewCollectionNameDialogVisible) {

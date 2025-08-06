@@ -8,6 +8,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
@@ -20,6 +21,8 @@ fun HomeScreenRoute(
     backStackEntry: NavBackStackEntry
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
+    val searchState by homeViewModel.searchState.collectAsState()
+    val results by homeViewModel.searchResults.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(key1 = true) {
@@ -55,6 +58,8 @@ fun HomeScreenRoute(
     }
 
     HomeLayout(
+        searchResults = results,
+        searchState = searchState,
         uiState = uiState,
         onEvent = homeViewModel::onEvent,
         snackbarHostState = snackbarHostState,

@@ -32,7 +32,6 @@ fun RoundedOutlinedTextField(content : String, onClick: () -> Unit = {}) {
                 Icons.Default.Clear,
                 contentDescription = "Clear",
                 modifier = Modifier.padding(end = 4.dp).size(18.dp).clickable {
-                    // Handle clear action
                     onClick()
                 })
         }

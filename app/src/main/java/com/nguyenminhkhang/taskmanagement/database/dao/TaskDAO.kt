@@ -130,4 +130,7 @@ interface TaskDAO {
 
     @Query("UPDATE task_collection Set content = :newCollectionName WHERE id = :collectionId")
     suspend fun updateCollectionName(collectionId: Long, newCollectionName: String) : Int
+
+    @Query("SELECT * FROM task WHERE title LIKE '%' || :query || '%'")
+    fun SearchTasks(query: String): Flow<List<TaskEntity>>
 }

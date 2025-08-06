@@ -5,8 +5,9 @@ import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 data class HomeUiState(
+    val isSearchBarVisible: Boolean = false,
     val isShowAddNewCollectionSheetVisible : Boolean = false,
-    val newTask: TaskEntity? = TaskEntity(content = "Empty Task"),
+    val newTask: TaskEntity? = TaskEntity(content = ""),
     val menuListButtonSheet: List<AppMenuItem>? = null,
     val newCollectionName: String = "",
     val isNewCollectionNameDialogVisible: Boolean = false,

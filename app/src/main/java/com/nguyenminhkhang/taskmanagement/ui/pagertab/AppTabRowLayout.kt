@@ -3,6 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.pagertab
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
@@ -40,7 +41,7 @@ fun AppTabRowLayout(
                         thickness = 0.dp
                     )
                 },
-                modifier = Modifier.clip(RoundedCornerShape(50.dp)).fillMaxWidth().background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
+                modifier = Modifier.padding(top = 8.dp).clip(RoundedCornerShape(50.dp)).fillMaxWidth().background(color = MaterialTheme.colorScheme.surfaceContainerHigh)
             ) {
                 repeat(listTabs.size) { tabIndex ->
 
@@ -61,7 +62,7 @@ fun AppTabRowLayout(
                         thickness = 0.dp
                     )
                 },
-                modifier = Modifier.clip(RoundedCornerShape(50.dp)).fillMaxWidth().background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
+                modifier = Modifier.padding(top = 8.dp).clip(RoundedCornerShape(50.dp)).fillMaxWidth().background(color = MaterialTheme.colorScheme.surfaceContainerHigh),
             ) {
                 repeat(listTabs.size) { tabIndex ->
                     TabItemLayout(

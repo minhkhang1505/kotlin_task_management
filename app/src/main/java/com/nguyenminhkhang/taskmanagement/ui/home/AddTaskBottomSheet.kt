@@ -1,6 +1,5 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
