@@ -484,7 +484,6 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ClearRenameCollectionName -> ClearRenameCollectionName()
             is HomeEvent.OnCollectionNameChange -> OnCollectionNameChange(event.newCollectionName)
             is HomeEvent.RenameCollection -> RenameCollection(event.newCollectionName)
-            is HomeEvent.ShowSearchBar -> _uiState.update { it.copy(isSearchBarVisible = true) }
             is HomeEvent.Search -> handleSearchEvent(event.searchEvent)
         }
     }

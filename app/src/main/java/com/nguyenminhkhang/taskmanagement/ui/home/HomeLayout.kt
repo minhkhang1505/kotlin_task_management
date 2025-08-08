@@ -56,7 +56,7 @@ fun HomeLayout(
             PagerTabLayout( uiState, onEvent, navController)
         }
 
-        if (uiState.isSearchBarVisible) {
+        if (searchState.isSearchBarVisible) {
             CustomSearchBar(
                 searchResult = searchResults,
                 searchState = searchState,

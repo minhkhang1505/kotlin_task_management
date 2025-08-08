@@ -51,6 +51,5 @@ sealed class HomeEvent {
     data class RenameCollection(val newCollectionName: String) : HomeEvent()
     data class OnCollectionNameChange(val newCollectionName: String) : HomeEvent()
 
-    object ShowSearchBar : HomeEvent()
     data class Search(val searchEvent: SearchEvent) : HomeEvent()
 }
