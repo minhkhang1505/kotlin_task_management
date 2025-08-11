@@ -10,6 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeScreenRoute
+import com.nguyenminhkhang.taskmanagement.ui.login.LoginPage
+import com.nguyenminhkhang.taskmanagement.ui.login.LoginState
+import com.nguyenminhkhang.taskmanagement.ui.register.RegisterPage
+import com.nguyenminhkhang.taskmanagement.ui.register.state.RegisterState
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatPage
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailPage
 
@@ -20,8 +24,20 @@ fun TaskApp() {
         NavHost(
             navController = navController,
             modifier = Modifier.fillMaxSize(),
-            startDestination = NavScreen.HOME.route
+            startDestination = NavScreen.REGISTER.route
         ) {
+            composable(route = NavScreen.LOGIN.route) {
+                LoginPage(
+                    loginState = LoginState()
+                )
+            }
+
+            composable(route = NavScreen.REGISTER.route) {
+                RegisterPage(
+                    registerState = RegisterState()
+                )
+            }
+
             composable(route = NavScreen.HOME.route) { backStackEntry ->
                 HomeScreenRoute(navController = navController, backStackEntry= backStackEntry)
             }
@@ -46,6 +62,8 @@ fun TaskApp() {
 }
 
 enum class NavScreen(val route: String) {
+    LOGIN("Login"),
+    REGISTER("Register"),
     HOME("Home"),
     TASK_DETAIL("TaskDetail/{taskId}"),
     REPEAT("Repeat/{taskId}"),
