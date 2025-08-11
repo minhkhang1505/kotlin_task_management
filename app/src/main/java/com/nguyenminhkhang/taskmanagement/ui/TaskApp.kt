@@ -24,18 +24,14 @@ fun TaskApp() {
         NavHost(
             navController = navController,
             modifier = Modifier.fillMaxSize(),
-            startDestination = NavScreen.REGISTER.route
+            startDestination = NavScreen.LOGIN.route
         ) {
             composable(route = NavScreen.LOGIN.route) {
-                LoginPage(
-                    loginState = LoginState()
-                )
+                LoginPage(loginState = LoginState(), navController = navController)
             }
 
             composable(route = NavScreen.REGISTER.route) {
-                RegisterPage(
-                    registerState = RegisterState()
-                )
+                RegisterPage(registerState = RegisterState(), navController = navController)
             }
 
             composable(route = NavScreen.HOME.route) { backStackEntry ->

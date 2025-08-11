@@ -1,30 +1,36 @@
 package com.nguyenminhkhang.taskmanagement.ui.login
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.TaskApp
-import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
+import com.nguyenminhkhang.taskmanagement.ui.NavScreen
 
 @Composable
 fun LoginLayout(
-    loginState: LoginState
+    loginState: LoginState,
+    navController: NavController
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -38,17 +44,27 @@ fun LoginLayout(
             Text(
                 text = "Login",
                 fontSize = 52.sp,
-                style = androidx.compose.material3.MaterialTheme.typography.headlineLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(150.dp))
             OutlinedTextField(
                 value = loginState.email,
                 onValueChange = {  },
                 label = { Text("Email or Username") },
                 placeholder = { Text("Enter your email or username") },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_person_24),
+                        contentDescription = "User Icon",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(0.9f),
+                maxLines = 1
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
@@ -56,45 +72,78 @@ fun LoginLayout(
                 onValueChange = {},
                 label = { Text("Password") },
                 placeholder = { Text("Enter your password") },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_key_24),
+                        contentDescription = "Lock Icon",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
                 trailingIcon = {
                     Icon(
-                        painter = if (!loginState.isPasswordVisible)
+                        painter = if (loginState.isPasswordVisible)
                             painterResource(R.drawable.baseline_visibility_24)
                         else
                             painterResource(R.drawable.baseline_visibility_off_24),
                         contentDescription = "Visible Password Icon",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.6f),
+                        modifier = Modifier.size(20.dp)
                     )
                 },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(0.9f),
+                maxLines = 1,
             )
-
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(0.9f),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                Text(
+                    text = "Forgot Password? ",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                )
+            }
+            Spacer(modifier = Modifier.height(12.dp))
             Button(
                 onClick = {},
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.fillMaxWidth(0.9f),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth(0.9f).height(60.dp),
                 content = {
-                    Text(text = "Login", fontSize = 18.sp)
+                    Text(
+                        text = "Login",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                    )
                 }
             )
             Spacer(modifier = Modifier.height(50.dp))
             OrDivider()
             Spacer(modifier = Modifier.height(50.dp))
             LoginWith()
+            Spacer(modifier = Modifier.height(100.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = "Don't have an account? ",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                )
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 4.dp)
+                        .clickable { navController.navigate(NavScreen.REGISTER.route) }
+                )
+            }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginLayoutPreview() {
-    TaskManagementTheme {
-        val loginState = LoginState(
-            email = "mkhang040506@gmail.com",
-            password = "password123",
-            isLoading = false,
-            isPasswordVisible = true
-        )
-        LoginLayout(loginState = loginState)
     }
 }
