@@ -1,17 +1,16 @@
-package com.nguyenminhkhang.taskmanagement.ui.login
+package com.nguyenminhkhang.taskmanagement.ui.signin
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,14 +23,14 @@ import com.nguyenminhkhang.taskmanagement.R
 
 @Composable
 fun LoginWith(
-
+    onGoogleSignInClick: () -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(0.9f)
             .height(60.dp)
             .clip( RoundedCornerShape(12.dp))
-            .clickable(onClick = { })
-            .border(1.dp, androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), RoundedCornerShape(12.dp)),
+            .clickable(onClick = onGoogleSignInClick)
+            .border(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f), RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -43,8 +42,8 @@ fun LoginWith(
         )
         Text(
             text = "Login with Google.",
-            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
-            color = androidx.compose.material3.MaterialTheme.colorScheme.onPrimaryContainer,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(start = 8.dp)
         )
     }

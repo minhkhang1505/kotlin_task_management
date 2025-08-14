@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Task Management</string>
 
+    <string name="default_web_client_id" translatable="false">396229359784-9ov28t0fqroam7ls16kmqsi0a5ggq2rr.apps.googleusercontent.com</string>
 </resources>

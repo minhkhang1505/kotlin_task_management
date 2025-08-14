@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.login
+package com.nguyenminhkhang.taskmanagement.ui.signin
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth

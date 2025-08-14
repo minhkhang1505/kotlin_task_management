@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.login
+package com.nguyenminhkhang.taskmanagement.ui.signin
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,10 +26,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.NavScreen
+import com.nguyenminhkhang.taskmanagement.ui.signin.state.SignInState
 
 @Composable
-fun LoginLayout(
-    loginState: LoginState,
+fun SignInLayout(
+    loginState: SignInState,
+    onGoogleSignInClick: () -> Unit,
     navController: NavController
 ) {
     Box(
@@ -108,7 +110,9 @@ fun LoginLayout(
             }
             Spacer(modifier = Modifier.height(12.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    navController.navigate(NavScreen.HOME.route)
+                },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(0.9f).height(60.dp),
                 content = {
@@ -124,7 +128,7 @@ fun LoginLayout(
             Spacer(modifier = Modifier.height(50.dp))
             OrDivider()
             Spacer(modifier = Modifier.height(50.dp))
-            LoginWith()
+            LoginWith(onGoogleSignInClick = onGoogleSignInClick)
             Spacer(modifier = Modifier.height(100.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),

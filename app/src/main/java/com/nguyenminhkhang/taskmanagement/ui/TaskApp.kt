@@ -10,11 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeScreenRoute
-import com.nguyenminhkhang.taskmanagement.ui.login.LoginPage
-import com.nguyenminhkhang.taskmanagement.ui.login.LoginState
 import com.nguyenminhkhang.taskmanagement.ui.register.RegisterPage
 import com.nguyenminhkhang.taskmanagement.ui.register.state.RegisterState
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatPage
+import com.nguyenminhkhang.taskmanagement.ui.signin.SignInPage
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailPage
 
 @Composable
@@ -27,7 +26,7 @@ fun TaskApp() {
             startDestination = NavScreen.LOGIN.route
         ) {
             composable(route = NavScreen.LOGIN.route) {
-                LoginPage(loginState = LoginState(), navController = navController)
+                SignInPage(navController = navController)
             }
 
             composable(route = NavScreen.REGISTER.route) {
