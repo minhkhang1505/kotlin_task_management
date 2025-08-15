@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.SnackbarHostState
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.nguyenminhkhang.taskmanagement.ui.TaskApp
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TaskApp()
+            TaskApp( )
         }
         requestNotificationPermissionIfNeeded()
     }

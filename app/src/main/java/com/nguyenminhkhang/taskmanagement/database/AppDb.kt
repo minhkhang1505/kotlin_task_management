@@ -13,7 +13,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 
 private const val DB_NAME = "task_db"
-private const val DB_VERSION = 7
+private const val DB_VERSION = 8
 
 @Database(entities = [TaskEntity::class, TaskCollection::class], version = DB_VERSION)
 @TypeConverters(Converters::class)
@@ -40,6 +40,7 @@ abstract class AppDb : RoomDatabase()  {
             .addMigrations(MIGRATION_4_5)
             .addMigrations(MIGRATION_5_6)
             .addMigrations(MIGRATION_6_7)
+            .addMigrations(MIGRATION_7_8)
             .build()
     }
 }
@@ -145,5 +146,12 @@ private val MIGRATION_5_6 = object : Migration(5, 6) {
 private val MIGRATION_6_7 = object : Migration(6, 7) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE task ADD COLUMN reminder_time_millis INTEGER DEFAULT NULL")
+    }
+}
+
+private val MIGRATION_7_8 = object : Migration(7, 8) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE task ADD COLUMN user_id TEXT NOT NULL DEFAULT 'local_user'")
+        db.execSQL("ALTER TABLE task_collection ADD COLUMN user_id TEXT NOT NULL DEFAULT 'local_user'")
     }
 }

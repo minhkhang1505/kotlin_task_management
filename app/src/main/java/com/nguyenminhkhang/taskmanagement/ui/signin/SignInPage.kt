@@ -24,6 +24,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.ui.NavScreen
 
 @Composable
 fun SignInPage(
@@ -33,8 +34,6 @@ fun SignInPage(
     val loginState by viewModel.signInState.collectAsState()
     val webClientId = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
-
-    Log.d("SignInPage", "Web Client ID: $webClientId")
 
     val googleSignInClient = remember {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -47,19 +46,10 @@ fun SignInPage(
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        Log.d("SignInPage", "Launcher resultCode: ${result.resultCode}")
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)
-                Log.d(
-                    "SignInPage", """
-                    GoogleSignInAccount:
-                      email: ${account.email}
-                      displayName: ${account.displayName}
-                      idToken: ${if (account.idToken != null) "NOT NULL" else "NULL"}
-                """.trimIndent()
-                )
                 if (account.idToken != null) {
                     viewModel.signInWithGoogle(account.idToken!!)
                 } else {
@@ -74,15 +64,12 @@ fun SignInPage(
     }
 
     val onGoogleSignInClick = {
-        Log.d("SignInPage", "Launching Google Sign-In Intent...")
         googleSignInLauncher.launch(googleSignInClient.signInIntent)
     }
 
     LaunchedEffect(loginState) {
-        Log.d("SignInPage", "Login state changed: $loginState")
         if (loginState.isSuccess) {
-            Log.d("SignInPage", "Login successful → navigating to home")
-            navController.navigate("home") {
+            navController.navigate(NavScreen.HOME.route) {
                 popUpTo("login") { inclusive = true }
             }
         }
@@ -91,6 +78,7 @@ fun SignInPage(
     SignInLayout(
         loginState = loginState,
         onGoogleSignInClick = onGoogleSignInClick,
+        onGuessSignInClick = { viewModel.signInAsGuest() },
         navController = navController
     )
 

@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
+    @ColumnInfo(name = "user_id")
+    val userId: String = "",
     @ColumnInfo(name = "title")
     val content: String,
     @ColumnInfo(name = "is_favorite")

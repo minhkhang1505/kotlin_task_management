@@ -1,11 +1,16 @@
 package com.nguyenminhkhang.taskmanagement.di
 
+import android.content.Context
 import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepoImpl
+import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepo
+import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepoImpl
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -17,4 +22,8 @@ object RepoModule {
     fun provideTaskRepo(taskDAO: TaskDAO): TaskRepo {
         return TaskRepoImpl(taskDAO)
     }
+
+    @Singleton
+    @Provides
+    fun provideAuthRepo(@ApplicationContext context: Context): AuthRepo = AuthRepoImpl(context)
 }

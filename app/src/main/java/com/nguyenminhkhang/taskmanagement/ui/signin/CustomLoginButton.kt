@@ -17,12 +17,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 
 @Composable
 fun LoginWith(
+    icon: Painter,
+    title: String,
     onGoogleSignInClick: () -> Unit
 ) {
     Row(
@@ -35,13 +38,13 @@ fun LoginWith(
         horizontalArrangement = Arrangement.Center
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_google),
+            painter = icon,
             contentDescription = "Login with",
             modifier = Modifier.size(30.dp),
             tint = Color.Unspecified
         )
         Text(
-            text = "Login with Google.",
+            text = title,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(start = 8.dp)

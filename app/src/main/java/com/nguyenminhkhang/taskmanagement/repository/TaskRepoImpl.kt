@@ -1,5 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.repository
 
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
@@ -9,9 +12,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
-class TaskRepoImpl(
-    private val taskDAO: TaskDAO
+class TaskRepoImpl (
+    private val taskDAO: TaskDAO,
 ) : TaskRepo {
+    private val auth: FirebaseAuth = Firebase.auth
+
     override fun getTaskCollection(): Flow<List<TaskCollection>>  {
         return taskDAO.getAllTaskCollection()
     }
@@ -23,6 +28,7 @@ class TaskRepoImpl(
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val task = TaskEntity(
+            userId = auth.currentUser?.uid ?: "",
             content = content,
             taskDetail = taskDetail,
             isFavorite = isFavorite,
@@ -43,6 +49,7 @@ class TaskRepoImpl(
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val taskCollection = TaskCollection(
+            userId = auth.currentUser?.uid ?: "",
             content = content,
             updatedAt = now,
             sortedType = SortedType.SORTED_BY_DATE.value
@@ -218,5 +225,11 @@ class TaskRepoImpl(
 
     override fun SearchTasks(query: String): Flow<List<TaskEntity>> {
         return taskDAO.SearchTasks(query)
+    }
+
+    override suspend fun claimLocalTasks(userId: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.claimLocalTasks(userId) > 0
+        }
     }
 }

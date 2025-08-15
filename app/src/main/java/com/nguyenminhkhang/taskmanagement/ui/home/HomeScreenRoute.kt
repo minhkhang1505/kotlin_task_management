@@ -18,7 +18,9 @@ import kotlinx.coroutines.launch
 fun HomeScreenRoute(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
-    backStackEntry: NavBackStackEntry
+    backStackEntry: NavBackStackEntry,
+    selectedDestination: Int,
+    currentRoute: String? = null
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val searchState by homeViewModel.searchState.collectAsState()
@@ -58,6 +60,8 @@ fun HomeScreenRoute(
     }
 
     HomeLayout(
+        currentRoute = currentRoute,
+        selectedDestination = selectedDestination,
         searchResults = results,
         searchState = searchState,
         uiState = uiState,

@@ -8,6 +8,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
+import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.home.state.SearchState
@@ -52,6 +53,7 @@ const val ID_ADD_FAVORITE_LIST = -1000L
 class HomeViewModel @Inject constructor(
     private val taskRepo: TaskRepo,
     private val scheduler: TaskScheduler,
+    private val authRepo : AuthRepo
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -213,6 +215,7 @@ class HomeViewModel @Inject constructor(
     private fun handleToggleFavorite(task: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
             taskRepo.updateTaskFavorite(taskId = task.id!!, isFavorite = !task.isFavorite)
+            Log.d("HomeViewModel", "authRepo.getCurrentUserId(): ${authRepo.getAuthState()}")
         }
     }
 

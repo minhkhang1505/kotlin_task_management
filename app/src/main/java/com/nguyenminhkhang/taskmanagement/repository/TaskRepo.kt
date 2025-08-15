@@ -47,4 +47,5 @@ interface TaskRepo {
     suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean
     suspend fun updateCollectionNameById(collectionId: Long, newCollectionName: String): Boolean
     fun SearchTasks(query: String): Flow<List<TaskEntity>>
+    suspend fun claimLocalTasks(userId: String) : Boolean
 }

@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.ui.NavScreen
+import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.home.state.SearchState
@@ -30,6 +32,8 @@ import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLayout(
+    currentRoute: String?,
+    selectedDestination: Int,
     searchResults: List<TaskEntity>,
     searchState: SearchState,
     uiState: HomeUiState,
@@ -38,6 +42,15 @@ fun HomeLayout(
     onEvent: (HomeEvent) -> Unit,
 ) {
     Scaffold(
+        bottomBar = {
+            if (currentRoute in listOf(NavScreen.HOME.route)) {
+                NavigationBottomBar(
+                    navController = navController,
+                    selectedDestination = selectedDestination,
+                    onSelectedDestinationChange = {}
+                )
+            }
+        },
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         floatingActionButton = {
@@ -47,13 +60,12 @@ fun HomeLayout(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+                .fillMaxSize().padding(innerPadding),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopBar(onEvent)
-            PagerTabLayout( uiState, onEvent, navController)
+            PagerTabLayout(uiState, onEvent, navController)
         }
 
         if (searchState.isSearchBarVisible) {
@@ -64,18 +76,18 @@ fun HomeLayout(
             )
         }
 
-        if(uiState.isNewCollectionNameDialogVisible) {
+        if (uiState.isNewCollectionNameDialogVisible) {
             RenameCollectionDialog(
                 newCollectionName = uiState.newCollectionName,
                 onEvent = onEvent
             )
         }
 
-        if(uiState.isAddTaskSheetVisible) {
+        if (uiState.isAddTaskSheetVisible) {
             AddTaskBottomSheet(uiState = uiState, onEvent = onEvent,)
         }
 
-        if(uiState.menuListButtonSheet.isNullOrEmpty()== false) {
+        if (uiState.menuListButtonSheet.isNullOrEmpty() == false) {
             ModalBottomSheet(
                 onDismissRequest = { onEvent(HomeEvent.ResetMenuListButtonSheet) }
             ) {

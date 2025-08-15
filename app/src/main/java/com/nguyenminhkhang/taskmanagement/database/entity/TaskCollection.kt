@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 data class TaskCollection(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
+    @ColumnInfo(name = "user_id")
+    val userId: String = "",
     @ColumnInfo(name = "content")
     val content: String,
     @ColumnInfo(name = "updated_at")

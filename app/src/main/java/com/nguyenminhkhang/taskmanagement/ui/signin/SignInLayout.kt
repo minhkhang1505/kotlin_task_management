@@ -32,6 +32,7 @@ import com.nguyenminhkhang.taskmanagement.ui.signin.state.SignInState
 fun SignInLayout(
     loginState: SignInState,
     onGoogleSignInClick: () -> Unit,
+    onGuessSignInClick: () -> Unit,
     navController: NavController
 ) {
     Box(
@@ -125,10 +126,12 @@ fun SignInLayout(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(45.dp))
             OrDivider()
-            Spacer(modifier = Modifier.height(50.dp))
-            LoginWith(onGoogleSignInClick = onGoogleSignInClick)
+            Spacer(modifier = Modifier.height(45.dp))
+            LoginWith(icon = painterResource(R.drawable.ic_google), title = "Login with Google",onGoogleSignInClick = onGoogleSignInClick)
+            Spacer(modifier = Modifier.height(12.dp))
+            LoginWith(icon = painterResource(R.drawable.ic_guest), title = "Login as a Guest",onGoogleSignInClick = onGuessSignInClick)
             Spacer(modifier = Modifier.height(100.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),

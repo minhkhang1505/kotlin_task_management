@@ -133,4 +133,7 @@ interface TaskDAO {
 
     @Query("SELECT * FROM task WHERE title LIKE '%' || :query || '%'")
     fun SearchTasks(query: String): Flow<List<TaskEntity>>
+
+    @Query("UPDATE task SET user_id = :newUserId WHERE user_id = 'local_user'")
+    suspend fun claimLocalTasks(newUserId: String) : Int
 }
