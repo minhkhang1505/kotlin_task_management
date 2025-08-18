@@ -15,12 +15,10 @@ import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomeScreenRoute(
+fun HomePage(
     homeViewModel: HomeViewModel = hiltViewModel(),
     navController: NavController,
     backStackEntry: NavBackStackEntry,
-    selectedDestination: Int,
-    currentRoute: String? = null
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val searchState by homeViewModel.searchState.collectAsState()
@@ -60,8 +58,6 @@ fun HomeScreenRoute(
     }
 
     HomeLayout(
-        currentRoute = currentRoute,
-        selectedDestination = selectedDestination,
         searchResults = results,
         searchState = searchState,
         uiState = uiState,

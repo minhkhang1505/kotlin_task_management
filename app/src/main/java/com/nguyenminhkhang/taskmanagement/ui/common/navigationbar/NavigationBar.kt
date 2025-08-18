@@ -2,29 +2,37 @@ package com.nguyenminhkhang.taskmanagement.ui.common.navigationbar
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 
 @Composable
-fun NavigationBottomBar(navController: NavController, selectedDestination: Int, onSelectedDestinationChange: () -> Unit) {
-    NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-        Destination.entries.forEachIndexed { index, destination ->
+fun NavigationBottomBar(navController: NavController) {
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentDest = backStackEntry?.destination
+    NavigationBar {
+        BottomDestinations.forEach { dest ->
+            val selected = currentDest?.hierarchy?.any { it.route == dest.route } == true
             NavigationBarItem(
-                selected = selectedDestination == index,
+                selected = selected,
                 onClick = {
-                    navController.navigate(route = destination.route)
-                    onSelectedDestinationChange()
+                    if (!selected) {
+                        navController.navigate(dest.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
                 },
-                icon = {
-                    Icon(
-                        destination.icon,
-                        contentDescription = destination.contentDescription
-                    )
-                },
-                label = { Text(destination.label) }
+                icon = { Icon(dest.icon, contentDescription = dest.contentDescription) },
+                label = { Text(dest.label) }
             )
         }
     }

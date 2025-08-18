@@ -1,26 +1,37 @@
 package com.nguyenminhkhang.taskmanagement.ui.common.navigationbar
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.nguyenminhkhang.taskmanagement.ui.NavScreen
 
-enum class Destination(
+data class BottomDestination(
     val route: String,
-    val icon: ImageVector,
     val label: String,
-    val contentDescription: String,
-) {
-    Home(
-        route = "home",
-        icon = Icons.Default.Home,
+    val icon: ImageVector,
+    val contentDescription: String
+)
+
+val BottomDestinations = listOf(
+    BottomDestination(
+        route = NavScreen.HOME.route,
         label = "Home",
-        contentDescription = "Home",
+        icon = Icons.Outlined.Home,
+        contentDescription = "Home"
     ),
-    Account(
-        route = "account",
-        icon = Icons.Default.AccountBox,
+    BottomDestination(
+        route = NavScreen.SEARCH.route,
+        label = "Search",
+        icon = Icons.Outlined.Search,
+        contentDescription = "Search"
+    ),
+    BottomDestination(
+        route = NavScreen.ACCOUNT.route,
         label = "Account",
-        contentDescription = "Account",
-    )
-}
+        icon = Icons.Outlined.AccountCircle,
+        contentDescription = "Account"
+    ),
+
+)

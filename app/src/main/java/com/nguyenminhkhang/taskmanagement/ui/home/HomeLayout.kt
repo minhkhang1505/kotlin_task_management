@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
@@ -32,8 +34,6 @@ import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLayout(
-    currentRoute: String?,
-    selectedDestination: Int,
     searchResults: List<TaskEntity>,
     searchState: SearchState,
     uiState: HomeUiState,
@@ -42,16 +42,10 @@ fun HomeLayout(
     onEvent: (HomeEvent) -> Unit,
 ) {
     Scaffold(
-        bottomBar = {
-            if (currentRoute in listOf(NavScreen.HOME.route)) {
-                NavigationBottomBar(
-                    navController = navController,
-                    selectedDestination = selectedDestination,
-                    onSelectedDestinationChange = {}
-                )
-            }
+        topBar = {
+            TopBar(onEvent)
         },
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().background(Color.Yellow),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         floatingActionButton = {
             AppFloatActionButton{ onEvent(HomeEvent.ShowAddTaskSheet) }
@@ -64,7 +58,6 @@ fun HomeLayout(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TopBar(onEvent)
             PagerTabLayout(uiState, onEvent, navController)
         }
 
