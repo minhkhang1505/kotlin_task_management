@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.home
+package com.nguyenminhkhang.taskmanagement.ui.search
 
 sealed class SearchEvent {
     data class OnSearchQueryChange(val query: String) : SearchEvent()

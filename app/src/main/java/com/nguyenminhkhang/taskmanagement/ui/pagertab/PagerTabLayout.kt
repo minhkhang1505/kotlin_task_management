@@ -21,7 +21,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.ui.home.CustomSearchBar
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState

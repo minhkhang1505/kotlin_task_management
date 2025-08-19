@@ -1,7 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
@@ -11,7 +10,6 @@ import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
-import com.nguyenminhkhang.taskmanagement.ui.home.state.SearchState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
@@ -22,7 +20,6 @@ import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -33,7 +30,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -58,32 +54,11 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private val _searchState = MutableStateFlow(SearchState())
-    val searchState: StateFlow<SearchState> = _searchState.asStateFlow()
-
     private var _snackBarEvent = MutableSharedFlow<SnackbarEvent>()
     val snackBarEvent = _snackBarEvent.asSharedFlow()
 
     private var pendingCompleteAction : Job? = null
     private var taskToConfirm : TaskUiState? = null
-
-    private val _searchQuery = MutableStateFlow("")
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val searchResults: StateFlow<List<TaskEntity>> = _searchQuery
-        .debounce(300L)
-        .flatMapLatest { query ->
-            if (query.length < 2) {
-                flowOf(emptyList())
-            } else {
-                taskRepo.SearchTasks(query)
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
 
     private var _currentSelectedCollectionId:Long = -1L
 
@@ -408,28 +383,6 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun handleSearchEvent(event: SearchEvent) {
-        when (event) {
-            is SearchEvent.OnSearchQueryChange -> {
-                _searchState.update { it.copy(searchQuery = event.query) }
-                _searchQuery.value = event.query
-            }
-            is SearchEvent.OnExpandedChange -> {
-                _searchState.update { it.copy(expanded = event.isExpanded) }
-                if (!event.isExpanded) {
-                    _searchState.update { it.copy(searchQuery = "") }
-                    _searchQuery.value = ""
-                }
-            }
-            is SearchEvent.OnSearchResultClick -> {}
-            is SearchEvent.ToggleSearchBarVisibility -> { _searchState.update { it.copy(isSearchBarVisible = !it.isSearchBarVisible) } }
-            is SearchEvent.ClearSearchQuery -> { _searchState.update { it.copy(searchQuery = "") } }
-            is SearchEvent.HideSearchBar -> { _searchState.update { it.copy(isSearchBarVisible = false) } }
-            is SearchEvent.ExpandSearchBarChanged -> { _searchState.update { it.copy(expanded = !it.expanded) } }
-            is SearchEvent.CollapseSearchBar -> { _searchState.update { it.copy(expanded = false) } }
-        }
-    }
-
     fun onEvent(event: HomeEvent) {
         when (event) {
             is HomeEvent.ShowAddTaskSheet -> _uiState.update {
@@ -487,7 +440,6 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ClearRenameCollectionName -> ClearRenameCollectionName()
             is HomeEvent.OnCollectionNameChange -> OnCollectionNameChange(event.newCollectionName)
             is HomeEvent.RenameCollection -> RenameCollection(event.newCollectionName)
-            is HomeEvent.Search -> handleSearchEvent(event.searchEvent)
         }
     }
 }

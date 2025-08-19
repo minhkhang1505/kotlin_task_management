@@ -4,10 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -22,29 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.ui.NavScreen
-import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
-import com.nguyenminhkhang.taskmanagement.ui.home.state.SearchState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLayout(
-    searchResults: List<TaskEntity>,
-    searchState: SearchState,
     uiState: HomeUiState,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     onEvent: (HomeEvent) -> Unit,
 ) {
     Scaffold(
-        topBar = {
-            TopBar(onEvent)
-        },
+        topBar = { TopBar() },
         modifier = Modifier.fillMaxSize().background(Color.Yellow),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         floatingActionButton = {
@@ -59,14 +49,6 @@ fun HomeLayout(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             PagerTabLayout(uiState, onEvent, navController)
-        }
-
-        if (searchState.isSearchBarVisible) {
-            CustomSearchBar(
-                searchResult = searchResults,
-                searchState = searchState,
-                onEvent = onEvent
-            )
         }
 
         if (uiState.isNewCollectionNameDialogVisible) {
