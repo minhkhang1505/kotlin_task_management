@@ -48,4 +48,5 @@ interface TaskRepo {
     suspend fun updateCollectionNameById(collectionId: Long, newCollectionName: String): Boolean
     fun SearchTasks(query: String): Flow<List<TaskEntity>>
     suspend fun claimLocalTasks(userId: String) : Boolean
+    fun getTodayTasks(startDate: Long, endDate: Long): Flow<List<TaskEntity>>
 }

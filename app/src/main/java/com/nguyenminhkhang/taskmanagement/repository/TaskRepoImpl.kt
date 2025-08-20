@@ -232,4 +232,8 @@ class TaskRepoImpl (
             taskDAO.claimLocalTasks(userId) > 0
         }
     }
+
+    override fun getTodayTasks(startDate: Long, endDate: Long): Flow<List<TaskEntity>> {
+        return taskDAO.getTodayTasks(startDate, endDate)
+    }
 }

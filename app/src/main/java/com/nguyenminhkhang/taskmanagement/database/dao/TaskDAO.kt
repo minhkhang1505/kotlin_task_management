@@ -1,5 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.database.dao
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -9,6 +11,9 @@ import androidx.room.Update
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
+import java.time.LocalDate
+import java.time.ZoneId
+
 
 @Dao
 interface TaskDAO {
@@ -136,4 +141,13 @@ interface TaskDAO {
 
     @Query("UPDATE task SET user_id = :newUserId WHERE user_id = 'local_user'")
     suspend fun claimLocalTasks(newUserId: String) : Int
+
+    @Query("""
+    SELECT * FROM task 
+    WHERE repeat_end_date BETWEEN :startOfDay AND :endOfDay
+""")
+    fun getTodayTasks(
+        startOfDay: Long,
+        endOfDay: Long
+    ): Flow<List<TaskEntity>>
 }

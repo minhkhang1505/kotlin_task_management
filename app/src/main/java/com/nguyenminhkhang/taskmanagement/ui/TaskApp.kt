@@ -77,7 +77,9 @@ fun TaskApp() {
                 }
 
                 composable(route = NavScreen.ACCOUNT.route) {
-                    AccountPage()
+                    AccountPage(
+                        navController = navController
+                    )
                 }
 
                 composable(route = NavScreen.SEARCH.route) {

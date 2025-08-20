@@ -41,15 +41,6 @@ class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, priva
 
                 val result = auth.signInWithCredential(credential).await()
                 val user = result.user
-//                if (user != null)  {
-//                    val metadata = user.metadata
-//
-//                    Log.d("SignInViewModel", "First time sign-in detected. Claiming local tasks...")
-//                    if (metadata != null && metadata.creationTimestamp == metadata.lastSignInTimestamp) {
-//                        taskRepo.claimLocalTasks(user.uid)
-//                    }
-//                }
-
                 val hasAlreadyClaimed = authRepo.hasClaimedLocalTasksFlow.first()
                 if(!hasAlreadyClaimed) {
                     taskRepo.claimLocalTasks(user!!.uid)
@@ -79,17 +70,6 @@ class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, priva
 
                 authRepo.updateHasClaimedLocalTasks(true)
                 Log.d("AuthViewModel", "Flag hasClaimedLocalTasks set to true.")
-            }
-        }
-    }
-
-    private fun signOut() {
-        viewModelScope.launch {
-            try {
-                auth.signOut()
-                _signInState.update { it.copy(isSuccess = false) }
-            } catch (e: Exception) {
-                Log.e("SignInViewModel", "signOut: ${e.message}", e)
             }
         }
     }

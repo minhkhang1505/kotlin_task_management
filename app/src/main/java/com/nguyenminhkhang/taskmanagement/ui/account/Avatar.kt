@@ -1,6 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.account
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +30,7 @@ fun Avatar(
 ) {
     val context = LocalContext.current
     Box(
-        modifier = Modifier.clip(CircleShape).size(size),
+        modifier = Modifier.clip(CircleShape).border(2.dp, color = MaterialTheme.colorScheme.primary, shape = CircleShape).size(size),
         contentAlignment = Alignment.Center
     ) {
         when {
@@ -42,7 +44,7 @@ fun Avatar(
                     },
                     contentDescription = "User Avatar",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.matchParentSize(),
+                    modifier = Modifier.matchParentSize().clip(CircleShape).padding(2.dp),
                     placeholder = androidx.compose.ui.res.painterResource(R.drawable.baseline_person_24),
                     error = androidx.compose.ui.res.painterResource(R.drawable.baseline_person_24)
                 )
@@ -62,7 +64,7 @@ fun Avatar(
                         .build(),
                     contentDescription = "Default Avatar",
                     contentScale = ContentScale.Fit,
-                    modifier = Modifier.matchParentSize()
+                    modifier = Modifier.matchParentSize().clip(CircleShape).padding(2.dp)
                 )
             }
         }

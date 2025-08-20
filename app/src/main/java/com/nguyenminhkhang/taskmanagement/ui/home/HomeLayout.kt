@@ -35,7 +35,6 @@ fun HomeLayout(
 ) {
     Scaffold(
         topBar = { TopBar() },
-        modifier = Modifier.fillMaxSize().background(Color.Yellow),
         containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
         floatingActionButton = {
             AppFloatActionButton{ onEvent(HomeEvent.ShowAddTaskSheet) }
