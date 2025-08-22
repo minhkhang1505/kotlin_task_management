@@ -55,6 +55,7 @@ fun CustomSearchBar(
         Column(
             modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
+            Spacer(modifier = Modifier.height(8.dp))
             searchResult.forEach {result ->
                 SearchTaskItemLayout(
                     taskResult = result,

@@ -144,6 +144,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun syncTasksForCurrentUser() {
+
+    }
+
     private fun addNewTask() {
         val taskToSave = _uiState.value
         if (taskToSave.newTask!!.content.isBlank() || _currentSelectedCollectionId <= 0) return

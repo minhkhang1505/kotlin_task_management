@@ -132,7 +132,7 @@ fun SignInLayout(
             LoginWith(icon = painterResource(R.drawable.ic_google), title = "Login with Google",onGoogleSignInClick = onGoogleSignInClick)
             Spacer(modifier = Modifier.height(12.dp))
             LoginWith(icon = painterResource(R.drawable.ic_guest), title = "Login as a Guest",onGoogleSignInClick = onGuessSignInClick)
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,

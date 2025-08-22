@@ -1,13 +1,10 @@
 package com.nguyenminhkhang.taskmanagement.ui.signin
 
 import android.util.Log
-import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
@@ -21,9 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.tasks.await
-import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
 class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, private val authRepo: AuthRepo ) : ViewModel() {
@@ -43,7 +38,8 @@ class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, priva
                 val user = result.user
                 val hasAlreadyClaimed = authRepo.hasClaimedLocalTasksFlow.first()
                 if(!hasAlreadyClaimed) {
-                    taskRepo.claimLocalTasks(user!!.uid)
+                    taskRepo.claimLocalTasks()
+                    taskRepo.claimLocalTaskCollection()
                     authRepo.updateHasClaimedLocalTasks(true)
                 }
 
@@ -56,21 +52,5 @@ class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, priva
         }
     }
 
-    fun signInAsGuest() {
-
-    }
-
-    private fun checkAndClaimLocalTasks(firebaseUser: FirebaseUser) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val hasAlreadyClaimed = authRepo.hasClaimedLocalTasksFlow.first()
-
-            if (!hasAlreadyClaimed) {
-                Log.d("AuthViewModel", "First time sign-in detected. Claiming local tasks...")
-                taskRepo.claimLocalTasks(firebaseUser.uid)
-
-                authRepo.updateHasClaimedLocalTasks(true)
-                Log.d("AuthViewModel", "Flag hasClaimedLocalTasks set to true.")
-            }
-        }
-    }
+    fun signInAsGuest() { }
 }

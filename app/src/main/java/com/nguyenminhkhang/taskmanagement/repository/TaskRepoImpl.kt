@@ -1,8 +1,11 @@
 package com.nguyenminhkhang.taskmanagement.repository
 
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
@@ -16,19 +19,21 @@ class TaskRepoImpl (
     private val taskDAO: TaskDAO,
 ) : TaskRepo {
     private val auth: FirebaseAuth = Firebase.auth
+    private val firestore: FirebaseFirestore = Firebase.firestore
 
     override fun getTaskCollection(): Flow<List<TaskCollection>>  {
-        return taskDAO.getAllTaskCollection()
+        Log.d("TaskRepoImpl", "getTaskCollection: ${auth.currentUser?.uid ?: "local_user"}")
+        return taskDAO.getAllTaskCollection(auth.currentUser?.uid ?: "local_user")
     }
 
     override fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>> =
-        taskDAO.getAllTaskByCollectionId(collectionId)
+        taskDAO.getAllTaskByCollectionId(collectionId, auth.currentUser?.uid ?: "local_user")
 
     override suspend fun addTask(content: String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long?): TaskEntity? =
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val task = TaskEntity(
-            userId = auth.currentUser?.uid ?: "",
+            userId = auth.currentUser?.uid ?: return@withContext null,
             content = content,
             taskDetail = taskDetail,
             isFavorite = isFavorite,
@@ -40,8 +45,17 @@ class TaskRepoImpl (
             reminderTimeMillis = reminderTimeMillis,
         )
         val id = taskDAO.insertTask(task)
+
         if (id > 0) {
-            task.copy(id = id)
+            val taskWithId = task.copy(id = id)
+
+            firestore.collection("users")
+                .document("${auth.currentUser!!.email}")
+                .collection("tasks")
+                .document(taskWithId.content) // Đặt ID cho document
+                .set(taskWithId)
+
+            taskWithId
         } else null
     }
 
@@ -49,14 +63,22 @@ class TaskRepoImpl (
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val taskCollection = TaskCollection(
-            userId = auth.currentUser?.uid ?: "",
+            userId = auth.currentUser?.uid ?: "local_user",
             content = content,
             updatedAt = now,
             sortedType = SortedType.SORTED_BY_DATE.value
         )
         val id = taskDAO.insertTaskCollection(taskCollection)
         if(id > 0) {
-            taskCollection.copy(id = id)
+            val taskCollectionWithID = taskCollection.copy(id = id)
+
+            firestore.collection("users")
+                .document("${auth.currentUser!!.email}")
+                .collection("task_collections")
+                .document(taskCollectionWithID.content) // Đặt ID cho document
+                .set(taskCollectionWithID)
+
+            taskCollectionWithID
         } else null
     }
 
@@ -224,16 +246,22 @@ class TaskRepoImpl (
     }
 
     override fun SearchTasks(query: String): Flow<List<TaskEntity>> {
-        return taskDAO.SearchTasks(query)
+        return taskDAO.SearchTasks(query, auth.currentUser?.uid ?: "local_user")
     }
 
-    override suspend fun claimLocalTasks(userId: String): Boolean {
+    override suspend fun claimLocalTasks(): Boolean {
         return withContext(Dispatchers.IO) {
-            taskDAO.claimLocalTasks(userId) > 0
+            taskDAO.claimLocalTasks(auth.currentUser!!.uid) > 0
+        }
+    }
+
+    override suspend fun claimLocalTaskCollection(): Boolean {
+        return withContext(Dispatchers.IO) {
+            taskDAO.claimLocalTaskCollection(auth.currentUser!!.uid) > 0
         }
     }
 
     override fun getTodayTasks(startDate: Long, endDate: Long): Flow<List<TaskEntity>> {
-        return taskDAO.getTodayTasks(startDate, endDate)
+        return taskDAO.getTodayTasks(startDate, endDate, auth.currentUser?.uid ?: "local_user")
     }
 }

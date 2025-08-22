@@ -28,7 +28,7 @@ fun SearchLayout(
             searchState = searchUiState,
             onEvent = onEvent
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             text = "Today's Tasks",
             style = MaterialTheme.typography.titleMedium,

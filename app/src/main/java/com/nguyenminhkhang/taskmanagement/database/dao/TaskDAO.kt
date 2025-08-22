@@ -1,7 +1,5 @@
 package com.nguyenminhkhang.taskmanagement.database.dao
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,9 +9,6 @@ import androidx.room.Update
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDate
-import java.time.ZoneId
-
 
 @Dao
 interface TaskDAO {
@@ -24,11 +19,11 @@ interface TaskDAO {
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: TaskEntity) : Long
 
-    @Query("SELECT * FROM task_collection")
-    fun getAllTaskCollection(): Flow<List<TaskCollection>>
+    @Query("SELECT * FROM task_collection WHERE user_id = :currentUser")
+    fun getAllTaskCollection(currentUser: String): Flow<List<TaskCollection>>
 
-    @Query("SELECT * FROM task WHERE collection_id = :collectionId")
-    fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>>
+    @Query("SELECT * FROM task WHERE collection_id = :collectionId AND user_id = :currentUser")
+    fun getAllTaskByCollectionId(collectionId: Long, currentUser: String): Flow<List<TaskEntity>>
 
     @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
     suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean) : Int
@@ -136,18 +131,22 @@ interface TaskDAO {
     @Query("UPDATE task_collection Set content = :newCollectionName WHERE id = :collectionId")
     suspend fun updateCollectionName(collectionId: Long, newCollectionName: String) : Int
 
-    @Query("SELECT * FROM task WHERE title LIKE '%' || :query || '%'")
-    fun SearchTasks(query: String): Flow<List<TaskEntity>>
+    @Query("SELECT * FROM task WHERE title LIKE '%' || :query || '%' AND user_id = :currentUser")
+    fun SearchTasks(query: String, currentUser: String): Flow<List<TaskEntity>>
 
     @Query("UPDATE task SET user_id = :newUserId WHERE user_id = 'local_user'")
     suspend fun claimLocalTasks(newUserId: String) : Int
 
+    @Query("UPDATE task_collection SET user_id = :newUserId WHERE user_id = 'local_user'")
+    suspend fun claimLocalTaskCollection(newUserId: String) : Int
+
     @Query("""
     SELECT * FROM task 
-    WHERE repeat_end_date BETWEEN :startOfDay AND :endOfDay
+    WHERE repeat_end_date BETWEEN :startOfDay AND :endOfDay AND user_id = :currentUser
 """)
     fun getTodayTasks(
         startOfDay: Long,
-        endOfDay: Long
+        endOfDay: Long,
+        currentUser: String
     ): Flow<List<TaskEntity>>
 }

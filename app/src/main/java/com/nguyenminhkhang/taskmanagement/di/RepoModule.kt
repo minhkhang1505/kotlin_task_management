@@ -1,6 +1,10 @@
 package com.nguyenminhkhang.taskmanagement.di
 
 import android.content.Context
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.firestoreSettings
 import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepoImpl
@@ -26,4 +30,15 @@ object RepoModule {
     @Singleton
     @Provides
     fun provideAuthRepo(@ApplicationContext context: Context): AuthRepo = AuthRepoImpl(context)
+
+    @Singleton
+    @Provides
+    fun provideFirestore(): FirebaseFirestore {
+        val firestore = Firebase.firestore
+        val settings = firestoreSettings {
+            isPersistenceEnabled = true
+        }
+        firestore.firestoreSettings = settings
+        return firestore
+    }
 }

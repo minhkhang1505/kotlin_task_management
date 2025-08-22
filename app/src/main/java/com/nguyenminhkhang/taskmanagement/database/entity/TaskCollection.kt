@@ -9,7 +9,7 @@ data class TaskCollection(
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
     @ColumnInfo(name = "user_id")
-    val userId: String = "",
+    val userId: String = "local_user",
     @ColumnInfo(name = "content")
     val content: String,
     @ColumnInfo(name = "updated_at")

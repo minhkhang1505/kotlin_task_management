@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,17 +39,17 @@ fun SearchTaskItemLayout(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column{
+        Column (
+            modifier = Modifier.padding(start = 16.dp)
+        ){
             Text(
                 text = taskResult.content,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(8.dp)
             )
             Text(
-                text ="Due: ${taskResult.repeatEndDate!!.millisToDateString()}",
+                text ="Due: ${taskResult.repeatEndDate?.millisToDateString() ?: "No due date"}",
                 color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp, bottom = 8.dp)
             )
         }
         Icon(

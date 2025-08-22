@@ -25,9 +25,9 @@ import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 val zoneId = ZoneId.systemDefault()
+
 @RequiresApi(Build.VERSION_CODES.O)
 val today = LocalDate.now(zoneId)
 
