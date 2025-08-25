@@ -11,35 +11,23 @@ interface TaskRepo {
     fun syncTasksForCurrentUser()
     suspend fun addTask(content:String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long? ): TaskEntity?
     suspend fun addNewCollection(content: String): TaskCollection?
-    suspend fun updateTask(task: TaskEntity): Boolean
     suspend fun updateTaskCollection(taskCollection: TaskCollection): Boolean
     suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean): Boolean
     suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean
     suspend fun deleteTaskCollectionById(collectionId: Long): Boolean
     suspend fun updateCollectionSortedType(collectionId: Long, sortedType: SortedType) : Boolean
     fun getTaskById(taskId: Long): Flow<TaskEntity>
-    suspend fun updateTaskContentById(taskId: Long, newContent: String): Boolean
-    suspend fun updateTaskStartDateById(taskId: Long, startDate: Long): Boolean
+//    suspend fun updateTaskContentById(taskId: Long, newContent: String): Boolean
+//    suspend fun updateTaskStartDateById(taskId: Long, startDate: Long): Boolean
     suspend fun updateTaskDueDateById(taskId: Long, dueDate: Long): Boolean
     suspend fun updateTaskReminderTimeById(taskId: Long, reminderTime: Int): Boolean
     suspend fun updateTaskPriorityById(taskId: Long, priority: Int): Boolean
-    suspend fun updateTaskRepeatById(
-        taskId: Long,
-        repeatEvery: Long,
-        repeatDaysOfWeek: String?,
-        repeatInterval: String?,
-        repeatStartDay: Long?,
-        repeatEndType: String?,
-        repeatEndDate: Long?,
-        repeatEndCount: Int,
-        startTime: Long?
-    ): Boolean
-
+    suspend fun updateTask(task: TaskEntity): Boolean
     suspend fun updateTaskStartDate(taskId : Long, startDate : Long): Boolean
     suspend fun clearDateSelected(taskId : Long): Boolean
     suspend fun clearTimeSelected(taskId : Long) : Boolean
-    suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean
-    suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean
+//    suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean
+//    suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean
     suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean
     suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Boolean
     suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean

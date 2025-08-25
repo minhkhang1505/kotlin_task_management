@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +34,7 @@ class RepeatViewModel @Inject constructor(
             taskRepo.getTaskById(taskId).collect { taskEntity ->
                 _taskUiState.update {currentState ->
                     currentState.copy(
-                        task = taskEntity.toTaskUiState(),
+                        task = taskEntity,
                         isLoading = false,
                     )
                 }
@@ -169,26 +168,12 @@ class RepeatViewModel @Inject constructor(
         }
     }
 
-    fun callHelloWorld(){
-        println("Hello World from RepeatViewModel")
-    }
-
-    fun updateTaskRepeatById() {
+    fun updateRepeatTask() {
         val currentState = uiState.value
         val taskToUpdate = currentState.task ?: return // Nếu task null thì không làm gì
 
         viewModelScope.launch {
-            taskRepo.updateTaskRepeatById(
-                taskId = taskId,
-                repeatEvery = currentState.task.repeatEvery,
-                repeatDaysOfWeek = currentState.task.repeatDaysOfWeek?.joinToString(",") ?: "",
-                repeatInterval = currentState.task.repeatInterval,
-                repeatStartDay = currentState.task.startDate,
-                repeatEndType = currentState.selectedEndCondition,
-                repeatEndDate = currentState.task.repeatEndDate,
-                repeatEndCount = currentState.occurrenceCount.toIntOrNull() ?: 1,
-                startTime = currentState.task.startTime ?: 0L
-            )
+            taskRepo.updateTask(taskToUpdate)
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }

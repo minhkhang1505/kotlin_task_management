@@ -36,23 +36,7 @@ import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUi
 fun TaskDetailLayout(
     context: Context,
     uiState: TaskDetailScreenUiState,
-    toggleFavorite: () -> Unit,
-    onTitleChange: (String) -> Unit,
-    onEnterEditMode: () -> Unit,
-    onExitEditMode: () -> Unit,
-    saveTitle: () -> Unit,
-    onDetailChange: (String) -> Unit,
-    saveDetail: () -> Unit,
-    onShowDatePicker: () -> Unit,
-    onClearDateSelected: () -> Unit,
-    onShowTimePicker: () -> Unit,
-    onClearTimeSelected: () -> Unit,
-    onDateSelected: (Long) -> Unit,
-    onDismissDatePicker: () -> Unit,
-    onTimeSelected: (Long) -> Unit,
-    onDismissTimePicker: () -> Unit,
     onNavigateBack: () -> Unit,
-    onMarkAsDone: () -> Unit,
     onNavigateTo: (String) -> Unit,
     onEvent: (TaskDetailEvent) -> Unit
 ) {
@@ -60,7 +44,7 @@ fun TaskDetailLayout(
         topBar = {
             TaskDetailTopAppBar(
                 isFavorite = uiState.task?.isFavorite ?: false,
-                onFavoriteClick = { toggleFavorite() },
+                onFavoriteClick = { onEvent(TaskDetailEvent.ToggleFavorite) },
                 onNavigateBack = { onNavigateBack() },
             )
         },
@@ -81,28 +65,28 @@ fun TaskDetailLayout(
                 TaskTitleField(
                     title = uiState.task!!.content,
                     isInEditMode = uiState.isInEditMode,
-                    onTitleChange = onTitleChange,
-                    onEnterEditMode = onEnterEditMode,
-                    onExitEditMode = onExitEditMode,
-                    onSave = { saveTitle() }
+                    onTitleChange = { onEvent(TaskDetailEvent.OnTitleChanged(it)) },
+                    onEnterEditMode = { onEvent(TaskDetailEvent.OnEnterEditMode) },
+                    onExitEditMode = { onEvent(TaskDetailEvent.OnExitEditMode) },
+                    onSave = { onEvent(TaskDetailEvent.SaveTitle) }
                 )
                 // menu icon sub task detail
                 TaskDetailInputRow(
                     detailValue = uiState.task.taskDetail,
-                    onDetailChange = onDetailChange,
-                    onSave = { saveDetail() }
+                    onDetailChange = { onEvent(TaskDetailEvent.OnDetailChange(it)) },
+                    onSave = { onEvent(TaskDetailEvent.SaveDetail) }
                 )
                 // date icon and text field
                 TaskDateRow(
                     uiState = uiState,
-                    onShowDatePicker = onShowDatePicker,
-                    onClearDate = onClearDateSelected
+                    onShowDatePicker = { onEvent(TaskDetailEvent.OnShowDatePicker) },
+                    onClearDate = { onEvent(TaskDetailEvent.OnClearDateSelected) }
                 )
                 // time icon and text field
                 TaskTimeRow(
                     uiState = uiState,
-                    onShowDatePicker = onShowTimePicker,
-                    onClearDate = onClearTimeSelected
+                    onShowDatePicker = { onEvent(TaskDetailEvent.OnShowTimePicker) },
+                    onClearDate = { onEvent(TaskDetailEvent.OnClearTimeSelected) }
                 )
                 // repeat icon and text field
                 RepeatInfoRow(
@@ -112,22 +96,24 @@ fun TaskDetailLayout(
                     }
                 )
                 AddToCalendarButton(
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 8.dp),
-                    onClick = { onEvent(TaskDetailEvent.AddToCalendar(context, uiState.task.toTaskEntity())) }
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 8.dp),
+                    onClick = { onEvent(TaskDetailEvent.AddToCalendar(context, uiState.task)) }
                 )
             }
 
             if (uiState.isDatePickerVisible) {
                 DatePickerModal(
-                    onDateSelected = { onDateSelected(it) },
-                    onDismiss = { onDismissDatePicker() },
+                    onDateSelected = { onEvent(TaskDetailEvent.OnDateSelected(it)) },
+                    onDismiss = { onEvent(TaskDetailEvent.OnDismissDatePicker) },
                 )
             }
 
             if (uiState.isTimePickerVisible) {
                 TimePickerModal(
-                    onConfirm = { onTimeSelected(it.toHourMinute()) },
-                    onDismiss = { onDismissTimePicker() }
+                    onConfirm = { onEvent(TaskDetailEvent.OnTimeSelected(it.toHourMinute())) },
+                    onDismiss = { onEvent(TaskDetailEvent.OnDismissTimePicker) }
                 )
             }
             if (uiState.isChangeCollectionSheetVisible) {
@@ -138,7 +124,7 @@ fun TaskDetailLayout(
             }
 
             FloatingActionButton(
-                onClick = onMarkAsDone,
+                onClick = { onEvent(TaskDetailEvent.OnMarkAsDoneClicked) },
                 modifier = Modifier
                     .padding(8.dp)
                     .align(Alignment.BottomEnd),

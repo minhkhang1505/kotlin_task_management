@@ -2,10 +2,11 @@ package com.nguyenminhkhang.taskmanagement.ui.repeat.state
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 
 data class RepeatUiState(
-    val task: TaskUiState? = null,
+    val task: TaskEntity? = null,
     val isLoading: Boolean = true,
     val isDatePickerVisible: Boolean = false,
     val isTimePickerVisible: Boolean = false,

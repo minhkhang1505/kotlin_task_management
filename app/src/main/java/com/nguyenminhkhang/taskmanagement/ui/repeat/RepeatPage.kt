@@ -28,7 +28,7 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
             onDismissStartDatePicker = repeatViewModel::onDismissDatePicker,
             onClearStartDateSelected = repeatViewModel::onClearDateSelected,
             onStartDateSelected = repeatViewModel::onDateSelected,
-            onSave = repeatViewModel::updateTaskRepeatById,
+            onSave = repeatViewModel::updateRepeatTask,
             onNavigationBack = { navController.popBackStack() },
             onEndDateSelected = repeatViewModel::onEndDateSelected,
         )

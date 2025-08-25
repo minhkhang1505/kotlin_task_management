@@ -51,7 +51,7 @@ class TaskDetailViewModel @Inject constructor (
                 if (taskEntity == null) {
                     TaskDetailScreenUiState(isLoading = false, task = null, collection = collections)
                 } else {
-                    val taskUiState = taskEntity.toTaskUiState()
+                    val taskUiState = taskEntity
                     val currentCollectionName = collections.find { it.id == taskUiState.collectionId }?.content ?: ""
 
                     TaskDetailScreenUiState(
@@ -92,8 +92,8 @@ class TaskDetailViewModel @Inject constructor (
 
     fun saveTitle() {
         viewModelScope.launch {
-            val currentTitle = _taskUiState.value.task?.content ?: return@launch
-            taskRepo.updateTaskContentById(taskId, currentTitle)
+            val currentTask = _taskUiState.value.task ?: return@launch
+            taskRepo.updateTask(currentTask)
             _snackbarEvent.emit(SnackbarEvent("Task updated"))
         }
     }
@@ -116,23 +116,34 @@ class TaskDetailViewModel @Inject constructor (
 
     fun saveDetail() {
         viewModelScope.launch {
-            val currentDetail = _taskUiState.value.task?.taskDetail ?: return@launch
-            taskRepo.updateTaskDetailById(taskId, currentDetail)
+            val currentDetail = _taskUiState.value.task ?: return@launch
+            taskRepo.updateTask(currentDetail)
             _snackbarEvent.emit(SnackbarEvent("Task detail updated"))
         }
     }
 
     //For date picker
     fun onDateSelected(dateInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy( task = currentTask.task?.copy(startDate = dateInMillis), isDatePickerVisible = false)
+        }
+
+        val currentTask = _taskUiState.value.task ?: return
+
         viewModelScope.launch {
-            taskRepo.updateTaskStartDate(taskId, dateInMillis)
-            onDismissDatePicker()
+            taskRepo.updateTask(currentTask)
         }
     }
 
     fun onClearDateSelected() {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(startDate = null))
+        }
+
+        val currentTask = _taskUiState.value.task ?: return
+
         viewModelScope.launch {
-            taskRepo.clearDateSelected(taskId)
+            taskRepo.updateTask(currentTask)
         }
     }
 
@@ -146,15 +157,24 @@ class TaskDetailViewModel @Inject constructor (
 
     // For time picker
     fun onTimeSelected(timeSelected: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy( task = currentTask.task?.copy(startTime = timeSelected), isTimePickerVisible = false)
+        }
+        val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTaskStartTime(taskId, timeSelected)
-            onDismissTimePicker()
+            taskRepo.updateTask(currentTask)
         }
     }
 
     fun onClearTimeSelected() {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(startTime = null))
+        }
+
+        val currentTask = _taskUiState.value.task ?: return
+
         viewModelScope.launch {
-            taskRepo.clearTimeSelected(taskId)
+            taskRepo.updateTask(currentTask)
         }
     }
 
@@ -196,7 +216,7 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     // For repeat summary text
-    private fun buildRepeatSummaryText(task: TaskUiState?): String {
+    private fun buildRepeatSummaryText(task: TaskEntity?): String {
         if (task == null || (task.repeatInterval == null && task.repeatDaysOfWeek.isNullOrEmpty())) {
             return ""
         }
@@ -249,6 +269,23 @@ class TaskDetailViewModel @Inject constructor (
                     }
                 }
             }
+
+            is TaskDetailEvent.ToggleFavorite -> toggleFavorite()
+            is TaskDetailEvent.OnTitleChanged -> onTitleChange(event.newTitle)
+            is TaskDetailEvent.SaveTitle -> saveTitle()
+            is TaskDetailEvent.OnEnterEditMode -> onEnterEditMode()
+            is TaskDetailEvent.OnExitEditMode -> onExitEditMode()
+            is TaskDetailEvent.OnDetailChange -> onDetailChange(event.contentDetail)
+            is TaskDetailEvent.SaveDetail -> saveDetail()
+            is TaskDetailEvent.OnShowDatePicker -> onShowDatePicker()
+            is TaskDetailEvent.OnDismissDatePicker -> onDismissDatePicker()
+            is TaskDetailEvent.OnClearDateSelected -> onClearDateSelected()
+            is TaskDetailEvent.OnDateSelected -> onDateSelected(event.dataMillis)
+            is TaskDetailEvent.OnShowTimePicker -> onShowTimePicker()
+            is TaskDetailEvent.OnClearTimeSelected -> onClearTimeSelected()
+            is TaskDetailEvent.OnTimeSelected -> onTimeSelected(event.timeMillis)
+            is TaskDetailEvent.OnDismissTimePicker -> onDismissTimePicker()
+            is TaskDetailEvent.OnMarkAsDoneClicked -> onMarkAsDoneClicked()
         }
     }
 }

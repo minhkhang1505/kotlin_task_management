@@ -52,23 +52,7 @@ fun TaskDetailPage(
         TaskDetailLayout(
             context = context,
             uiState = uiState,
-            toggleFavorite = { taskDetailViewModel.toggleFavorite() },
-            onTitleChange = { taskDetailViewModel.onTitleChange(it) },
-            onEnterEditMode = { taskDetailViewModel.onEnterEditMode() },
-            onExitEditMode = { taskDetailViewModel.onExitEditMode() },
-            saveTitle = { taskDetailViewModel.saveTitle() },
-            onDetailChange = { taskDetailViewModel.onDetailChange(it) },
-            saveDetail = { taskDetailViewModel.saveDetail() },
-            onShowDatePicker = { taskDetailViewModel.onShowDatePicker() },
-            onClearDateSelected = { taskDetailViewModel.onClearDateSelected() },
-            onShowTimePicker = { taskDetailViewModel.onShowTimePicker() },
-            onClearTimeSelected = { taskDetailViewModel.onClearTimeSelected() },
-            onDateSelected = { taskDetailViewModel.onDateSelected(it) },
-            onDismissDatePicker = { taskDetailViewModel.onDismissDatePicker() },
-            onTimeSelected = { taskDetailViewModel.onTimeSelected(it) },
-            onDismissTimePicker = { taskDetailViewModel.onDismissTimePicker() },
             onNavigateBack = { navController.popBackStack() },
-            onMarkAsDone = { taskDetailViewModel.onMarkAsDoneClicked() },
             onNavigateTo = { route -> navController.navigate(route) },
             onEvent = taskDetailViewModel::onEvent
         )

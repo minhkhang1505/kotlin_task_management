@@ -11,10 +11,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -91,7 +88,7 @@ class TaskRepoImpl (
             firestore.collection("users")
                 .document("${auth.currentUser!!.email}")
                 .collection("tasks")
-                .document(taskWithId.content) // Đặt ID cho document
+                .document(taskWithId.id.toString())
                 .set(taskWithId)
 
             taskWithId
@@ -114,15 +111,11 @@ class TaskRepoImpl (
             firestore.collection("users")
                 .document("${auth.currentUser!!.email}")
                 .collection("task_collections")
-                .document(taskCollectionWithID.content) // Đặt ID cho document
+                .document(taskCollectionWithID.id.toString()) // Đặt ID cho document
                 .set(taskCollectionWithID)
 
             taskCollectionWithID
         } else null
-    }
-
-    override suspend fun updateTask(task: TaskEntity): Boolean = withContext(Dispatchers.IO) {
-        taskDAO.updateTask(task) > 0
     }
 
     override suspend fun updateTaskCollection(taskCollection: TaskCollection): Boolean =
@@ -156,18 +149,6 @@ class TaskRepoImpl (
         return taskDAO.getTaskById(taskId)
     }
 
-    override suspend fun updateTaskContentById(taskId: Long, newContent: String): Boolean  {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskContentById(taskId, newContent) > 0
-        }
-    }
-
-    override suspend fun updateTaskStartDateById(taskId: Long, startDate: Long): Boolean {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskStartDateById(taskId, startDate) > 0
-        }
-    }
-
     override suspend fun updateTaskDueDateById(taskId: Long, dueDate: Long): Boolean {
         return withContext(Dispatchers.IO) {
             taskDAO.updateTaskDueDateById(taskId, dueDate) > 0
@@ -186,29 +167,30 @@ class TaskRepoImpl (
         }
     }
 
-    override suspend fun updateTaskRepeatById(
-        taskId: Long,
-        repeatEvery: Long,
-        repeatDaysOfWeek: String?,
-        repeatInterval: String?,
-        repeatStartDay: Long?,
-        repeatEndType: String?,
-        repeatEndDate: Long?,
-        repeatEndCount: Int,
-        startTime: Long?
+    override suspend fun updateTask(
+        task: TaskEntity
     ): Boolean {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskRepeatById(
-                taskId = taskId,
-                repeatEvery = repeatEvery,
-                repeatDaysOfWeek = repeatDaysOfWeek,
-                repeatInterval = repeatInterval,
-                repeatStartDay = repeatStartDay,
-                repeatEndType = repeatEndType,
-                repeatEndDate = repeatEndDate,
-                repeatEndCount = repeatEndCount,
-                startTime = startTime,
-            ) > 0
+        val userEmail = auth.currentUser?.email ?: return false
+
+        val roomUpdateSuccess =  withContext(Dispatchers.IO) {
+            taskDAO.updateTask(task = task) > 0
+        }
+
+        return if(roomUpdateSuccess) {
+            try {
+                firestore.collection("users").document(userEmail)
+                    .collection("tasks")
+                    .document(task.id.toString())
+                    .set(task)
+                    .await()
+                Log.d("TaskRepoImpl", "Task updated in Firestore")
+                true
+            } catch(e: Exception) {
+                Log.e("TaskRepoImpl", "Error updating task in Firestore", e)
+                false
+            }
+        } else {
+            false
         }
     }
 
@@ -227,18 +209,6 @@ class TaskRepoImpl (
     override suspend fun clearTimeSelected(taskId: Long) : Boolean {
         return withContext(Dispatchers.IO) {
             taskDAO.clearTimeSelected(taskId) > 0
-        }
-    }
-
-    override suspend fun updateTaskStartTime(taskId: Long, time: Long): Boolean {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskStartTime(taskId, time) > 0
-        }
-    }
-
-    override suspend fun updateTaskDetailById(taskId: Long, detail: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskDetailById(taskId, detail) > 0
         }
     }
 

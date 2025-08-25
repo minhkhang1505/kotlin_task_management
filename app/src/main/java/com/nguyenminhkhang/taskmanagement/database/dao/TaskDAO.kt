@@ -101,31 +101,6 @@ interface TaskDAO {
     @Query("UPDATE task SET priority = :priority WHERE id = :taskId")
     suspend fun updateTaskPriorityById(taskId: Long, priority: Int): Int
 
-    @Query("""
-    UPDATE task 
-    SET 
-        repeat_every = :repeatEvery,
-        repeat_days_of_week = :repeatDaysOfWeek,
-        repeat_interval = :repeatInterval,
-        start_date = :repeatStartDay,
-        repeat_end_type = :repeatEndType,
-        repeat_end_date = :repeatEndDate,
-        repeat_end_count = :repeatEndCount,
-        start_time = :startTime
-    WHERE id = :taskId
-""")
-    suspend fun updateTaskRepeatById(
-        taskId: Long,
-        repeatEvery: Long,
-        repeatDaysOfWeek: String?,
-        repeatInterval: String?,
-        repeatStartDay: Long?,
-        repeatEndType: String?,
-        repeatEndDate: Long?,
-        repeatEndCount: Int,
-        startTime: Long?
-    ): Int
-
     @Query("UPDATE task SET start_date = :startDate WHERE id = :taskId")
     suspend fun updateTaskStartDate(taskId: Long, startDate: Long): Int
 
