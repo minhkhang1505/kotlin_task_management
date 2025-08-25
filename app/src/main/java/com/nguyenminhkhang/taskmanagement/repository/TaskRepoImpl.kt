@@ -10,8 +10,14 @@ import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import java.util.Calendar
 
@@ -28,6 +34,39 @@ class TaskRepoImpl (
 
     override fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>> =
         taskDAO.getAllTaskByCollectionId(collectionId, auth.currentUser?.uid ?: "local_user")
+
+    override fun syncTasksForCurrentUser() {
+        val userId = auth.currentUser?.uid ?: return
+        val userEmail = auth.currentUser?.email ?: return
+
+        val userDoc = firestore.collection("users").document(userEmail)
+
+        userDoc.collection("tasks").addSnapshotListener { tasksSnapshot, error ->
+            if (error != null) {
+                Log.w("FirestoreSync", "Listen for tasks failed.", error)
+                return@addSnapshotListener
+            }
+            if (tasksSnapshot != null) {
+                val onlineTasks = tasksSnapshot.toObjects(TaskEntity::class.java)
+                CoroutineScope(Dispatchers.IO).launch {
+                    taskDAO.syncTasksForUser(userId, onlineTasks)
+                }
+            }
+        }
+
+        userDoc.collection("task_collections").addSnapshotListener { collectionsSnapshot, error ->
+            if (error != null) {
+                Log.w("FirestoreSync", "Listen for collections failed.", error)
+                return@addSnapshotListener
+            }
+            if (collectionsSnapshot != null) {
+                val onlineCollections = collectionsSnapshot.toObjects(TaskCollection::class.java)
+                CoroutineScope(Dispatchers.IO).launch {
+                    taskDAO.syncCollectionsForUser(userId, onlineCollections)
+                }
+            }
+        }
+    }
 
     override suspend fun addTask(content: String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long?): TaskEntity? =
         withContext(Dispatchers.IO) {

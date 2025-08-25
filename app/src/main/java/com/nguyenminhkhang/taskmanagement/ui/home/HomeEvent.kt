@@ -50,4 +50,7 @@ sealed class HomeEvent {
     object ClearRenameCollectionName : HomeEvent()
     data class RenameCollection(val newCollectionName: String) : HomeEvent()
     data class OnCollectionNameChange(val newCollectionName: String) : HomeEvent()
+
+
+    object ShowCurrentCollectionID : HomeEvent()
 }

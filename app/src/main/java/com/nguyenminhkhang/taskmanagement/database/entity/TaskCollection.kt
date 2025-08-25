@@ -11,11 +11,11 @@ data class TaskCollection(
     @ColumnInfo(name = "user_id")
     val userId: String = "local_user",
     @ColumnInfo(name = "content")
-    val content: String,
+    val content: String = "",
     @ColumnInfo(name = "updated_at")
-    val updatedAt: Long,
+    val updatedAt: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "sorted_type", defaultValue = "0")
-    val sortedType: Int,
+    val sortedType: Int = SortedType.SORTED_BY_DATE.value,
 )
 
 

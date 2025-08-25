@@ -100,14 +100,19 @@ class RepeatViewModel @Inject constructor(
             }
             is RepeatEvent.WeekDayClicked -> {
                 _taskUiState.update {currentState ->
-                    val updatedDays = currentState.task?.repeatDaysOfWeek.orEmpty().toMutableSet()
+                    val currentDays = currentState.task?.repeatDaysOfWeek.orEmpty()
+                    val updatedDays = currentDays.toMutableList()
+
                     if (updatedDays.contains(event.day)) {
                         updatedDays.remove(event.day)
                     } else {
                         updatedDays.add(event.day)
                     }
+
                     currentState.copy(
-                        task = currentState.task?.copy(repeatDaysOfWeek = updatedDays)
+                        task = currentState.task?.copy(
+                            repeatDaysOfWeek = updatedDays.distinct() // đảm bảo không trùng
+                        )
                     )
                 }
             }

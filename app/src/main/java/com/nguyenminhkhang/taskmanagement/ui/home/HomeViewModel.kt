@@ -9,6 +9,7 @@ import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent.ShowAddTaskSheet
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
@@ -63,89 +64,76 @@ class HomeViewModel @Inject constructor(
     private var _currentSelectedCollectionId:Long = -1L
 
     init {
+        taskRepo.getTaskCollection()
+            .flatMapLatest { collections ->
+                if (collections.isEmpty()) {
+                    flowOf(emptyList())
+                } else {
+                    val taskFlows = collections.map { collection ->
+                        taskRepo.getAllTaskByCollectionId(collection.id!!)
+                    }
+                    combine(taskFlows) { arrayOfTaskLists ->
+                        collections.mapIndexed { index, collection ->
+                            val tasksForThisCollection = arrayOfTaskLists[index]
+                            val taskUiStates = tasksForThisCollection.map { it.toTaskUiState() }
+
+                            TaskGroupUiState(
+                                tab = collection.toTabUiState(),
+                                page = TaskPageUiState(
+                                    activeTaskList = taskUiStates.filter { !it.isCompleted },
+                                    completedTaskList = taskUiStates.filter { it.isCompleted }
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+            .map { taskGroupsFromDb ->
+                listOf(
+                    TaskGroupUiState(
+                        tab = TabUiState(ID_ADD_FAVORITE_LIST, "⭐️", sortedType = SortedType.SORTED_BY_DATE),
+                        page = TaskPageUiState(
+                            activeTaskList = taskGroupsFromDb.flatMap { it.page.activeTaskList }
+                                .filter { it.isFavorite }
+                                .sortedByDescending { it.updatedAt },
+                            completedTaskList = emptyList()
+                        )
+                    )
+                ) + taskGroupsFromDb.map { tabItem ->
+                    val sortedType = tabItem.tab.sortedType
+                    val activeTaskList = tabItem.page.activeTaskList
+                    tabItem.copy(
+                        tab = tabItem.tab,
+                        page = tabItem.page.copy(
+                            activeTaskList = if (sortedType == SortedType.SORTED_BY_FAVORITE) {
+                                activeTaskList.sortedByDescending { it.isFavorite }
+                            } else {
+                                activeTaskList.sortedByDescending { it.createdAt }
+                            },
+                            completedTaskList = tabItem.page.completedTaskList.sortedByDescending { it.updatedAt }
+                        )
+                    )
+                } + TaskGroupUiState( // Cuối cùng, thêm tab "+ New Tab"
+                    tab = TabUiState(ID_ADD_NEW_LIST, "+ New Tab", sortedType = SortedType.SORTED_BY_DATE),
+                    page = TaskPageUiState(
+                        activeTaskList = emptyList(),
+                        completedTaskList = emptyList()
+                    )
+                )
+            }
+            .onEach { finalTabs ->
+                _uiState.update { it.copy(listTabGroup = finalTabs, isLoading = false) }
+            }
+            .launchIn(viewModelScope)
+
         viewModelScope.launch(Dispatchers.IO) {
             if (taskRepo.getTaskCollection().first().isEmpty()) {
                 taskRepo.addNewCollection("Personal")
                 taskRepo.addNewCollection("Work")
             }
 
-            val persistentListFlow: Flow<List<TaskGroupUiState>> = taskRepo.getTaskCollection()
-                .flatMapLatest { collections ->
-                    if (collections.isEmpty()) {
-                        flowOf(emptyList())
-                    } else {
-                        val taskFlows = collections.map { collection ->
-                            taskRepo.getAllTaskByCollectionId(collection.id!!)
-                        }
-                        combine(taskFlows) { arrayOfTaskLists ->
-                            collections.mapIndexed { index, collection ->
-                                val tasksForThisCollection = arrayOfTaskLists[index]
-                                val taskUiStates = tasksForThisCollection.map { it.toTaskUiState() }
-
-                                TaskGroupUiState(
-                                    tab = collection.toTabUiState(),
-                                    page = TaskPageUiState(
-                                        activeTaskList = taskUiStates.filter { !it.isCompleted },
-                                        completedTaskList = taskUiStates.filter { it.isCompleted }
-                                    )
-                                )
-                            }
-                        }
-                    }
-                }
-                .map { taskGroupsFromDb ->
-                    listOf(
-                        TaskGroupUiState(
-                            tab = TabUiState(ID_ADD_FAVORITE_LIST, "⭐️", sortedType = SortedType.SORTED_BY_DATE),
-                            page = TaskPageUiState(
-                                activeTaskList = taskGroupsFromDb.flatMap { it.page.activeTaskList }
-                                    .filter { it.isFavorite }
-                                    .sortedByDescending { it.updatedAt },
-                                completedTaskList = emptyList()
-                            )
-                        )
-                    ) + taskGroupsFromDb.map { tabItem ->
-                        val sortedType = tabItem.tab.sortedType
-                        val activeTaskList = tabItem.page.activeTaskList
-                        tabItem.copy(
-                            tab = tabItem.tab,
-                            page = tabItem.page.copy(
-                                activeTaskList = if (sortedType == SortedType.SORTED_BY_FAVORITE) {
-                                    activeTaskList.sortedByDescending { it.isFavorite }
-                                } else {
-                                    activeTaskList.sortedByDescending { it.createdAt }
-                                },
-                                completedTaskList = tabItem.page.completedTaskList.sortedByDescending { it.updatedAt }
-                            )
-                        )
-                    } + TaskGroupUiState( // Cuối cùng, thêm tab "+ New Tab"
-                        tab = TabUiState(ID_ADD_NEW_LIST, "+ New Tab", sortedType = SortedType.SORTED_BY_DATE),
-                        page = TaskPageUiState(
-                            activeTaskList = emptyList(),
-                            completedTaskList = emptyList()
-                        )
-                    )
-                }
-                .stateIn(
-                    scope = viewModelScope,
-                    initialValue = emptyList(),
-                    started = SharingStarted.WhileSubscribed(5000L),
-                )
-
-            persistentListFlow.onEach { persistentList ->
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        listTabGroup = persistentList,
-                        isLoading = false
-                    )
-                }
-            }
-                .launchIn(viewModelScope)
+            taskRepo.syncTasksForCurrentUser()
         }
-    }
-
-    private fun syncTasksForCurrentUser() {
-
     }
 
     private fun addNewTask() {
@@ -157,7 +145,6 @@ class HomeViewModel @Inject constructor(
         val isFavorite = taskToSave.newTask.isFavorite
         val startDate = taskToSave.newTask.startDate
         val startTime = taskToSave.newTask.startTime
-        Log.d("HomeViewModel", "Time millis: ${_uiState.value.newTask?.reminderTimeMillis}" )
         val reminderTimeMillis = taskToSave.newTask.reminderTimeMillis
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -275,6 +262,7 @@ class HomeViewModel @Inject constructor(
 
     private fun updateCurrentCollectionId(collectionId: Long) {
         _currentSelectedCollectionId = collectionId
+        Log.d("HomeViewModel", "Current selected collection id updated to: $_currentSelectedCollectionId")
     }
 
     private fun deleteCollectionById(collectionId: Long) {
@@ -389,10 +377,12 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.ShowAddTaskSheet -> _uiState.update {
+            is ShowAddTaskSheet -> _uiState.update {
                 if ( _currentSelectedCollectionId>0L ) {
                     it.copy(isAddTaskSheetVisible = true)
-                } else it
+                } else {
+                    it.copy(isAddTaskSheetVisible = false)
+                }
             }
             is HomeEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
             is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(content = event.content)) }
@@ -444,6 +434,13 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ClearRenameCollectionName -> ClearRenameCollectionName()
             is HomeEvent.OnCollectionNameChange -> OnCollectionNameChange(event.newCollectionName)
             is HomeEvent.RenameCollection -> RenameCollection(event.newCollectionName)
+            is HomeEvent.ShowCurrentCollectionID -> {
+                Log.d(
+                    "PagerTabLayout",
+                    "Current selected collection ID: $_currentSelectedCollectionId"
+                )
+                Log.d("HomeViewModel", "UIState: ${_uiState.value}" )
+            }
         }
     }
 }

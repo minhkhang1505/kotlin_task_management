@@ -57,7 +57,7 @@ fun TaskRepeatLayout(
             if (currentTask.task!!.repeatInterval == "Week") {
                 WeekDaySelector(
                     allDays = currentTask.dayItems,
-                    selectedDays = currentTask.task.repeatDaysOfWeek ?: emptySet(),
+                    selectedDays = currentTask.task.repeatDaysOfWeek ?: emptyList(),
                     onDayClick = { day -> onEvent(RepeatEvent.WeekDayClicked(day))  }
                 )
             } else if (currentTask.task.repeatInterval == "Month") {

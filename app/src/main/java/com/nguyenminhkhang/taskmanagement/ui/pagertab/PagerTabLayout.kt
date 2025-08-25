@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,6 +46,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
         snapshotFlow { pagerState.currentPage }.collect { index ->
             internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
                 onEvent(HomeEvent.CurrentCollectionId(currentCollectionId))
+                Log.d("PagerTabLayout", "Current page index: $index, CollectionId: $currentCollectionId")
             }
         }
     }

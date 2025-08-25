@@ -11,7 +11,7 @@ data class TaskEntity(
     @ColumnInfo(name = "user_id")
     val userId: String = "local_user",
     @ColumnInfo(name = "title")
-    val content: String,
+    val content: String = "",
     @ColumnInfo(name = "is_favorite")
     val isFavorite: Boolean = false,
     @ColumnInfo(name = "is_completed")
@@ -36,7 +36,7 @@ data class TaskEntity(
     @ColumnInfo(name = "repeat_every")
     val repeatEvery: Long = 1L,
     @ColumnInfo(name = "repeat_days_of_week")
-    val repeatDaysOfWeek: Set<String>? = null,
+    val repeatDaysOfWeek: List<String>? = null,
     @ColumnInfo(name = "repeat_interval")
     val repeatInterval: String? = null,
     @ColumnInfo(name = "repeat_end_type")

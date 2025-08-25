@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun WeekDaySelector(
     allDays: List<String>,
-    selectedDays: Set<String>,
+    selectedDays: List<String>,
     onDayClick: (String) -> Unit,
 ) {
     Row(
