@@ -28,10 +28,7 @@ import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 @Composable
 fun RepeatFrequencySelector(
     uiState: RepeatUiState,
-    onRepeatEveryChanged: (Long) -> Unit,
-    onIntervalSelected: (String) -> Unit,
-    onIntervalDropdownDismiss: () -> Unit,
-    onIntervalDropdownClicked: () -> Unit,
+    onEvent: (RepeatEvent) -> Unit,
 ) {
     Text(text = "Every")
     Row (
@@ -43,7 +40,7 @@ fun RepeatFrequencySelector(
         OutlinedTextField(
             value = uiState.task?.repeatEvery.toString(),
             placeholder = { Text("1") },
-            onValueChange = { onRepeatEveryChanged (it.toLongOrNull() ?: 1L) },
+            onValueChange = { onEvent(RepeatEvent.OnRepeatEveryChanged (it.toLongOrNull() ?: 1L))  },
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number, imeAction = ImeAction.Done),
             modifier = Modifier.weight(0.2f).padding(end = 8.dp),
             maxLines = 1,
@@ -55,7 +52,7 @@ fun RepeatFrequencySelector(
                 .onSizeChanged { size ->
                     uiState.textFieldWidth = with(density) { size.width.toDp() }
                 }
-                .clickable { onIntervalDropdownClicked() }
+                .clickable { onEvent(RepeatEvent.OnIntervalDropdownClicked) }
         ) {
             OutlinedTextField(
                 value = uiState.task?.repeatInterval ?: "Week",
@@ -72,15 +69,15 @@ fun RepeatFrequencySelector(
             )
             DropdownMenu(
                 expanded = uiState.isIntervalDropdownVisible,
-                onDismissRequest = { onIntervalDropdownDismiss() },
+                onDismissRequest = { onEvent(RepeatEvent.OnIntervalDropdownDismiss) },
                 modifier = Modifier.width(uiState.textFieldWidth)
             ) {
                 uiState.availableIntervals.forEach { type ->
                     DropdownMenuItem(
                         text = { Text(type) },
                         onClick = {
-                            onIntervalSelected(type)
-                            onIntervalDropdownDismiss()
+                            onEvent(RepeatEvent.OnIntervalSelected(type))
+                            onEvent(RepeatEvent.OnIntervalDropdownDismiss)
                         },
                     )
                 }

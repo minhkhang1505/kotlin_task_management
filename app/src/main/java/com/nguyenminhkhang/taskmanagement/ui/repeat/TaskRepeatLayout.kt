@@ -17,27 +17,13 @@ import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 @Composable
 fun TaskRepeatLayout(
     currentTask: RepeatUiState,
-    onRepeatEveryChanged: (Long) -> Unit,
-    onIntervalSelected: (String) -> Unit,
-    onIntervalDropdownDismiss: () -> Unit,
-    onIntervalDropdownClicked: () -> Unit,
     onEvent: (RepeatEvent) -> Unit,
-    onShowTimePicker: () -> Unit,
-    onDismissTimePicker: () -> Unit,
-    onClearTimeSelected: () -> Unit,
-    onTimeSelected: (Long) -> Unit,
-    onShowStartDatePicker: () -> Unit,
-    onDismissStartDatePicker: () -> Unit,
-    onClearStartDateSelected: () -> Unit,
-    onStartDateSelected: (Long) -> Unit,
-    onSave: () -> Unit,
     onNavigationBack: () -> Unit,
-    onEndDateSelected: (Long) -> Unit,
 ) {
     Scaffold(
         topBar = {
             RepeatTopAppBar(
-                onSave = { onSave() },
+                onSave = { onEvent(RepeatEvent.OnSaveRepeatTaskSetup) },
                 onNavigationBack = { onNavigationBack() }
             )
         }
@@ -49,10 +35,7 @@ fun TaskRepeatLayout(
             // Repeat frequency input
             RepeatFrequencySelector(
                 uiState = currentTask,
-                onRepeatEveryChanged = onRepeatEveryChanged,
-                onIntervalSelected = onIntervalSelected,
-                onIntervalDropdownDismiss = onIntervalDropdownDismiss,
-                onIntervalDropdownClicked = onIntervalDropdownClicked,
+                onEvent = onEvent,
             )
             if (currentTask.task!!.repeatInterval == "Week") {
                 WeekDaySelector(
@@ -69,14 +52,14 @@ fun TaskRepeatLayout(
             // Time Selection
             RepeatTimeRow(
                 uiState = currentTask,
-                onShowTimePicker = { onShowTimePicker() },
-                onClearDate = { onClearTimeSelected() }
+                onShowTimePicker = { onEvent(RepeatEvent.OnShowTimePicker) },
+                onClearDate = { onEvent(RepeatEvent.OnClearTimeSelected) }
             )
             // Start Date Selection
             RepeatStartDateRow(
                 uiState = currentTask,
-                onShowDatePicker = { onShowStartDatePicker() },
-                onClearDate = { onClearStartDateSelected() }
+                onShowDatePicker = { onEvent(RepeatEvent.OnShowStartDatePicker) },
+                onClearDate = { onEvent(RepeatEvent.OnClearStartDateSelected) }
             )
             // Radio Buttons for End Condition
             RepeatEndConditionSelector(
@@ -85,21 +68,24 @@ fun TaskRepeatLayout(
             )
             if(currentTask.isDatePickerVisible || currentTask.isEndDatePickerVisible) {
                 DatePickerModal(
-                    onDismiss = { onDismissStartDatePicker()
-                                onEvent(RepeatEvent.DismissEndDatePicker) },
+                    onDismiss = {
+                        onEvent(RepeatEvent.OnDismissStartDatePicker)
+                        onEvent(RepeatEvent.DismissEndDatePicker) },
                     onDateSelected = {
                         if (currentTask.isEndDatePickerVisible) {
-                            onEndDateSelected(it)
+                            onEvent(RepeatEvent.OnEndDateSelected(it))
                         } else {
-                            onStartDateSelected(it)
+                            onEvent(RepeatEvent.OnStartDateSelected(it))
                         }
                     },
                 )
             }
             if(currentTask.isTimePickerVisible) {
                 TimePickerModal(
-                    onDismiss = { onDismissTimePicker() },
-                    onConfirm = { onTimeSelected(it.toHourMinute()) },
+                    onDismiss = {
+                        onEvent(RepeatEvent.OnDismissTimePicker) },
+                    onConfirm = {
+                        onEvent(RepeatEvent.OnTimeSelected(it.toHourMinute())) },
                 )
             }
         }

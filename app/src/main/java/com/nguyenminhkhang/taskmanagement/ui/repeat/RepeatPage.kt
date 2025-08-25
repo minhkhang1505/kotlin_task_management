@@ -15,22 +15,8 @@ fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = 
     } else {
         TaskRepeatLayout(
             currentTask = currentTask,
-            onRepeatEveryChanged = repeatViewModel::onRepeatEveryChanged,
-            onIntervalSelected = repeatViewModel::onIntervalSelected,
-            onIntervalDropdownDismiss = repeatViewModel::onIntervalDropdownDismiss,
-            onIntervalDropdownClicked = repeatViewModel::onIntervalDropdownClicked,
-            onEvent = repeatViewModel::onEvent,
-            onShowTimePicker = repeatViewModel::onShowTimePicker,
-            onDismissTimePicker = repeatViewModel::onDismissTimePicker,
-            onClearTimeSelected = repeatViewModel::onClearTimeSelected,
-            onTimeSelected = repeatViewModel::onTimeSelected,
-            onShowStartDatePicker = repeatViewModel::onShowDatePicker,
-            onDismissStartDatePicker = repeatViewModel::onDismissDatePicker,
-            onClearStartDateSelected = repeatViewModel::onClearDateSelected,
-            onStartDateSelected = repeatViewModel::onDateSelected,
-            onSave = repeatViewModel::updateRepeatTask,
             onNavigationBack = { navController.popBackStack() },
-            onEndDateSelected = repeatViewModel::onEndDateSelected,
+            onEvent = repeatViewModel::onEvent,
         )
     }
 }

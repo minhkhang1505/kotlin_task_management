@@ -43,14 +43,27 @@ class RepeatViewModel @Inject constructor(
     }
 
     fun onRepeatEveryChanged(repeatEvery: Long) {
+        _taskUiState.update { currentState ->
+            currentState.copy(
+                task = currentState.task?.copy(repeatEvery = repeatEvery)
+            )
+        }
+        val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTaskRepeatEveryById(taskId, repeatEvery)
+            taskRepo.updateTask(currentTask)
         }
     }
 
     fun onIntervalSelected(interval: String) {
+        _taskUiState.update { currentState ->
+            currentState.copy(
+                isIntervalDropdownVisible = false,
+                task = currentState.task?.copy(repeatInterval = interval)
+            )
+        }
+        val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTaskRepeatIntervalById(taskId, interval)
+            taskRepo.updateTask(currentTask)
         }
     }
 
@@ -63,6 +76,69 @@ class RepeatViewModel @Inject constructor(
     fun onIntervalDropdownClicked() {
         _taskUiState.update { currentState ->
             currentState.copy(isIntervalDropdownVisible = !currentState.isIntervalDropdownVisible)
+        }
+    }
+    // date picker
+    fun onDateSelected(dateInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy( task = currentTask.task?.copy(startDate = dateInMillis), isDatePickerVisible = false)
+        }
+    }
+
+    fun onEndDateSelected(dateInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(repeatEndDate = dateInMillis), isEndDatePickerVisible = false)
+        }
+    }
+
+    fun onClearDateSelected() {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(startDate = null))
+        }
+        val currentTask = _taskUiState.value.task ?: return
+        viewModelScope.launch {
+            taskRepo.updateTask(currentTask)
+        }
+    }
+
+    fun onShowDatePicker() {
+        _taskUiState.update { it.copy(isDatePickerVisible = true) }
+    }
+
+    fun onDismissDatePicker() {
+        _taskUiState.update { it.copy(isDatePickerVisible = false) }
+    }
+
+    // time picker
+    fun onTimeSelected(timeInMillis: Long) {
+        _taskUiState.update { currentTask ->
+            currentTask.copy(task = currentTask.task?.copy(startTime = timeInMillis), isTimePickerVisible = false)
+        }
+    }
+
+    fun onShowTimePicker() {
+        _taskUiState.update { it.copy(isTimePickerVisible = true) }
+    }
+
+    fun onDismissTimePicker() {
+        _taskUiState.update {
+            it.copy(isTimePickerVisible = false)
+        }
+    }
+
+    fun onClearTimeSelected() {
+        viewModelScope.launch {
+            taskRepo.clearTimeSelected(taskId)
+        }
+    }
+
+    fun updateRepeatTask() {
+        val currentState = uiState.value
+        val taskToUpdate = currentState.task ?: return // Nếu task null thì không làm gì
+
+        viewModelScope.launch {
+            taskRepo.updateTask(taskToUpdate)
+            _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }
 
@@ -115,80 +191,20 @@ class RepeatViewModel @Inject constructor(
                     )
                 }
             }
+            is RepeatEvent.OnRepeatEveryChanged -> onRepeatEveryChanged(event.repeatEvery)
+            is RepeatEvent.OnIntervalSelected -> onIntervalSelected(event.intervalSelected)
+            is RepeatEvent.OnIntervalDropdownDismiss -> onIntervalDropdownDismiss()
+            is RepeatEvent.OnIntervalDropdownClicked -> onIntervalDropdownClicked()
+            is RepeatEvent.OnShowTimePicker -> onShowTimePicker()
+            is RepeatEvent.OnDismissTimePicker -> onDismissTimePicker()
+            is RepeatEvent.OnClearTimeSelected -> onClearTimeSelected()
+            is RepeatEvent.OnTimeSelected -> onTimeSelected(event.timeMillis)
+            is RepeatEvent.OnShowStartDatePicker -> onShowDatePicker()
+            is RepeatEvent.OnDismissStartDatePicker -> onDismissDatePicker()
+            is RepeatEvent.OnClearStartDateSelected -> onClearDateSelected()
+            is RepeatEvent.OnStartDateSelected -> onDateSelected(event.dateMillis)
+            is RepeatEvent.OnEndDateSelected -> onEndDateSelected(event.dateMillis)
+            is RepeatEvent.OnSaveRepeatTaskSetup -> updateRepeatTask()
         }
     }
-
-    // date picker
-    fun onDateSelected(dateInMillis: Long) {
-        _taskUiState.update { currentTask ->
-            currentTask.copy( task = currentTask.task?.copy(startDate = dateInMillis), isDatePickerVisible = false)
-        }
-    }
-
-    fun onEndDateSelected(dateInMillis: Long) {
-        _taskUiState.update { currentTask ->
-            currentTask.copy(task = currentTask.task?.copy(repeatEndDate = dateInMillis), isEndDatePickerVisible = false)
-        }
-    }
-
-    fun onClearDateSelected() {
-        viewModelScope.launch {
-            taskRepo.clearDateSelected(taskId)
-        }
-    }
-
-    fun onShowDatePicker() {
-        _taskUiState.update { it.copy(isDatePickerVisible = true) }
-    }
-
-    fun onDismissDatePicker() {
-        _taskUiState.update { it.copy(isDatePickerVisible = false) }
-    }
-
-    // time picker
-    fun onTimeSelected(timeInMillis: Long) {
-        _taskUiState.update { currentTask ->
-            currentTask.copy(task = currentTask.task?.copy(startTime = timeInMillis), isTimePickerVisible = false)
-        }
-    }
-
-    fun onShowTimePicker() {
-        _taskUiState.update { it.copy(isTimePickerVisible = true) }
-    }
-
-    fun onDismissTimePicker() {
-        _taskUiState.update {
-            it.copy(isTimePickerVisible = false)
-        }
-    }
-
-    fun onClearTimeSelected() {
-        viewModelScope.launch {
-            taskRepo.clearTimeSelected(taskId)
-        }
-    }
-
-    fun updateRepeatTask() {
-        val currentState = uiState.value
-        val taskToUpdate = currentState.task ?: return // Nếu task null thì không làm gì
-
-        viewModelScope.launch {
-            taskRepo.updateTask(taskToUpdate)
-            _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
-        }
-    }
-}
-
-sealed class RepeatEvent {
-    data class MonthRepeatOptionChanged(val option: String) : RepeatEvent()
-    data class DayInMonthChanged(val day: Int) : RepeatEvent()
-    data class WeekOrderChanged(val order: String) : RepeatEvent()
-    data class WeekDayChanged(val day: String) : RepeatEvent()
-
-    data class WeekDayClicked(val day: String) : RepeatEvent()
-
-    data class EndConditionChanged(val option: String) : RepeatEvent()
-    object ShowEndDatePicker : RepeatEvent()
-    object DismissEndDatePicker : RepeatEvent()
-    data class OccurrenceCountChanged(val count: String) : RepeatEvent()
 }

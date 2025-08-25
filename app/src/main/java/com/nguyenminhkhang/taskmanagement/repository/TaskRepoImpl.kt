@@ -218,18 +218,6 @@ class TaskRepoImpl (
         }
     }
 
-    override suspend fun updateTaskRepeatEveryById(taskId: Long, repeatEvery: Long): Boolean {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskRepeatEveryById(taskId, repeatEvery) > 0
-        }
-    }
-
-    override suspend fun updateTaskRepeatIntervalById(taskId: Long, repeatInterval: String?): Boolean {
-        return withContext(Dispatchers.IO) {
-            taskDAO.updateTaskRepeatIntervalById(taskId, repeatInterval) > 0
-        }
-    }
-
     override suspend fun deleteTaskById(taskId: Long): Boolean {
         return withContext(Dispatchers.IO) {
             taskDAO.deleteTaskById(taskId) > 0
