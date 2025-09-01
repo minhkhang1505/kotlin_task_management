@@ -62,6 +62,94 @@ fun AccountLayout(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
+                    painter = painterResource(R.drawable.baseline_image_aspect_ratio_24),
+                    contentDescription = "Theme",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(0.1f),
+                )
+                Text(
+                    text = "Theme",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .height(56.dp)
+                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_language_24),
+                    contentDescription = "Language",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(0.1f),
+                )
+                Text(
+                    text = "Language",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .height(56.dp)
+                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_delete_outline_24),
+                    contentDescription = "Delete Account",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(0.1f),
+                )
+                Text(
+                    text = "Delete Account",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .height(56.dp)
+                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.baseline_info_outline_24),
+                    contentDescription = "About Task Management",
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(0.1f),
+                )
+                Text(
+                    text = "About Task Management",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .height(56.dp)
+                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
                     painter = painterResource(R.drawable.baseline_logout_24),
                     contentDescription = "Logout",
                     modifier = Modifier
@@ -72,6 +160,26 @@ fun AccountLayout(
                     text = "Logout",
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = "Version: ",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = "1.0.0",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 )
             }
             if(accountUiState.isLogoutDialogVisible) {
