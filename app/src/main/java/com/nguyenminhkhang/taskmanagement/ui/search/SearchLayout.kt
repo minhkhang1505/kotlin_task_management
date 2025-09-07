@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 
@@ -83,7 +84,7 @@ import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 //}
 
 @Composable
-private fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String) {
+private fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String, navController: NavController) {
     if (searchQuery.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize().padding(WindowInsets.ime.asPaddingValues()).padding(16.dp), contentAlignment = Alignment.TopCenter) {
             Text("Try searching for 'Project X' or 'Meeting'", style = MaterialTheme.typography.bodyMedium)
@@ -110,7 +111,7 @@ private fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String) 
                 items(searchResults, key = { task -> task.id ?: 0 }) { result ->
                     SearchTaskItemLayout(
                         taskResult = result,
-                        onTaskClick = {}
+                        onTaskClick = {navController.navigate("TaskDetail/${it}") }
                     )
                 }
             }
@@ -127,6 +128,7 @@ fun SearchLayout(
     searchUiState: SearchUiState,
     searchResults: List<TaskEntity>,
     onEvent: (SearchEvent) -> Unit,
+    navController: NavController
 ) {
     // ✨ Sử dụng Column để chứa cả DockedSearchBar và nội dung mặc định
     Column(
@@ -180,7 +182,8 @@ fun SearchLayout(
             // Nội dung tìm kiếm vẫn giữ nguyên, nhưng giờ nó sẽ hiển thị trong một vùng drop-down
             SearchContent(
                 searchResults = searchResults,
-                searchQuery = searchUiState.searchQuery
+                searchQuery = searchUiState.searchQuery,
+                navController = navController
             )
         }
 

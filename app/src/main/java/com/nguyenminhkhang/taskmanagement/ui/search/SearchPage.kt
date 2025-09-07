@@ -7,11 +7,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SearchPage(
     viewModel: SearchViewModel = hiltViewModel(),
+    navController: NavController,
 ) {
     val searchState by viewModel.searchUiState.collectAsState()
     val results by viewModel.searchResults.collectAsStateWithLifecycle()
@@ -20,5 +22,6 @@ fun SearchPage(
         searchResults = results,
         searchUiState = searchState,
         onEvent = viewModel::onEvent,
+        navController = navController
     )
 }

@@ -71,8 +71,7 @@ fun TaskApp() {
                 composable(
                     route = NavScreen.REPEAT.route,
                     arguments = listOf(navArgument("taskId") { type = NavType.LongType })
-                ) { backStackEntry ->
-                    val id = backStackEntry.arguments?.getLong("taskId")
+                ) {
                     RepeatPage(navController = navController)
                 }
 
@@ -83,7 +82,9 @@ fun TaskApp() {
                 }
 
                 composable(route = NavScreen.SEARCH.route) {
-                    SearchPage()
+                    SearchPage(
+                        navController = navController
+                    )
                 }
             }
         }
