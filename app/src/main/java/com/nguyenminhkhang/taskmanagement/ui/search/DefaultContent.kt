@@ -13,13 +13,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 
-
 @Composable
 fun DefaultContent(
     todayTasks: SearchUiState,
     navController: NavController
 ) {
-    // Xóa padding top vì bây giờ nó nằm trong một Column có quản lý vị trí
     Column(
         modifier = Modifier
             .fillMaxSize()
