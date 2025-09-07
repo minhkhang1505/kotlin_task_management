@@ -1,8 +1,10 @@
 package com.nguyenminhkhang.taskmanagement.ui.search
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,13 +30,14 @@ fun SearchTaskItemLayout(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 12.dp)
             .heightIn(min = 56.dp)
             .background(
                 color = MaterialTheme.colorScheme.onPrimary.copy(0.7f),
                 shape = RoundedCornerShape(12.dp)
             ).
-            clickable( onClick = { onTaskClick(taskResult.id!!) }
+            clickable( onClick = { onTaskClick(taskResult.id!!)
+                Log.d("SearchTaskItemLayout", "Task clicked: ${taskResult.id}")
+            }
         ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
@@ -56,8 +59,7 @@ fun SearchTaskItemLayout(
             painter = painterResource(if(taskResult.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
             contentDescription = "Favorite Icon",
             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-            modifier = Modifier.padding(end = 10.dp).clickable {
-            }
+            modifier = Modifier.padding(end = 10.dp).clickable {}
         )
     }
 }
