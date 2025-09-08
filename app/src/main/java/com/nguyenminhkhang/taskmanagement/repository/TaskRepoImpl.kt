@@ -13,6 +13,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -231,8 +232,27 @@ class TaskRepoImpl (
     }
 
     override suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean {
-        return withContext(Dispatchers.IO) {
+
+        val userEmail = auth.currentUser?.email ?: return false
+        val roomUpdateSuccess =  withContext(Dispatchers.IO) {
             taskDAO.updateTaskCollectionById(taskId, collectionId) > 0
+        }
+        return if(roomUpdateSuccess) {
+            try {
+                val updatedTask = taskDAO.getTaskById(taskId).firstOrNull() ?: return false
+                firestore.collection("users").document(userEmail)
+                    .collection("tasks")
+                    .document(taskId.toString())
+                    .set(updatedTask)
+                    .await()
+                Log.d("TaskRepoImpl", "Collection updated in Firestore")
+                true
+            } catch(e: Exception) {
+                Log.e("TaskRepoImpl", "Error updating collection in Firestore", e)
+                false
+            }
+        } else {
+            false
         }
     }
 
