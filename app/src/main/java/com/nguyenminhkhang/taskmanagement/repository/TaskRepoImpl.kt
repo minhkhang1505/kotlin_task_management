@@ -135,8 +135,26 @@ class TaskRepoImpl (
     }
 
     override suspend fun deleteTaskCollectionById(collectionId: Long): Boolean {
-        return withContext(Dispatchers.IO) {
+        val userEmail = auth.currentUser?.email ?: return false
+
+        val roomDeleteSuccess = withContext(Dispatchers.IO) {
             taskDAO.deleteTaskCollectionById(collectionId) > 0
+        }
+        return if (roomDeleteSuccess) {
+            try {
+                firestore.collection("users").document(userEmail)
+                    .collection("task_collections")
+                    .document(collectionId.toString())
+                    .delete()
+                    .await()
+                Log.d("TaskRepoImpl", "Collection deleted in Firestore")
+                true
+            } catch (e: Exception) {
+                Log.e("TaskRepoImpl", "Error deleting collection in Firestore", e)
+                false
+            }
+        } else {
+            false
         }
     }
 
@@ -220,8 +238,28 @@ class TaskRepoImpl (
     }
 
     override suspend fun deleteTaskById(taskId: Long): Boolean {
-        return withContext(Dispatchers.IO) {
+
+        val userEmail = auth.currentUser?.email ?: return false
+
+        val roomDeleteSuccess = withContext(Dispatchers.IO) {
             taskDAO.deleteTaskById(taskId) > 0
+        }
+
+        return if(roomDeleteSuccess) {
+            try {
+                firestore.collection("users").document(userEmail)
+                    .collection("tasks")
+                    .document(taskId.toString())
+                    .delete()
+                    .await()
+                Log.d("TaskRepoImpl", "Task deleted in Firestore")
+                true
+            } catch (e: Exception) {
+                Log.e("TaskRepoImpl", "Error deleting task in Firestore", e)
+                false
+            }
+        } else {
+            false
         }
     }
 
