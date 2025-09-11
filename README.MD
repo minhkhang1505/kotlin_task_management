@@ -54,3 +54,24 @@ Each row in the `task_collection` table represents a group or collection of task
 | `content`        | String      | The name or description of the task collection.                             |
 | `updated_at`     | Long (Epoch)| Timestamp of the last update to the collection (milliseconds since epoch).  |
 | `sorted_type`    | Int         | Sorting type for tasks within the collection (default: 0).                  |
+
+# UI
+
+<p float="left">
+  <img src="https://drive.google.com/uc?export=view&id=1XPuL8_TvAF_XJbKEuzxXQfT7QXbDa1mx" width="250" />
+  <img src="https://drive.google.com/uc?export=view&id=1EScXS5_966sGpjFrlkS3iKDGXEEx2A9J" />
+  <img src="https://drive.google.com/uc?export=view&id=1qUE7n78o1S7RxE5T4o31WL0F2Qp8X3jv" />
+</p>
+
+<p float="left">
+  <img src="https://drive.google.com/uc?export=view&id=1pAESJ88LHt6aTsDJkKnKQfqEhV1uoW5Q" />
+  <img src="https://drive.google.com/uc?export=view&id=11vDu6YmYpP8hnc-wItROc_hwBBhN-ywb" />
+  <img src="https://drive.google.com/uc?export=view&id=1tor0YdBtQPPQGOCqWDULJrnOGgJBNDtH" />
+</p>
+
+<p float="left">
+  <img src="https://drive.google.com/uc?export=view&id=1YIVrrKFYvnnzi-AXoRAptEpkh9zZCdrj" />
+  <img src="https://drive.google.com/uc?export=view&id=18X0DLtZYD3srORuGtdAzk17hRzrqTjNZ" />
+  <img src="https://drive.google.com/uc?export=view&id=1baHkq592Wo4RZEePgwcV4SwDGUaEOMyD" />
+</p>
+
