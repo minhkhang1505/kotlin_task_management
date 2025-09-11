@@ -57,21 +57,20 @@ Each row in the `task_collection` table represents a group or collection of task
 
 # UI
 
-<p float="left">
+<div align="center">
   <img src="https://drive.google.com/uc?export=view&id=1XPuL8_TvAF_XJbKEuzxXQfT7QXbDa1mx" width="250" />
-  <img src="https://drive.google.com/uc?export=view&id=1EScXS5_966sGpjFrlkS3iKDGXEEx2A9J" />
-  <img src="https://drive.google.com/uc?export=view&id=1qUE7n78o1S7RxE5T4o31WL0F2Qp8X3jv" />
-</p>
+  <img src="https://drive.google.com/uc?export=view&id=1EScXS5_966sGpjFrlkS3iKDGXEEx2A9J" width="250" />
+  <img src="https://drive.google.com/uc?export=view&id=1qUE7n78o1S7RxE5T4o31WL0F2Qp8X3jv" width="250" />
+</div>
 
-<p float="left">
-  <img src="https://drive.google.com/uc?export=view&id=1pAESJ88LHt6aTsDJkKnKQfqEhV1uoW5Q" />
-  <img src="https://drive.google.com/uc?export=view&id=11vDu6YmYpP8hnc-wItROc_hwBBhN-ywb" />
-  <img src="https://drive.google.com/uc?export=view&id=1tor0YdBtQPPQGOCqWDULJrnOGgJBNDtH" />
-</p>
+<div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1pAESJ88LHt6aTsDJkKnKQfqEhV1uoW5Q" width="250" />
+  <img src="https://drive.google.com/uc?export=view&id=11vDu6YmYpP8hnc-wItROc_hwBBhN-ywb" width="250" />
+  <img src="https://drive.google.com/uc?export=view&id=1tor0YdBtQPPQGOCqWDULJrnOGgJBNDtH" width="250" />
+</div>
 
-<p float="left">
-  <img src="https://drive.google.com/uc?export=view&id=1YIVrrKFYvnnzi-AXoRAptEpkh9zZCdrj" />
-  <img src="https://drive.google.com/uc?export=view&id=18X0DLtZYD3srORuGtdAzk17hRzrqTjNZ" />
-  <img src="https://drive.google.com/uc?export=view&id=1baHkq592Wo4RZEePgwcV4SwDGUaEOMyD" />
-</p>
-
+<div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1YIVrrKFYvnnzi-AXoRAptEpkh9zZCdrj" width="250" />
+  <img src="https://drive.google.com/uc?export=view&id=18X0DLtZYD3srORuGtdAzk17hRzrqTjNZ" width="250" />
+  <img src="https://drive.google.com/uc?export=view&id=1baHkq592Wo4RZEePgwcV4SwDGUaEOMyD" width="250" />
+</div>
