@@ -55,6 +55,41 @@ Each row in the `task_collection` table represents a group or collection of task
 | `updated_at`     | Long (Epoch)| Timestamp of the last update to the collection (milliseconds since epoch).  |
 | `sorted_type`    | Int         | Sorting type for tasks within the collection (default: 0).                  |
 
+# Features
+
+The **Task Management** application provides the following key features:
+
+- 🔑 **Login & Authentication**
+  - Log in with Email/Username & Password
+  - Google Sign-In integration
+  - Create a new account
+
+- 🏠 **Homepage**
+  - Manage categories with **Tabs** (add/remove tabs)
+  - Display task lists
+  - Quickly add new tasks with the ➕ button
+  - ⭐ **Favorite Tasks**: Mark and manage important tasks
+
+- 👤 **Account Page**
+  - Manage account information
+  - Change theme and language
+  - Delete account / Log out
+  - View app version
+
+- 🔁 **Repeat Task**
+  - Create recurring tasks (daily, weekly, …)
+  - Select start date, end date, or number of occurrences
+
+- 📅 **Task Detail**
+  - Add detailed descriptions for tasks
+  - Select date and time
+  - Customize recurrence (weekly, specific weekdays, …)
+  - Add to calendar
+
+- 🔍 **Search**
+  - Search tasks by name or content
+  - Display search results by category
+
 # UI
 
 <div align="center">
