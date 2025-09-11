@@ -64,6 +64,10 @@ The **Task Management** application provides the following key features:
   - Google Sign-In integration
   - Create a new account
 
+- 🔄 **Cross-Device Sync**
+  - Synchronize tasks seamlessly across multiple devices
+  - Powered by your Google account for secure backup and access anywhere
+
 - 🏠 **Homepage**
   - Manage categories with **Tabs** (add/remove tabs)
   - Display task lists
