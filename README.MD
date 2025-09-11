@@ -34,16 +34,6 @@ Each row in the `task` table represents a single task with a variety of attribut
 | `updated_at`          | Long (Epoch)   | Timestamp of the last update to the task.                                                     |
 | `created_at`          | Long (Epoch)   | Timestamp when the task was created (default: current system time).                           |
 
-## Usage
-
-This table is suitable for task management applications that require:
-
-- Task grouping (collection support)
-- Completion and favorite flags
-- Flexible reminders and due dates
-- Advanced repeat scheduling (daily/weekly/monthly, custom days, etc.)
-- Tracking of creation and update times
-
 ## Table: `task_collection`
 
 Each row in the `task_collection` table represents a group or collection of tasks.
