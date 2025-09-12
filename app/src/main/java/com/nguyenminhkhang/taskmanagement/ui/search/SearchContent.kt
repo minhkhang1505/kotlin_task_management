@@ -20,7 +20,7 @@ import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 
 @Composable
-fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String, navController: NavController) {
+fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String, navController: NavController, onEvent: (SearchEvent) -> Unit) {
     if (searchQuery.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize().padding(WindowInsets.ime.asPaddingValues()).padding(16.dp), contentAlignment = Alignment.TopCenter) {
             Text("Try searching for 'Project X' or 'Meeting'", style = MaterialTheme.typography.bodyMedium)
@@ -47,7 +47,8 @@ fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String, navContr
                 items(searchResults, key = { task -> task.id ?: 0 }) { result ->
                     SearchTaskItemLayout(
                         taskResult = result,
-                        onTaskClick = {navController.navigate("TaskDetail/${it}") }
+                        onTaskClick = {navController.navigate("TaskDetail/${it}") },
+                        onEvent = onEvent
                     )
                 }
             }

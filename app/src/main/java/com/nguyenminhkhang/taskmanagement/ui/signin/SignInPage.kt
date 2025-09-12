@@ -78,7 +78,6 @@ fun SignInPage(
     SignInLayout(
         loginState = loginState,
         onGoogleSignInClick = onGoogleSignInClick,
-        onGuessSignInClick = { viewModel.signInAsGuest() },
         navController = navController
     )
 

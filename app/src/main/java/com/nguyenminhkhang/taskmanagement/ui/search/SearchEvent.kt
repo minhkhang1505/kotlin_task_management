@@ -9,4 +9,5 @@ sealed class SearchEvent {
     object HideSearchBar : SearchEvent()
     object ExpandSearchBarChanged : SearchEvent()
     object CollapseSearchBar : SearchEvent()
+    data class OnToggleFavoriteClick(val taskId: Long, val isFavorite: Boolean) : SearchEvent()
 }

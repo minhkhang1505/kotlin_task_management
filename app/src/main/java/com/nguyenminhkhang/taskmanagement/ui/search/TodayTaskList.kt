@@ -12,7 +12,8 @@ import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 @Composable
 fun TodayTaskList(
     searchUiState: SearchUiState,
-    navController: NavController
+    navController: NavController,
+    onEvent:(SearchEvent) -> Unit
 ) {
     LazyColumn {
         items(searchUiState.todayTaskResult.size) { index ->
@@ -21,7 +22,8 @@ fun TodayTaskList(
                 taskResult = todayTask,
                 onTaskClick = {
                     navController.navigate("TaskDetail/${it}")
-                }
+                },
+                onEvent = onEvent
             )
             Spacer(modifier = Modifier.height(8.dp))
         }

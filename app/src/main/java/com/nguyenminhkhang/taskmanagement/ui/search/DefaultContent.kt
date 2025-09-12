@@ -16,7 +16,8 @@ import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 @Composable
 fun DefaultContent(
     todayTasks: SearchUiState,
-    navController: NavController
+    navController: NavController,
+    onEvent: (SearchEvent) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -35,7 +36,7 @@ fun DefaultContent(
                 modifier = Modifier.padding(top = 8.dp)
             )
         } else {
-            TodayTaskList(searchUiState = todayTasks, navController = navController)
+            TodayTaskList(searchUiState = todayTasks, navController = navController, onEvent = onEvent)
         }
     }
 }

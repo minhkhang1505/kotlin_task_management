@@ -51,6 +51,4 @@ class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, priva
             }
         }
     }
-
-    fun signInAsGuest() { }
 }

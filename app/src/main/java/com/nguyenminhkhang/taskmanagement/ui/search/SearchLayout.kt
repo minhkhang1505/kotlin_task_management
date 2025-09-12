@@ -90,7 +90,8 @@ fun SearchLayout(
             SearchContent(
                 searchResults = searchResults,
                 searchQuery = searchUiState.searchQuery,
-                navController = navController
+                navController = navController,
+                onEvent = onEvent
             )
         }
 
@@ -98,6 +99,7 @@ fun SearchLayout(
             DefaultContent(
                 todayTasks = searchUiState,
                 navController = navController,
+                onEvent = onEvent
             )
         }
     }

@@ -21,6 +21,7 @@ import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 
 @Composable
 fun LazyItemScope.TaskItemLayout(
@@ -56,7 +57,15 @@ fun LazyItemScope.TaskItemLayout(
             )
             if(state.isCompleted) {
                 Text(text = "Completed: ${state.stringUpdateAt}", modifier = Modifier.padding(end = 10.dp), color = MaterialTheme.colorScheme.primary)
-
+            } else {
+                if(state.repeatEndDate != null && state.startDate != null) {
+                    Text(
+                        text = "Begin: ${state.startDate!!.millisToDateString()}",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(end = 10.dp),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                    )
+                }
             }
         }
 

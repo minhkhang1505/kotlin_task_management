@@ -27,6 +27,7 @@ import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 fun SearchTaskItemLayout(
     taskResult: TaskEntity,
     onTaskClick: (Long) -> Unit,
+    onEvent:(SearchEvent) -> Unit
 ) {
     Row(
         modifier = Modifier.fillMaxWidth()
@@ -35,7 +36,9 @@ fun SearchTaskItemLayout(
                 color = MaterialTheme.colorScheme.onPrimary.copy(0.7f),
                 shape = RoundedCornerShape(12.dp)
             ).
-            clickable( onClick = { onTaskClick(taskResult.id!!)
+            clickable( onClick = {
+                onEvent(SearchEvent.OnSearchResultClick(taskResult.id!!))
+                onTaskClick(taskResult.id!!)
                 Log.d("SearchTaskItemLayout", "Task clicked: ${taskResult.id}")
             }
         ),
@@ -59,7 +62,9 @@ fun SearchTaskItemLayout(
             painter = painterResource(if(taskResult.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
             contentDescription = "Favorite Icon",
             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
-            modifier = Modifier.padding(end = 10.dp).clickable {}
+            modifier = Modifier.padding(end = 10.dp).clickable {
+                onEvent(SearchEvent.OnToggleFavoriteClick(taskResult.id!!, !taskResult.isFavorite))
+            }
         )
     }
 }

@@ -96,6 +96,11 @@ class SearchViewModel @Inject constructor(
             is SearchEvent.HideSearchBar -> { _searchUiState.update { it.copy(isSearchBarVisible = false) } }
             is SearchEvent.ExpandSearchBarChanged -> { _searchUiState.update { it.copy(expanded = !it.expanded) } }
             is SearchEvent.CollapseSearchBar -> { _searchUiState.update { it.copy(expanded = false) } }
+            is SearchEvent.OnToggleFavoriteClick -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    taskRepo.updateTaskFavoriteById(event.taskId, event.isFavorite)
+                }
+            }
         }
     }
 }

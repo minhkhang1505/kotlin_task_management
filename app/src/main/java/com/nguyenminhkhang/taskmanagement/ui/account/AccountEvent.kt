@@ -5,4 +5,6 @@ sealed class AccountEvent {
     object DismissLogoutDialog : AccountEvent()
     object ShowLogoutDialog : AccountEvent()
     object HideLogoutDialog : AccountEvent()
+
+    data class ThemeModeChanged(val mode: String) : AccountEvent()
 }

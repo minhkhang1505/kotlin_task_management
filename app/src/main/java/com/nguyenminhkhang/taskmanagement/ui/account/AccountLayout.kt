@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.account.state.AccountUiState
 
@@ -30,6 +31,7 @@ import com.nguyenminhkhang.taskmanagement.ui.account.state.AccountUiState
 fun AccountLayout(
     accountUiState: AccountUiState,
     onEvent: (AccountEvent) -> Unit,
+    navController: NavController
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -56,7 +58,9 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .clickable{
+                        navController.navigate("ThemeMode")
+                    }
                     .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -78,7 +82,7 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .clickable{ }
                     .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -100,7 +104,7 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .clickable{}
                     .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -122,7 +126,7 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
+                    .clickable{ }
                     .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically

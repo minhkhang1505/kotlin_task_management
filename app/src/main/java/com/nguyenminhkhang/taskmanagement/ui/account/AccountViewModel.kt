@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.account.state.AccountUiState
+import com.nguyenminhkhang.taskmanagement.ui.account.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,9 @@ class AccountViewModel @Inject constructor(
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AccountUiState())
     val uiState = _uiState.asStateFlow()
+
+    private val _themeModeUiState = MutableStateFlow(ThemeModeUiState())
+    val themeUiState = _themeModeUiState.asStateFlow()
 
     private val auth: FirebaseAuth = Firebase.auth
 
@@ -72,6 +76,11 @@ class AccountViewModel @Inject constructor(
             is AccountEvent.DismissLogoutDialog -> {
                 _uiState.update { currentState ->
                     currentState.copy(isLogoutDialogVisible = false)
+                }
+            }
+            is AccountEvent.ThemeModeChanged -> {
+                _themeModeUiState.update { currentState ->
+                    currentState.copy(selectedOption = event.mode )
                 }
             }
         }
