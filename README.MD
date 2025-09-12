@@ -50,6 +50,68 @@ Each row in the `task_collection` table represents a group or collection of task
 The **Task Management** application provides the following key features:
 
 - 🔑 **Login & Authentication**
+  - Log in with Email/Username & Password
+  - Google Sign-In integration
+  - Create a new account
+
+- 🔄 **Cross-Device Sync**
+  - Synchronize tasks seamlessly across multiple devices
+  - Powered by your Google account for secure backup and access anywhere
+
+- 🏠 **Homepage**
+  - Manage categories with **Tabs** (add/remove tabs)
+  - Display task lists
+  - Quickly add new tasks with the ➕ button
+  - ⭐ **Favorite Tasks**: Mark and manage important tasks
+
+- 👤 **Account Page**
+  - Manage account information
+  - Change theme and language
+  - Delete account / Log out
+  - View app version
+
+- 🔁 **Repeat Task**
+  - Create recurring tasks (daily, weekly, …)
+  - Select start date, end date, or number of occurrences
+
+- 📅 **Task Detail**
+  - Add detailed descriptions for tasks
+  - Select date and time
+  - Customize recurrence (weekly, specific weekdays, …)
+  - Add to calendar
+
+- 🔍 **Search**
+  - Search tasks by name or content
+  - Display search results by category
+
+# UI
+
+<div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1XPuL8_TvAF_XJbKEuzxXQfT7QXbDa1mx" width="200" />
+  <img src="https://drive.google.com/uc?export=view&id=1EScXS5_966sGpjFrlkS3iKDGXEEx2A9J" width="200" />
+  <img src="https://drive.google.com/uc?export=view&id=1qUE7n78o1S7RxE5T4o31WL0F2Qp8X3jv" width="200" />
+  <img src="https://drive.google.com/uc?export=view&id=1pAESJ88LHt6aTsDJkKnKQfqEhV1uoW5Q" width="200" />
+</div>
+
+<div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=11vDu6YmYpP8hnc-wItROc_hwBBhN-ywb" width="200" />
+  <img src="https://drive.google.com/uc?export=view&id=1tor0YdBtQPPQGOCqWDULJrnOGgJBNDtH" width="200" />
+  <img src="https://drive.google.com/uc?export=view&id=1YIVrrKFYvnnzi-AXoRAptEpkh9zZCdrj" width="200" />
+  <img src="https://drive.google.com/uc?export=view&id=18X0DLtZYD3srORuGtdAzk17hRzrqTjNZ" width="200" />
+</div>
+
+<div align="center">
+  <img src="https://drive.google.com/uc?export=view&id=1baHkq592Wo4RZEePgwcV4SwDGUaEOMyD" width="200" />
+</div>
+
+#Youtube Link:
+
+
+# Features
+
+The **Task Management** application provides the following key features:
+
+- 🔑 **Login & Authentication**
     - Log in with Email/Username & Password
     - Google Sign-In integration
     - Create a new account
