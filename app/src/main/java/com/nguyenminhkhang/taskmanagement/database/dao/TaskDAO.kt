@@ -26,6 +26,12 @@ interface TaskDAO {
         insertAllCollection(taskCollection)
     }
 
+    @Transaction
+    suspend fun clearAllData() {
+        clearAllTasks()
+        clearAllCollections()
+    }
+
     @Query("DELETE FROM task WHERE user_id = :userId")
     suspend fun clearTasksForUser(userId: String)
 
@@ -41,6 +47,12 @@ interface TaskDAO {
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTaskCollection(taskCollection: TaskCollection) : Long
 
+    @Query("DELETE FROM task")
+    suspend fun clearAllTasks()
+
+    @Query("DELETE FROM task_collection")
+    suspend fun clearAllCollections()
+
     @Insert (onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: TaskEntity) : Long
 
@@ -50,11 +62,11 @@ interface TaskDAO {
     @Query("SELECT * FROM task WHERE collection_id = :collectionId AND user_id = :currentUser")
     fun getAllTaskByCollectionId(collectionId: Long, currentUser: String): Flow<List<TaskEntity>>
 
-    @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
+    @Query("UPDATE task SET favorite = :isFavorite WHERE id = :taskId")
     suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean) : Int
 
-    @Query("UPDATE task SET is_completed = :isCompleted WHERE id = :taskId")
-    suspend fun updateTaskCompleted(taskId: Int, isCompleted: Boolean) : Int
+    @Query("UPDATE task SET completed = :isCompleted, updated_at = :updatedAt WHERE id = :taskId")
+    suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean, updatedAt: Long): Int
 
     @Query("UPDATE task_collection SET content = :content WHERE id = :collectionId")
     suspend fun updateTaskCollection(collectionId: Int, content: String)
@@ -116,7 +128,7 @@ interface TaskDAO {
     @Query("UPDATE task SET task_detail = :detail WHERE id = :taskId")
     suspend fun updateTaskDetailById(taskId: Long, detail: String): Int
 
-    @Query("UPDATE task SET is_favorite = :isFavorite WHERE id = :taskId")
+    @Query("UPDATE task SET favorite = :isFavorite WHERE id = :taskId")
     suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Int
 
     @Query("UPDATE task SET repeat_every = :repeatEvery WHERE id = :taskId")

@@ -40,7 +40,7 @@ fun LazyItemScope.TaskItemLayout(
         horizontalArrangement = Arrangement.Start
     ) {
         Checkbox(
-            checked = state.isCompleted,
+            checked = state.completed,
             onCheckedChange = {isChecked ->
                 onEvent(HomeEvent.ToggleComplete(state))
             }
@@ -53,9 +53,9 @@ fun LazyItemScope.TaskItemLayout(
             Text(
                 text = state.content,
                 modifier = Modifier.padding(horizontal = 4.dp),
-                textDecoration = TextDecoration.LineThrough.takeIf { state.isCompleted }
+                textDecoration = TextDecoration.LineThrough.takeIf { state.completed }
             )
-            if(state.isCompleted) {
+            if(state.completed) {
                 Text(text = "Completed: ${state.stringUpdateAt}", modifier = Modifier.padding(end = 10.dp), color = MaterialTheme.colorScheme.primary)
             } else {
                 if(state.repeatEndDate != null && state.startDate != null) {
@@ -69,7 +69,7 @@ fun LazyItemScope.TaskItemLayout(
             }
         }
 
-        if (!state.isCompleted) {
+        if (!state.completed) {
             Icon(
                 painter = painterResource(if(state.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
                 contentDescription = "Favorite Icon",

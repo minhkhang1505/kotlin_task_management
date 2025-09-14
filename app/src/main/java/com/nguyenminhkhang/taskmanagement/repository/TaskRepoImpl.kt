@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Calendar
 
 class TaskRepoImpl (
@@ -48,6 +49,9 @@ class TaskRepoImpl (
                 val onlineTasks = tasksSnapshot.toObjects(TaskEntity::class.java)
                 CoroutineScope(Dispatchers.IO).launch {
                     taskDAO.syncTasksForUser(userId, onlineTasks)
+                    onlineTasks.forEach { task ->
+                        Log.d("TaskSync", "Synced Task: ${task}")
+                    }
                 }
             }
         }
@@ -74,7 +78,7 @@ class TaskRepoImpl (
             content = content,
             taskDetail = taskDetail,
             isFavorite = isFavorite,
-            isCompleted = false,
+            completed = false,
             collectionId = collectionId,
             updatedAt = now,
             startDate = startDate,
@@ -124,9 +128,57 @@ class TaskRepoImpl (
         taskDAO.updateTaskCollection(taskCollection) > 0
     }
 
-    override suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean =
-        withContext(Dispatchers.IO) {
-        taskDAO.updateTaskCompleted(taskId.toInt(), isCompleted) > 0
+    override suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean {
+        val userId = auth.currentUser?.uid ?: run {
+            Timber.e("No user ID available")
+            return false
+        }
+        val now = System.currentTimeMillis()
+        val taskDocId = taskId.toString()  // Document ID cho Firestore
+        val taskPath = "users/$userId/tasks/$taskDocId"
+
+        // Cập nhật Room trước (giữ nguyên)
+        val roomSuccess = withContext(Dispatchers.IO) {
+            taskDAO.updateTaskCompleted(taskId, isCompleted, now) > 0
+        }
+        if (!roomSuccess) {
+            Timber.e("Room update failed for taskId: $taskId")
+            return false
+        }
+        Timber.d("Room updated successfully: isCompleted=$isCompleted, updatedAt=$now")
+
+        return try {
+            // Bước 1: Kiểm tra document tồn tại
+            val docSnapshot = firestore.collection("users").document(userId)
+                .collection("tasks").document(taskDocId).get().await()
+
+            if (!docSnapshot.exists()) {
+                Timber.e("Firestore document does not exist: $taskPath")
+                // Option: Tạo document mới nếu chưa tồn tại, hoặc return false tùy logic
+                // firestore.collection("users").document(userId).collection("tasks").document(taskDocId).set(mapOf("completed" to isCompleted, "updatedAt" to now)).await()
+                return false  // Hoặc throw exception tùy bạn
+            }
+
+            Timber.d("Firestore document exists, current completed: ${docSnapshot.getBoolean("completed") ?: "null"}")
+
+            // Bước 2: Update
+            firestore.collection("users").document(userId)
+                .collection("tasks")
+                .document(taskDocId)
+                .update(mapOf(
+                    "completed" to isCompleted,
+                    "updatedAt" to now
+                ))
+                .await()
+
+            Timber.d("Firestore update successful for $taskPath")
+            true
+        } catch (e: Exception) {
+            Timber.e(e, "Firestore update failed for $taskPath: ${e.message}")
+            // Option: Rollback Room nếu cần (update lại isCompleted về false)
+            // withContext(Dispatchers.IO) { taskDAO.updateTaskCompleted(taskId, false, now) }
+            false
+        }
     }
 
     override suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean): Boolean =
@@ -190,27 +242,20 @@ class TaskRepoImpl (
         task: TaskEntity
     ): Boolean {
         val userEmail = auth.currentUser?.email ?: return false
-
-        val roomUpdateSuccess =  withContext(Dispatchers.IO) {
-            taskDAO.updateTask(task = task) > 0
-        }
-
-        return if(roomUpdateSuccess) {
-            try {
-                firestore.collection("users").document(userEmail)
-                    .collection("tasks")
-                    .document(task.id.toString())
-                    .set(task)
-                    .await()
-                Log.d("TaskRepoImpl", "Task updated in Firestore")
-                true
-            } catch(e: Exception) {
-                Log.e("TaskRepoImpl", "Error updating task in Firestore", e)
-                false
-            }
-        } else {
+        taskDAO.updateTask(task = task) > 0
+        try {
+            firestore.collection("users").document(userEmail)
+                .collection("tasks")
+                .document(task.id.toString())
+                .set(task)
+                .await()
+            Log.d("TaskRepoImpl", "Task updated in Firestore")
+            true
+        } catch(e: Exception) {
+            Log.e("TaskRepoImpl", "Error updating task in Firestore", e)
             false
         }
+        return true
     }
 
     override suspend fun updateTaskStartDate(taskId: Long, startDate: Long): Boolean {
@@ -318,5 +363,18 @@ class TaskRepoImpl (
 
     override fun getTodayTasks(startDate: Long, endDate: Long): Flow<List<TaskEntity>> {
         return taskDAO.getTodayTasks(startDate, endDate, auth.currentUser?.uid ?: "local_user")
+    }
+
+    override suspend fun clearLocalData(): Boolean {
+        return CoroutineScope(Dispatchers.IO).launch {
+            try {
+                taskDAO.clearAllData()
+                Log.d("TaskRepoImpl", "Local data cleared successfully")
+                true
+            } catch (e: Exception) {
+                Log.e("TaskRepoImpl", "Error clearing local data", e)
+                false
+            }
+        }.join().let { true }
     }
 }

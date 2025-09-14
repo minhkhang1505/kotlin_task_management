@@ -13,7 +13,7 @@ import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 
 private const val DB_NAME = "task_db"
-private const val DB_VERSION = 8
+private const val DB_VERSION = 9
 
 @Database(entities = [TaskEntity::class, TaskCollection::class], version = DB_VERSION)
 @TypeConverters(Converters::class)
@@ -41,6 +41,7 @@ abstract class AppDb : RoomDatabase()  {
             .addMigrations(MIGRATION_5_6)
             .addMigrations(MIGRATION_6_7)
             .addMigrations(MIGRATION_7_8)
+            .addMigrations(MIGRATION_8_9)
             .build()
     }
 }
@@ -153,5 +154,79 @@ private val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE task ADD COLUMN user_id TEXT NOT NULL DEFAULT 'local_user'")
         db.execSQL("ALTER TABLE task_collection ADD COLUMN user_id TEXT NOT NULL DEFAULT 'local_user'")
+    }
+}
+
+private val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // Rename old table
+        db.execSQL("ALTER TABLE task RENAME TO task_temp")
+
+        // Create new table with corrected column names
+        db.execSQL(
+            """
+            CREATE TABLE task (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT NOT NULL,
+                favorite INTEGER NOT NULL DEFAULT 0,
+                completed INTEGER NOT NULL DEFAULT 0,
+                collection_id INTEGER NOT NULL,
+                start_date INTEGER,
+                due_date INTEGER,
+                reminder_time INTEGER NOT NULL,
+                priority INTEGER NOT NULL,
+                repeat_every INTEGER NOT NULL,
+                repeat_days_of_week TEXT,
+                repeat_interval TEXT,
+                repeat_end_type TEXT,
+                repeat_end_date INTEGER,
+                repeat_end_count INTEGER NOT NULL,
+                start_time INTEGER,
+                updated_at INTEGER NOT NULL,
+                created_at INTEGER NOT NULL,
+                task_detail TEXT NOT NULL DEFAULT '',
+                reminder_time_millis INTEGER,
+                user_id TEXT NOT NULL DEFAULT 'local_user'
+            )
+            """.trimIndent()
+        )
+
+        // Copy data, mapping old columns to new names
+        db.execSQL(
+            """
+            INSERT INTO task (
+                id, title, favorite, completed, collection_id, start_date, due_date,
+                reminder_time, priority, repeat_every, repeat_days_of_week, repeat_interval,
+                repeat_end_type, repeat_end_date, repeat_end_count, start_time, updated_at,
+                created_at, task_detail, reminder_time_millis, user_id
+            )
+            SELECT
+                id,
+                title,
+                is_favorite,
+                is_completed,
+                collection_id,
+                start_date,
+                due_date,
+                reminder_time,
+                priority,
+                repeat_every,
+                repeat_days_of_week,
+                repeat_interval,
+                repeat_end_type,
+                repeat_end_date,
+                repeat_end_count,
+                start_time,
+                updated_at,
+                created_at,
+                task_detail,
+                reminder_time_millis,
+                user_id
+            FROM task_temp
+            """.trimIndent()
+        )
+
+        // Drop temp table
+        db.execSQL("DROP TABLE task_temp")
     }
 }

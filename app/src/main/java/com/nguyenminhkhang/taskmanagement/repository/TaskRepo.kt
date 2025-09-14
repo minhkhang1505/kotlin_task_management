@@ -35,4 +35,7 @@ interface TaskRepo {
 
     suspend fun claimLocalTasks() : Boolean
     suspend fun claimLocalTaskCollection() : Boolean
+
+    //logout
+    suspend fun clearLocalData() : Boolean
 }

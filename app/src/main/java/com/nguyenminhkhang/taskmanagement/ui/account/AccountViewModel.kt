@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.account.state.AccountUiState
 import com.nguyenminhkhang.taskmanagement.ui.account.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val taskRepo: TaskRepo
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AccountUiState())
     val uiState = _uiState.asStateFlow()
@@ -59,7 +61,7 @@ class AccountViewModel @Inject constructor(
                         .requestEmail()
                         .build()
                     GoogleSignIn.getClient(context, gso).signOut().await()
-
+                    taskRepo.clearLocalData()
                     _logoutEvent.emit(Unit)
                 }
             }

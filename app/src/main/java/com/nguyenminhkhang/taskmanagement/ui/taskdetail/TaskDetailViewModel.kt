@@ -10,8 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -69,7 +67,11 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     fun onMarkAsDoneClicked() {
+        _taskUiState.update { currentState ->
+            currentState.copy(task = currentState.task?.copy(completed = true))
+        }
         viewModelScope.launch {
+            taskRepo.updateTask(_taskUiState.value.task!!)
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }

@@ -77,8 +77,8 @@ class HomeViewModel @Inject constructor(
                             TaskGroupUiState(
                                 tab = collection.toTabUiState(),
                                 page = TaskPageUiState(
-                                    activeTaskList = taskUiStates.filter { !it.isCompleted },
-                                    completedTaskList = taskUiStates.filter { it.isCompleted }
+                                    activeTaskList = taskUiStates.filter { !it.completed },
+                                    completedTaskList = taskUiStates.filter { it.completed }
                                 )
                             )
                         }
@@ -195,7 +195,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             _snackBarEvent.emit(SnackbarEvent(
-                message = "Task '${task.content}' marked as ${if (task.isCompleted) "incomplete" else "complete"}",
+                message = "Task '${task.content}' marked as ${if (task.completed) "incomplete" else "complete"}",
                 actionLabel = "Undo",
                 actionType = SnackbarActionType.UNDO_TOGGLE_COMPLETE,
                 onAction = { undoToggleComplete() }
@@ -212,7 +212,7 @@ class HomeViewModel @Inject constructor(
         pendingCompleteAction?.cancel()
         val taskToRestore = taskToConfirm ?: return
 
-        val restoredList = createOptimisticListForToggle(taskToRestore.copy(isCompleted = !taskToRestore.isCompleted))
+        val restoredList = createOptimisticListForToggle(taskToRestore.copy(completed = !taskToRestore.completed))
         _uiState.update { it.copy(listTabGroup = restoredList) }
 
         taskToConfirm = null
@@ -222,25 +222,25 @@ class HomeViewModel @Inject constructor(
         val task = taskToConfirm ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.updateTaskCompleted(task.id!!, !task.isCompleted)
+            taskRepo.updateTaskCompleted(task.id!!, !task.completed)
         }
         taskToConfirm = null
     }
 
     private fun createOptimisticListForToggle(taskToChange: TaskUiState): List<TaskGroupUiState> {
         val currentList = _uiState.value.listTabGroup
-        val isCompleting = !taskToChange.isCompleted
+        val isCompleting = !taskToChange.completed
 
         return currentList.map { group->
             if(group.tab.id == _currentSelectedCollectionId) {
                 val newActiveList = if(isCompleting) {
                     group.page.activeTaskList.filter { it.id != taskToChange.id }
                 } else {
-                    group.page.activeTaskList + taskToChange.copy(isCompleted = isCompleting)
+                    group.page.activeTaskList + taskToChange.copy(completed = isCompleting)
                 }
 
                 val newCompletedList = if(isCompleting) {
-                    group.page.completedTaskList + taskToChange.copy(isCompleted = isCompleting)
+                    group.page.completedTaskList + taskToChange.copy(completed = isCompleting)
                 } else {
                     group.page.completedTaskList.filter { it.id != taskToChange.id }
                 }
