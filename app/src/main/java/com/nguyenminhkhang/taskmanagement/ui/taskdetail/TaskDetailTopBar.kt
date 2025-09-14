@@ -26,7 +26,7 @@ fun TaskDetailTopAppBar (
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().size(56.dp)
-            .padding(horizontal = 12.dp),
+            .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

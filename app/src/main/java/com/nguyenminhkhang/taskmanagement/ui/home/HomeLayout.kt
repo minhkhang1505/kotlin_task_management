@@ -47,6 +47,7 @@ fun HomeLayout(
         }
 
         SnackbarHost(hostState = snackbarHostState)
+
         AppFloatActionButton(
             onClick = { onEvent(HomeEvent.ShowAddTaskSheet) },
             modifier = Modifier

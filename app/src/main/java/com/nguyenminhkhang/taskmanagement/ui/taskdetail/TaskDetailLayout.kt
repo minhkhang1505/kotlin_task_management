@@ -28,100 +28,94 @@ fun TaskDetailLayout(
     onNavigateTo: (String) -> Unit,
     onEvent: (TaskDetailEvent) -> Unit
 ) {
-    Scaffold(
-        topBar = {
+    Box(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxSize()
+    ) {
+        Column {
             TaskDetailTopAppBar(
                 isFavorite = uiState.task?.favorite ?: false,
                 onFavoriteClick = { onEvent(TaskDetailEvent.ToggleFavorite) },
                 onNavigateBack = { onNavigateBack() },
             )
-        },
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(it)
-                .padding(8.dp)
-                .fillMaxSize()
-        ) {
-            Column {
-                // collection name row
-                CurrentCollectionRow(
-                    collectionName = uiState.currentCollection,
-                    onCollectionClick = { onEvent(TaskDetailEvent.ShowChangeCollectionSheet) }
-                )
-                // task title and edit icon
-                TaskTitleField(
-                    title = uiState.task!!.content,
-                    isInEditMode = uiState.isInEditMode,
-                    onTitleChange = { onEvent(TaskDetailEvent.OnTitleChanged(it)) },
-                    onEnterEditMode = { onEvent(TaskDetailEvent.OnEnterEditMode) },
-                    onExitEditMode = { onEvent(TaskDetailEvent.OnExitEditMode) },
-                    onSave = { onEvent(TaskDetailEvent.SaveTitle) }
-                )
-                // menu icon sub task detail
-                TaskDetailInputRow(
-                    detailValue = uiState.task.taskDetail,
-                    onDetailChange = { onEvent(TaskDetailEvent.OnDetailChange(it)) },
-                    onSave = { onEvent(TaskDetailEvent.SaveDetail) }
-                )
-                // date icon and text field
-                TaskDateRow(
-                    uiState = uiState,
-                    onShowDatePicker = { onEvent(TaskDetailEvent.OnShowDatePicker) },
-                    onClearDate = { onEvent(TaskDetailEvent.OnClearDateSelected) }
-                )
-                // time icon and text field
-                TaskTimeRow(
-                    uiState = uiState,
-                    onShowDatePicker = { onEvent(TaskDetailEvent.OnShowTimePicker) },
-                    onClearDate = { onEvent(TaskDetailEvent.OnClearTimeSelected) }
-                )
-                // repeat icon and text field
-                RepeatInfoRow(
-                    summaryText = uiState.repeatSummaryText,
-                    onClick = {
-                        onNavigateTo("Repeat/${uiState.task.id}")
-                    }
-                )
-                AddToCalendarButton(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 8.dp),
-                    onClick = { onEvent(TaskDetailEvent.AddToCalendar(context, uiState.task)) }
-                )
-            }
-
-            if (uiState.isDatePickerVisible) {
-                DatePickerModal(
-                    onDateSelected = { onEvent(TaskDetailEvent.OnDateSelected(it)) },
-                    onDismiss = { onEvent(TaskDetailEvent.OnDismissDatePicker) },
-                )
-            }
-
-            if (uiState.isTimePickerVisible) {
-                TimePickerModal(
-                    onConfirm = { onEvent(TaskDetailEvent.OnTimeSelected(it.toHourMinute())) },
-                    onDismiss = { onEvent(TaskDetailEvent.OnDismissTimePicker) }
-                )
-            }
-            if (uiState.isChangeCollectionSheetVisible) {
-                ModelButtonChangeCollection(
-                    uiState = uiState,
-                    onEvent = onEvent
-                )
-            }
-
-            FloatingActionButton(
-                onClick = { onEvent(TaskDetailEvent.OnMarkAsDoneClicked) },
+            // collection name row
+            CurrentCollectionRow(
+                collectionName = uiState.currentCollection,
+                onCollectionClick = { onEvent(TaskDetailEvent.ShowChangeCollectionSheet) }
+            )
+            // task title and edit icon
+            TaskTitleField(
+                title = uiState.task!!.content,
+                isInEditMode = uiState.isInEditMode,
+                onTitleChange = { onEvent(TaskDetailEvent.OnTitleChanged(it)) },
+                onEnterEditMode = { onEvent(TaskDetailEvent.OnEnterEditMode) },
+                onExitEditMode = { onEvent(TaskDetailEvent.OnExitEditMode) },
+                onSave = { onEvent(TaskDetailEvent.SaveTitle) }
+            )
+            // menu icon sub task detail
+            TaskDetailInputRow(
+                detailValue = uiState.task.taskDetail,
+                onDetailChange = { onEvent(TaskDetailEvent.OnDetailChange(it)) },
+                onSave = { onEvent(TaskDetailEvent.SaveDetail) }
+            )
+            // date icon and text field
+            TaskDateRow(
+                uiState = uiState,
+                onShowDatePicker = { onEvent(TaskDetailEvent.OnShowDatePicker) },
+                onClearDate = { onEvent(TaskDetailEvent.OnClearDateSelected) }
+            )
+            // time icon and text field
+            TaskTimeRow(
+                uiState = uiState,
+                onShowDatePicker = { onEvent(TaskDetailEvent.OnShowTimePicker) },
+                onClearDate = { onEvent(TaskDetailEvent.OnClearTimeSelected) }
+            )
+            // repeat icon and text field
+            RepeatInfoRow(
+                summaryText = uiState.repeatSummaryText,
+                onClick = {
+                    onNavigateTo("Repeat/${uiState.task.id}")
+                }
+            )
+            AddToCalendarButton(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .align(Alignment.BottomEnd),
-            ) {
-                Text(
-                    text = "Mark done", modifier = Modifier.padding(horizontal = 16.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 8.dp),
+                onClick = { onEvent(TaskDetailEvent.AddToCalendar(context, uiState.task)) }
+            )
+        }
+
+        if (uiState.isDatePickerVisible) {
+            DatePickerModal(
+                onDateSelected = { onEvent(TaskDetailEvent.OnDateSelected(it)) },
+                onDismiss = { onEvent(TaskDetailEvent.OnDismissDatePicker) },
+            )
+        }
+
+        if (uiState.isTimePickerVisible) {
+            TimePickerModal(
+                onConfirm = { onEvent(TaskDetailEvent.OnTimeSelected(it.toHourMinute())) },
+                onDismiss = { onEvent(TaskDetailEvent.OnDismissTimePicker) }
+            )
+        }
+        if (uiState.isChangeCollectionSheetVisible) {
+            ModelButtonChangeCollection(
+                uiState = uiState,
+                onEvent = onEvent
+            )
+        }
+
+        FloatingActionButton(
+            onClick = { onEvent(TaskDetailEvent.OnMarkAsDoneClicked) },
+            modifier = Modifier
+                .padding(8.dp)
+                .align(Alignment.BottomEnd),
+        ) {
+            Text(
+                text = "Mark done", modifier = Modifier.padding(horizontal = 16.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }
