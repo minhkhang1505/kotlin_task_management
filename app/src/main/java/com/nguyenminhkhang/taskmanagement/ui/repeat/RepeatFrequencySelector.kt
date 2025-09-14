@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -44,6 +45,7 @@ fun RepeatFrequencySelector(
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number, imeAction = ImeAction.Done),
             modifier = Modifier.weight(0.2f).padding(end = 8.dp),
             maxLines = 1,
+            shape = RoundedCornerShape(12.dp),
             singleLine = true,
             keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
         )
@@ -63,6 +65,7 @@ fun RepeatFrequencySelector(
                         modifier = Modifier.padding(8.dp)
                     )
                 },
+                shape = RoundedCornerShape(12.dp),
                 readOnly = true,
                 enabled = false,
                 colors = OUTLINETEXTFIELD_COLOR,

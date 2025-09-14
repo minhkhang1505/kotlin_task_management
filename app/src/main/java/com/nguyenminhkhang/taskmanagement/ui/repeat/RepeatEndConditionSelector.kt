@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -73,6 +74,7 @@ fun RepeatEndConditionSelector(
                                 onValueChange = {},
                                 readOnly = true,
                                 enabled = false,
+                                shape = RoundedCornerShape(12.dp),
                                 colors = OUTLINETEXTFIELD_COLOR
                             )
                         }
@@ -99,6 +101,7 @@ fun RepeatEndConditionSelector(
                                 modifier = Modifier.weight(0.2f),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
                                 enabled = ("After" == uiState.selectedEndCondition),
+                                shape = RoundedCornerShape(12.dp),
                                 colors = OUTLINETEXTFIELD_COLOR,
                                 maxLines = 1,
                                 singleLine = true,
