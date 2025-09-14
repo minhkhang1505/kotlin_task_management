@@ -133,10 +133,9 @@ class TaskRepoImpl (
             return false
         }
         val now = System.currentTimeMillis()
-        val taskDocId = taskId.toString()  // Document ID cho Firestore
+        val taskDocId = taskId.toString()
         val taskPath = "users/$userEmail/tasks/$taskDocId"
 
-        // Cập nhật Room trước (giữ nguyên)
         val roomSuccess = withContext(Dispatchers.IO) {
             taskDAO.updateTaskCompleted(taskId, isCompleted, now) > 0
         }
@@ -147,20 +146,16 @@ class TaskRepoImpl (
         Log.d("TaskRepoImpl", "Room updated successfully: isCompleted=$isCompleted, updatedAt=$now")
 
         return try {
-            // Bước 1: Kiểm tra document tồn tại
             val docSnapshot = firestore.collection("users").document(userEmail)
                 .collection("tasks").document(taskDocId).get().await()
 
             if (!docSnapshot.exists()) {
                 Log.d("TaskRepoImpl", "Firestore document does not exist: $taskPath")
-                // Option: Tạo document mới nếu chưa tồn tại, hoặc return false tùy logic
-                // firestore.collection("users").document(userId).collection("tasks").document(taskDocId).set(mapOf("completed" to isCompleted, "updatedAt" to now)).await()
-                return false  // Hoặc throw exception tùy bạn
+                return false
             }
 
             Log.d("TaskRepoImpl", "Firestore document exists, current completed: ${docSnapshot.getBoolean("completed") ?: "null"}")
 
-            // Bước 2: Update
             firestore.collection("users").document(userEmail)
                 .collection("tasks")
                 .document(taskDocId)
@@ -174,15 +169,48 @@ class TaskRepoImpl (
             true
         } catch (e: Exception) {
             Log.e("TaskRepoImpl", "Firestore update failed for $taskPath: ${e.message}", e)
-            // Option: Rollback Room nếu cần (update lại isCompleted về false)
-            // withContext(Dispatchers.IO) { taskDAO.updateTaskCompleted(taskId, false, now) }
             false
         }
     }
 
-    override suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean): Boolean =
-        withContext(Dispatchers.IO) {
-        taskDAO.updateTaskFavorite(taskId.toInt(), isFavorite) > 0
+    override suspend fun updateTaskFavorite(taskId: Long, isFavorite: Boolean): Boolean {
+        val now = System.currentTimeMillis()
+        val userEmail = auth.currentUser?.email ?: return false
+        val taskDocId = taskId.toString()
+
+        val roomSuccess = withContext(Dispatchers.IO) {
+            taskDAO.updateTaskFavorite(taskId.toInt(), isFavorite, now) > 0
+        }
+
+        if (!roomSuccess) {
+            Log.d("TaskRepoImpl", "Room update failed for taskId: $taskId")
+            return false
+        }
+
+        try {
+            val docSnapshot = firestore.collection("users").document(userEmail)
+                .collection("tasks").document(taskDocId).get().await()
+
+            if (!docSnapshot.exists()) {
+                Log.d("TaskRepoImpl", "Firestore document does not exist: users/$userEmail/tasks/$taskDocId")
+                return false
+            }
+
+            firestore.collection("users").document(userEmail)
+                .collection("tasks")
+                .document(taskDocId)
+                .update(mapOf(
+                    "favorite" to isFavorite,
+                    "updatedAt" to now
+                ))
+                .await()
+
+            Log.d("TaskRepoImpl", "Firestore update successful for users/$userEmail/tasks/$taskDocId")
+            return true
+        } catch (e: Exception) {
+            Log.e("TaskRepoImpl", "Firestore update failed for users/$userEmail/tasks/$taskDocId: ${e.message}", e)
+            return false
+        }
     }
 
     override suspend fun deleteTaskCollectionById(collectionId: Long): Boolean {

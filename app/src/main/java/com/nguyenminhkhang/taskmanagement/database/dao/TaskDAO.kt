@@ -62,8 +62,8 @@ interface TaskDAO {
     @Query("SELECT * FROM task WHERE collection_id = :collectionId AND user_id = :currentUser")
     fun getAllTaskByCollectionId(collectionId: Long, currentUser: String): Flow<List<TaskEntity>>
 
-    @Query("UPDATE task SET favorite = :isFavorite WHERE id = :taskId")
-    suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean) : Int
+    @Query("UPDATE task SET favorite = :isFavorite, updated_at = :updatedAt WHERE id = :taskId")
+    suspend fun updateTaskFavorite(taskId: Int, isFavorite: Boolean, updatedAt: Long) : Int
 
     @Query("UPDATE task SET completed = :isCompleted, updated_at = :updatedAt WHERE id = :taskId")
     suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean, updatedAt: Long): Int
