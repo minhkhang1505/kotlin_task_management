@@ -47,7 +47,7 @@ fun ThemeModeLayout(
             Text(
                 text = "Theme Mode",
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.secondaryContainer
+                color = MaterialTheme.colorScheme.primary
             )
         }
 

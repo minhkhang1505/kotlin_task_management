@@ -67,11 +67,8 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     fun onMarkAsDoneClicked() {
-        _taskUiState.update { currentState ->
-            currentState.copy(task = currentState.task?.copy(completed = true))
-        }
         viewModelScope.launch {
-            taskRepo.updateTask(_taskUiState.value.task!!)
+            taskRepo.updateTaskCompleted(taskId, true)
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }
@@ -80,7 +77,7 @@ class TaskDetailViewModel @Inject constructor (
         viewModelScope.launch {
             val currentTask = _taskUiState.value.task ?: return@launch
             val isFavorite = !currentTask.favorite
-            taskRepo.updateTaskFavoriteById(taskId, isFavorite)
+            taskRepo.updateTaskFavorite(taskId, isFavorite)
             _snackbarEvent.emit(SnackbarEvent("Task ${if (isFavorite) "added to" else "removed from"} favorites"))
         }
     }

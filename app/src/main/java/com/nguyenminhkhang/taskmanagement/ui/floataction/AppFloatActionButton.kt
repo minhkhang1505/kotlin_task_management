@@ -18,10 +18,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AppFloatActionButton(
     clickable: Boolean = true,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    modifier: Modifier
 ) {
     Box (
-        modifier = Modifier
+        modifier = modifier
             .shadow(
                 elevation = 8.dp,
                 shape = RoundedCornerShape(16.dp),
