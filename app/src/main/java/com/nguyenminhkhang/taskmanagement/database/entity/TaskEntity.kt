@@ -22,7 +22,7 @@ data class TaskEntity(
 
     @ColumnInfo(name = "favorite")
     @SerializedName("favorite")
-    val isFavorite: Boolean = false,
+    val favorite: Boolean = false,
 
     @ColumnInfo(name = "completed")
     @SerializedName("completed")

@@ -139,7 +139,7 @@ class HomeViewModel @Inject constructor(
 
         val content = taskToSave.newTask.content.trim()
         val detail = taskToSave.newTask.taskDetail
-        val isFavorite = taskToSave.newTask.isFavorite
+        val isFavorite = taskToSave.newTask.favorite
         val startDate = taskToSave.newTask.startDate
         val startTime = taskToSave.newTask.startTime
         val reminderTimeMillis = taskToSave.newTask.reminderTimeMillis
@@ -160,7 +160,7 @@ class HomeViewModel @Inject constructor(
                 val updatedTask = insertedTask.copy(
                     content = content,
                     taskDetail = detail,
-                    isFavorite = isFavorite,
+                    favorite = isFavorite,
                     startDate = startDate,
                     startTime = startTime,
                     reminderTimeMillis = reminderTimeMillis
@@ -384,7 +384,7 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
             is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(content = event.content)) }
             is HomeEvent.TaskDetailChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(taskDetail = event.detail)) }
-            is HomeEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTask = it.newTask!!.copy(isFavorite = !it.newTask.isFavorite)) }
+            is HomeEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTask = it.newTask!!.copy(favorite = !it.newTask.favorite)) }
             is HomeEvent.ShowAddDetailTextField -> _uiState.update { it.copy(isShowAddDetailTextField = true) }
             is HomeEvent.ShowDatePicker -> _uiState.update { it.copy(isDatePickerVisible = true) }
             is HomeEvent.HideDatePicker -> _uiState.update { it.copy(isDatePickerVisible = false) }

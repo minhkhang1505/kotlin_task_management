@@ -141,7 +141,7 @@ fun AddTaskBottomSheet(
                     )
                 }
                 IconButton(onClick = { onEvent(HomeEvent.ToggleNewTaskFavorite) }) {
-                    Icon(painter = if(uiState.newTask?.isFavorite == true) {
+                    Icon(painter = if(uiState.newTask?.favorite == true) {
                         painterResource(R.drawable.baseline_star_24)
                     } else {
                         painterResource(R.drawable.baseline_star_outline_24)

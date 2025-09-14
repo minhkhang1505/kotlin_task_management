@@ -79,7 +79,7 @@ class TaskDetailViewModel @Inject constructor (
     fun toggleFavorite() {
         viewModelScope.launch {
             val currentTask = _taskUiState.value.task ?: return@launch
-            val isFavorite = !currentTask.isFavorite
+            val isFavorite = !currentTask.favorite
             taskRepo.updateTaskFavoriteById(taskId, isFavorite)
             _snackbarEvent.emit(SnackbarEvent("Task ${if (isFavorite) "added to" else "removed from"} favorites"))
         }

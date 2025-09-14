@@ -33,7 +33,7 @@ fun TaskUiState.toTaskEntity(): TaskEntity {
     return TaskEntity(
         id = this.id,
         content = this.content,
-        isFavorite = this.isFavorite,
+        favorite = this.isFavorite,
         completed = this.completed,
         collectionId = this.collectionId,
         createdAt = this.createdAt,
@@ -55,7 +55,7 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
     return TaskUiState(
         id = this.id,
         content = this.content,
-        isFavorite = this.isFavorite,
+        isFavorite = this.favorite,
         completed = this.completed,
         collectionId = this.collectionId,
         createdAt = this.createdAt,

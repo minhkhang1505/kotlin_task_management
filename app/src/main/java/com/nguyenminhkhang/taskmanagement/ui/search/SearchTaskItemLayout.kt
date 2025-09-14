@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,11 +58,11 @@ fun SearchTaskItemLayout(
             )
         }
         Icon(
-            painter = painterResource(if(taskResult.isFavorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
+            painter = painterResource(if(taskResult.favorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
             contentDescription = "Favorite Icon",
             tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
             modifier = Modifier.padding(end = 10.dp).clickable {
-                onEvent(SearchEvent.OnToggleFavoriteClick(taskResult.id!!, !taskResult.isFavorite))
+                onEvent(SearchEvent.OnToggleFavoriteClick(taskResult.id!!, !taskResult.favorite))
             }
         )
     }
