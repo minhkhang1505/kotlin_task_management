@@ -2,4 +2,34 @@
     <string name="app_name">Task Management</string>
 
     <string name="default_web_client_id" translatable="false">396229359784-9ov28t0fqroam7ls16kmqsi0a5ggq2rr.apps.googleusercontent.com</string>
+    <string name="collection_one">Personal</string>
+    <string name="collection_two">Work</string>
+    <string name="add_new_collecion">New tab</string>
+    <string name="new_task_name_description">What\'s your next task?</string>
+    <string name="new_task_detail">Add detail</string>
+    <string name="save_button">Save</string>
+    <string name="new_task_detail_title">Detail</string>
+    <string name="collection_favorite">Favorite</string>
+    <string name="bottom_bar_ic_home">Home</string>
+    <string name="bottom_bar_ic_search">Search</string>
+    <string name="bottom_bar_ic_account">Account</string>
+    <string name="task_completed_tabs">Completed</string>
+    <string name="search_task">Search tasks...</string>
+    <string name="today_task">Today\'s tasks</string>
+    <string name="today_task_empty">No tasks for today!</string>
+    <string name="suggest_search_keyword">Try searching for \'ProjectX\' or \'Meeting\'.</string>
+    <string name="clear_button">Clear</string>
+    <string name="account_theme">Theme</string>
+    <string name="account_language">Language</string>
+    <string name="account_delete_account">Delete account</string>
+    <string name="account_about_app">About Task Management</string>
+    <string name="account_logout">Logout</string>
+    <string name="account_version">Version</string>
+    <string name="search_result_empty">No tasks found</string>
+    <string name="detail_markdone">Mark done</string>
+    <string name="detail_add_to_calendar">Add to Calendar</string>
+    <string name="detail_task_detail_descrip">Add some detail of task</string>
+    <string name="detail_start_date_descrip">Add start date for this task</string>
+    <string name="detail_add_start_time_descrip">Add start time for this task</string>
+    <string name="detail_set_repeat_times_descrip">Set repeat times for this task</string>
 </resources>

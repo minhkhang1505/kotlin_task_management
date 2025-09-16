@@ -13,6 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nguyenminhkhang.taskmanagement.ui.account.AccountPage
+import com.nguyenminhkhang.taskmanagement.ui.account.LanguagePage
 import com.nguyenminhkhang.taskmanagement.ui.account.ThemeModePage
 import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
 import com.nguyenminhkhang.taskmanagement.ui.home.HomePage
@@ -93,6 +94,12 @@ fun TaskApp() {
                         navController = navController
                     )
                 }
+
+                composable(route = NavScreen.LANGUAGE.route) {
+                    LanguagePage(
+                        navController = navController
+                    )
+                }
             }
         }
     }
@@ -106,5 +113,6 @@ enum class NavScreen(val route: String) {
     REPEAT("Repeat/{taskId}"),
     ACCOUNT("Account"),
     SEARCH("Search"),
-    THEME_MODE("ThemeMode")
+    THEME_MODE("ThemeMode"),
+    LANGUAGE("Language")
 }

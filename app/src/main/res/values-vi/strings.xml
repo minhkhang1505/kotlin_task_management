@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quản lý công việc</string>
+    <string name="collection_one">Cá nhân</string>
+    <string name="add_new_collecion">Thẻ mới</string>
+    <string name="new_task_name_description">Công việc tiếp theo của bạn là gì?</string>
+    <string name="new_task_detail">Thêm chi tiết</string>
+    <string name="save_button">Lưu</string>
+    <string name="new_task_detail_title">Chi tiết</string>
+    <string name="collection_two">Công việc</string>
+    <string name="collection_favorite">Yêu thích</string>
+    <string name="bottom_bar_ic_home">Trang chủ</string>
+    <string name="bottom_bar_ic_search">Tìm kiếm</string>
+    <string name="bottom_bar_ic_account">Tài khoản</string>
+    <string name="task_completed_tabs">Đã hoàn thành</string>
+    <string name="search_task">Tìm các tác vụ....</string>
+    <string name="today_task">Các công việc hôm nay</string>
+    <string name="today_task_empty">Không có công việc cho hôm nay!</string>
+    <string name="suggest_search_keyword">Thử tìm kiếm bằng từ khoá \'Cuộc hộp\'.</string>
+    <string name="account_logout">Đăng xuất</string>
+    <string name="account_version">Phiên bản</string>
+    <string name="clear_button">Xoá</string>
+    <string name="account_theme">Chủ đề</string>
+    <string name="account_language">Ngôn ngữ</string>
+    <string name="account_delete_account">Xoá tài khoản</string>
+    <string name="account_about_app">Thông tin ứng dụng</string>
+    <string name="search_result_empty">Không tìm thấy kết quả</string>
+    <string name="detail_markdone">Đã hoàn thành</string>
+    <string name="detail_add_to_calendar">Thêm vào lịch</string>
+    <string name="detail_task_detail_descrip">"Thêm chi tiết mô tả "</string>
+    <string name="detail_start_date_descrip">Thêm ngày bắt đầu</string>
+    <string name="detail_add_start_time_descrip">Thêm thời gian bắt đầu</string>
+    <string name="detail_set_repeat_times_descrip">"Thiết lập số lần lặp lại "</string>
+</resources>

@@ -1,10 +1,14 @@
 package com.nguyenminhkhang.taskmanagement.ui.account.state
 
+import com.nguyenminhkhang.taskmanagement.ui.account.AppLanguage
+import org.intellij.lang.annotations.Language
+
 data class AccountUiState(
     val isLoading: Boolean = false,
     val isLoggedIn: Boolean = true,
     val userName: String? = null,
     val userEmail: String? = null,
     val userAvatarUrl: String? = null,
-    val isLogoutDialogVisible: Boolean = false
+    val isLogoutDialogVisible: Boolean = false,
+    val language: AppLanguage = AppLanguage.EN,
 )

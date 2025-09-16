@@ -82,7 +82,9 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ }
+                    .clickable{
+                        navController.navigate("Language")
+                    }
                     .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
