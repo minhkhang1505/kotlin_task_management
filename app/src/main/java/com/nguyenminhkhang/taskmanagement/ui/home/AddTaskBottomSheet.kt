@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,7 +51,7 @@ fun AddTaskBottomSheet(
         TextField(
             value= uiState.newTask?.content ?: "",
             onValueChange = { onEvent(HomeEvent.TaskContentChanged(it)) },
-            placeholder = { Text("What’s your next task?", style = TextStyle(color = Color.Gray.copy(0.5f))) },
+            placeholder = { Text(stringResource(R.string.new_task_name_description), style = TextStyle(color = Color.Gray.copy(0.5f))) },
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .fillMaxWidth()
@@ -65,11 +66,11 @@ fun AddTaskBottomSheet(
         )
         Spacer(modifier = Modifier.height(8.dp))
         if(uiState.isShowAddDetailTextField) {
-            Text("Detail", modifier = Modifier.padding(horizontal = 16.dp))
+            Text(stringResource(R.string.new_task_detail_title), modifier = Modifier.padding(horizontal = 16.dp))
             TextField(
                 value=uiState.newTask?.taskDetail ?: "",
                 onValueChange = { onEvent(HomeEvent.TaskDetailChanged(it)) },
-                placeholder = { Text("Add detail", style = TextStyle(fontSize = 12.sp, color = Color.Gray.copy(0.5f))) },
+                placeholder = { Text(stringResource(R.string.new_task_detail), style = TextStyle(fontSize = 12.sp, color = Color.Gray.copy(0.5f))) },
                 modifier = Modifier
                     .padding(horizontal = 16.dp,)
                     .fillMaxWidth()
@@ -164,7 +165,7 @@ fun AddTaskBottomSheet(
                     onEvent(HomeEvent.NewTaskCleared)
                 }
             ) {
-                Text("Save")
+                Text(stringResource(R.string.save_button))
             }
         }
 

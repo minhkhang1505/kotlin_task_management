@@ -18,7 +18,7 @@
     <string name="today_task_empty">Không có công việc cho hôm nay!</string>
     <string name="suggest_search_keyword">Thử tìm kiếm bằng từ khoá \'Cuộc hộp\'.</string>
     <string name="account_logout">Đăng xuất</string>
-    <string name="account_version">Phiên bản</string>
+    <string name="account_version">Phiên bản: </string>
     <string name="clear_button">Xoá</string>
     <string name="account_theme">Chủ đề</string>
     <string name="account_language">Ngôn ngữ</string>

@@ -3,12 +3,14 @@ package com.nguyenminhkhang.taskmanagement.ui.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepo
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent.ShowAddTaskSheet
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
@@ -47,7 +49,8 @@ const val ID_ADD_FAVORITE_LIST = -1000L
 class HomeViewModel @Inject constructor(
     private val taskRepo: TaskRepo,
     private val scheduler: TaskScheduler,
-    private val authRepo : AuthRepo
+    private val authRepo : AuthRepo,
+    private val strings: StringProvider
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -111,7 +114,7 @@ class HomeViewModel @Inject constructor(
                         )
                     )
                 } + TaskGroupUiState( // Cuối cùng, thêm tab "+ New Tab"
-                    tab = TabUiState(ID_ADD_NEW_LIST, "+ New Tab", sortedType = SortedType.SORTED_BY_DATE),
+                    tab = TabUiState(ID_ADD_NEW_LIST, strings.getString(R.string.add_new_collecion), sortedType = SortedType.SORTED_BY_DATE),
                     page = TaskPageUiState(
                         activeTaskList = emptyList(),
                         completedTaskList = emptyList()
@@ -125,8 +128,8 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             if (taskRepo.getTaskCollection().first().isEmpty()) {
-                taskRepo.addNewCollection("Personal")
-                taskRepo.addNewCollection("Work")
+                taskRepo.addNewCollection(strings.getString(R.string.collection_one))
+                taskRepo.addNewCollection(strings.getString(R.string.collection_two))
             }
 
             taskRepo.syncTasksForCurrentUser()
@@ -431,13 +434,6 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.ClearRenameCollectionName -> ClearRenameCollectionName()
             is HomeEvent.OnCollectionNameChange -> OnCollectionNameChange(event.newCollectionName)
             is HomeEvent.RenameCollection -> RenameCollection(event.newCollectionName)
-            is HomeEvent.ShowCurrentCollectionID -> {
-                Log.d(
-                    "PagerTabLayout",
-                    "Current selected collection ID: $_currentSelectedCollectionId"
-                )
-                Log.d("HomeViewModel", "UIState: ${_uiState.value}" )
-            }
         }
     }
 }

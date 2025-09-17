@@ -15,15 +15,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 
 @Composable
 fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String, navController: NavController, onEvent: (SearchEvent) -> Unit) {
     if (searchQuery.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize().padding(WindowInsets.ime.asPaddingValues()).padding(16.dp), contentAlignment = Alignment.TopCenter) {
-            Text("Try searching for 'Project X' or 'Meeting'", style = MaterialTheme.typography.bodyMedium)
+            Text(stringResource(R.string.suggest_search_keyword), style = MaterialTheme.typography.bodyMedium)
         }
     } else {
         val imePadding = WindowInsets.ime.asPaddingValues()
@@ -38,7 +40,7 @@ fun SearchContent(searchResults: List<TaskEntity>, searchQuery: String, navContr
             if (searchResults.isEmpty()) {
                 item {
                     Text(
-                        text = "No tasks found",
+                        text = stringResource(R.string.search_result_empty),
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(top = 8.dp)
                     )

@@ -24,7 +24,7 @@
     <string name="account_delete_account">Delete account</string>
     <string name="account_about_app">About Task Management</string>
     <string name="account_logout">Logout</string>
-    <string name="account_version">Version</string>
+    <string name="account_version">Version: </string>
     <string name="search_result_empty">No tasks found</string>
     <string name="detail_markdone">Mark done</string>
     <string name="detail_add_to_calendar">Add to Calendar</string>

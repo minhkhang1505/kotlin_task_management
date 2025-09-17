@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -67,13 +68,13 @@ fun AccountLayout(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_image_aspect_ratio_24),
-                    contentDescription = "Theme",
+                    contentDescription = stringResource(R.string.account_theme),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(0.1f),
                 )
                 Text(
-                    text = "Theme",
+                    text = stringResource(R.string.account_theme),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
                 )
@@ -91,13 +92,13 @@ fun AccountLayout(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_language_24),
-                    contentDescription = "Language",
+                    contentDescription = stringResource(R.string.account_language),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(0.1f),
                 )
                 Text(
-                    text = "Language",
+                    text = stringResource(R.string.account_language),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
                 )
@@ -113,13 +114,13 @@ fun AccountLayout(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_delete_outline_24),
-                    contentDescription = "Delete Account",
+                    contentDescription = stringResource(R.string.account_delete_account),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(0.1f),
                 )
                 Text(
-                    text = "Delete Account",
+                    text = stringResource(R.string.account_delete_account),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
                 )
@@ -135,13 +136,13 @@ fun AccountLayout(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_info_outline_24),
-                    contentDescription = "About Task Management",
+                    contentDescription = stringResource(R.string.account_about_app),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(0.1f),
                 )
                 Text(
-                    text = "About Task Management",
+                    text = stringResource(R.string.account_about_app),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
                 )
@@ -157,13 +158,13 @@ fun AccountLayout(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_logout_24),
-                    contentDescription = "Logout",
+                    contentDescription = stringResource(R.string.account_logout),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(0.1f),
                 )
                 Text(
-                    text = "Logout",
+                    text = stringResource(R.string.account_logout),
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.fillMaxWidth(0.9f).padding(8.dp)
                 )
@@ -177,7 +178,7 @@ fun AccountLayout(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "Version: ",
+                    text = stringResource(R.string.account_version),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     fontWeight = FontWeight.Bold,

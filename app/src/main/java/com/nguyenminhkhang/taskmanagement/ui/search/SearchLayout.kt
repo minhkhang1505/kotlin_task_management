@@ -25,8 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 /**
@@ -67,7 +69,7 @@ fun SearchLayout(
                     Icon(Icons.Default.Search, contentDescription = "Search icon")
                 }
             },
-            placeholder = { Text("Search tasks...") },
+            placeholder = { Text(stringResource(R.string.search_task)) },
             trailingIcon = {
                 if (searchUiState.searchQuery.isNotEmpty()) {
                     Box(
@@ -79,7 +81,7 @@ fun SearchLayout(
                         ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "Clear", modifier = Modifier.padding(6.dp))
+                        Text(text = stringResource(R.string.clear_button), modifier = Modifier.padding(6.dp))
                     }
                 }
             },
