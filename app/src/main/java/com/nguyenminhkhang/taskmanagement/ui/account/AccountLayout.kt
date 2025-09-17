@@ -44,7 +44,7 @@ fun AccountLayout(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Text(
-                text = "Account",
+                text = stringResource(R.string.bottom_bar_ic_account),
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.titleLarge
             )
@@ -202,7 +202,7 @@ fun AccountLayout(
                     ) {
                         Column {
                             Text(
-                                text = "Are you sure you want to logout?",
+                                text = stringResource(R.string.logout_warning_desc),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
@@ -218,7 +218,7 @@ fun AccountLayout(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        text = "Cancel",
+                                        text = stringResource(R.string.cancel_button),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = Color.Blue.copy(alpha = 0.8f)
                                     )
@@ -229,7 +229,7 @@ fun AccountLayout(
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        text = "Logout",
+                                        text = stringResource(R.string.logout_button),
                                         style = MaterialTheme.typography.bodyMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)

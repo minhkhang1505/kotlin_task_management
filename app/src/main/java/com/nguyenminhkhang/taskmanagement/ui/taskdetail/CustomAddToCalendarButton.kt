@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 
@@ -45,7 +46,7 @@ fun AddToCalendarButton(
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "Add to Calendar",
+            text = stringResource(R.string.detail_add_to_calendar),
         )
     }
 }

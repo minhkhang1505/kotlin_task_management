@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
@@ -113,7 +115,7 @@ fun TaskDetailLayout(
                 .align(Alignment.BottomEnd),
         ) {
             Text(
-                text = "Mark done", modifier = Modifier.padding(horizontal = 16.dp),
+                text = stringResource(R.string.detail_markdone), modifier = Modifier.padding(horizontal = 16.dp),
                 style = MaterialTheme.typography.bodyLarge
             )
         }

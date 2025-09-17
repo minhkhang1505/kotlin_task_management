@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,7 +45,7 @@ fun SignInLayout(
             horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Login",
+                text = stringResource(R.string.login_button),
                 fontSize = 52.sp,
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.fillMaxWidth(),
@@ -54,7 +55,7 @@ fun SignInLayout(
             OutlinedTextField(
                 value = loginState.email,
                 onValueChange = {  },
-                label = { Text("Email or Username") },
+                label = { Text(stringResource(R.string.email_or_username)) },
                 placeholder = { Text("Enter your email or username") },
                 leadingIcon = {
                     Icon(
@@ -72,7 +73,7 @@ fun SignInLayout(
             OutlinedTextField(
                 value = loginState.password,
                 onValueChange = {},
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.password)) },
                 placeholder = { Text("Enter your password") },
                 leadingIcon = {
                     Icon(
@@ -103,7 +104,7 @@ fun SignInLayout(
                 horizontalArrangement = Arrangement.End,
             ) {
                 Text(
-                    text = "Forgot Password? ",
+                    text = stringResource(R.string.forget_password),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                 )
@@ -117,7 +118,7 @@ fun SignInLayout(
                 modifier = Modifier.fillMaxWidth(0.9f).height(60.dp),
                 content = {
                     Text(
-                        text = "Login",
+                        text = stringResource(R.string.login_button),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
@@ -128,19 +129,19 @@ fun SignInLayout(
             Spacer(modifier = Modifier.height(45.dp))
             OrDivider()
             Spacer(modifier = Modifier.height(45.dp))
-            LoginWith(icon = painterResource(R.drawable.ic_google), title = "Login with Google",onGoogleSignInClick = onGoogleSignInClick)
+            LoginWith(icon = painterResource(R.drawable.ic_google), title = stringResource(R.string.login_with_google_button),onGoogleSignInClick = onGoogleSignInClick)
             Spacer(modifier = Modifier.height(30.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
             ) {
                 Text(
-                    text = "Don't have an account? ",
+                    text = stringResource(R.string.dont_have_account),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
                 )
                 Text(
-                    text = "Register",
+                    text = stringResource(R.string.register_button),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,

@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Quản lý công việc</string>
     <string name="collection_one">Cá nhân</string>
-    <string name="add_new_collecion">Thẻ mới</string>
+    <string name="add_new_collecion">+ Thẻ mới</string>
     <string name="new_task_name_description">Công việc tiếp theo của bạn là gì?</string>
     <string name="new_task_detail">Thêm chi tiết</string>
     <string name="save_button">Lưu</string>
@@ -12,7 +12,6 @@
     <string name="bottom_bar_ic_home">Trang chủ</string>
     <string name="bottom_bar_ic_search">Tìm kiếm</string>
     <string name="bottom_bar_ic_account">Tài khoản</string>
-    <string name="task_completed_tabs">Đã hoàn thành</string>
     <string name="search_task">Tìm các tác vụ....</string>
     <string name="today_task">Các công việc hôm nay</string>
     <string name="today_task_empty">Không có công việc cho hôm nay!</string>
@@ -28,7 +27,36 @@
     <string name="detail_markdone">Đã hoàn thành</string>
     <string name="detail_add_to_calendar">Thêm vào lịch</string>
     <string name="detail_task_detail_descrip">"Thêm chi tiết mô tả "</string>
-    <string name="detail_start_date_descrip">Thêm ngày bắt đầu</string>
+    <string name="detail_start_date_descrip">thêm ngày bắt đầu</string>
     <string name="detail_add_start_time_descrip">Thêm thời gian bắt đầu</string>
     <string name="detail_set_repeat_times_descrip">"Thiết lập số lần lặp lại "</string>
+    <string name="forget_password">"Quên mật khẩu? "</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="login_with_google_button">Đăng nhập với Google</string>
+    <string name="dont_have_account">"Chưa có tài khoản? "</string>
+    <string name="register_button">Đăng ký</string>
+    <string name="devider_or">Hoặc</string>
+    <string name="email_or_username">Email hoặc Username</string>
+    <string name="password">Mật khẩu</string>
+    <string name="tilte_register_page">Đăng ký ngay</string>
+    <string name="desc_register_page">Tạo một tài khoản để bắt đầu quản lý công việc của bạn một cách hiệu quả.</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
+    <string name="had_account">"Bạn đã có tài khoản. "</string>
+    <string name="login_now_button">Đăng nhập</string>
+    <string name="completed_tasks">Đã hoàn thành</string>
+    <string name="input_task_collection_name">Nhập tên danh mục mới</string>
+    <string name="add_collection_button">Thêm danh mục</string>
+    <string name="delete_task">Xoá công việc</string>
+    <string name="delete_collection">Xoá bộ danh mục</string>
+    <string name="rename_collection">Đổi tên danh mục</string>
+    <string name="sort_by_date">Sắp xếp theo ngày</string>
+    <string name="sort_by_favorite">Sắp xếp theo yêu thích</string>
+    <string name="theme_page_title">Chủ đề</string>
+    <string name="appearance">Giao diện</string>
+    <string name="light_mode">Sáng</string>
+    <string name="dark_mode">Tối</string>
+    <string name="system_mode">Hệ thống</string>
+    <string name="logout_warning_desc">Bạn có chắc muốn đăng xuất không?</string>
+    <string name="cancel_button">Huỷ</string>
+    <string name="logout_button">Đăng xuất</string>
 </resources>

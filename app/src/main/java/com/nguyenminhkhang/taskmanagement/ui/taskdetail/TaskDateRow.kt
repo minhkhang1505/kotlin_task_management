@@ -21,7 +21,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.CustomTextField
 import com.nguyenminhkhang.taskmanagement.ui.common.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
@@ -59,7 +61,7 @@ fun TaskDateRow(
             Spacer(modifier = Modifier.height(8.dp))
             if (uiState.task?.startDate == null) {
                 Text(
-                    text = "Add start date for this task",
+                    text = stringResource(R.string.detail_start_date_descrip),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray

@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.CustomTextField
@@ -64,7 +65,7 @@ fun RepeatInfoRow(
                 )
             } else {
                 Text(
-                    text = "Set repeat times for this task",
+                    text = stringResource(R.string.detail_set_repeat_times_descrip),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray,

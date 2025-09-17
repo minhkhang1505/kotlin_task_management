@@ -22,9 +22,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.account.state.AccountUiState
 
 @Composable
@@ -50,7 +52,7 @@ fun LanguageLayout(
             IconButton(onClick = { navController.popBackStack() }) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "Back", modifier = Modifier.size(32.dp))
             }
-            Text("Language", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.account_language), style = MaterialTheme.typography.titleLarge)
         }
         languages.forEach { lang ->
             Row(

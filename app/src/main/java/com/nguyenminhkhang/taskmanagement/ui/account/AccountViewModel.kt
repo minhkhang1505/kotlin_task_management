@@ -81,9 +81,6 @@ class AccountViewModel @Inject constructor(
                 }
             }
             is AccountEvent.ThemeModeChanged -> {
-                _themeModeUiState.update { currentState ->
-                    currentState.copy(selectedOption = event.mode )
-                }
             }
         }
     }

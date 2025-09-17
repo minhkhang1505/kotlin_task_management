@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
@@ -50,20 +52,22 @@ fun RegisterLayout(
                 modifier = Modifier.size(200.dp),
                 tint = Color.Unspecified
             )
-            Text(text = "Register now",
+            Text(text = stringResource(R.string.tilte_register_page),
                 style = MaterialTheme.typography.headlineLarge,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
             Text(
-                text = "Create an account to start managing your tasks efficiently.",
+                text = stringResource(R.string.desc_register_page),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f),
+                modifier = Modifier.padding(horizontal = 16.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
             Spacer(modifier = Modifier.height(80.dp))
             OutlinedTextField(
                 value = registerState.email,
                 onValueChange = {  },
-                label = { Text("Email or Username") },
+                label = { Text(stringResource(R.string.email_or_username)) },
                 leadingIcon = {
                     Icon(
                         painter = painterResource(R.drawable.baseline_person_24),
@@ -81,7 +85,7 @@ fun RegisterLayout(
             OutlinedTextField(
                 value = registerState.password,
                 onValueChange = {},
-                label = { Text("Password") },
+                label = { Text(stringResource(R.string.password)) },
                 placeholder = { Text("Enter your password") },
                 leadingIcon = {
                     Icon(
@@ -110,7 +114,7 @@ fun RegisterLayout(
             OutlinedTextField(
                 value = registerState.confirmPassword,
                 onValueChange = {},
-                label = { Text("Confirm Password") },
+                label = { Text(stringResource(R.string.confirm_password)) },
                 placeholder = { Text("Confirm your entered password") },
                 leadingIcon = {
                     Icon(
@@ -142,7 +146,7 @@ fun RegisterLayout(
                 shape = RoundedCornerShape(12.dp),
                 content = {
                     Text(
-                        text = "Register",
+                        text = stringResource(R.string.register_button),
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
@@ -150,13 +154,13 @@ fun RegisterLayout(
                     )
                 }
             )
-            Spacer(modifier = Modifier.height(150.dp))
+            Spacer(modifier = Modifier.height(90.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "You had an account. ",
+                Text(text = stringResource(R.string.had_account),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                 )
@@ -166,7 +170,7 @@ fun RegisterLayout(
                     contentAlignment = Alignment.BottomStart
                 ) {
                     Text(
-                        text = "Login now",
+                        text = stringResource(R.string.login_now_button),
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.bodyMedium.copy(

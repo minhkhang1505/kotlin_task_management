@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.R
 
 @Composable
 fun OrDivider() {
@@ -25,7 +27,7 @@ fun OrDivider() {
             color = Color.Gray
         )
         Text(
-            text = "OR",
+            text = stringResource(R.string.devider_or),
             color = Color.Gray,
             modifier = Modifier.padding(horizontal = 8.dp)
         )

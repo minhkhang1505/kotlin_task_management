@@ -4,7 +4,7 @@
     <string name="default_web_client_id" translatable="false">396229359784-9ov28t0fqroam7ls16kmqsi0a5ggq2rr.apps.googleusercontent.com</string>
     <string name="collection_one">Personal</string>
     <string name="collection_two">Work</string>
-    <string name="add_new_collecion">New tab</string>
+    <string name="add_new_collecion">+ New tab</string>
     <string name="new_task_name_description">What\'s your next task?</string>
     <string name="new_task_detail">Add detail</string>
     <string name="save_button">Save</string>
@@ -13,7 +13,6 @@
     <string name="bottom_bar_ic_home">Home</string>
     <string name="bottom_bar_ic_search">Search</string>
     <string name="bottom_bar_ic_account">Account</string>
-    <string name="task_completed_tabs">Completed</string>
     <string name="search_task">Search tasks...</string>
     <string name="today_task">Today\'s tasks</string>
     <string name="today_task_empty">No tasks for today!</string>
@@ -32,4 +31,33 @@
     <string name="detail_start_date_descrip">Add start date for this task</string>
     <string name="detail_add_start_time_descrip">Add start time for this task</string>
     <string name="detail_set_repeat_times_descrip">Set repeat times for this task</string>
+    <string name="forget_password">"Forgot Password? "</string>
+    <string name="login_button">Login</string>
+    <string name="login_with_google_button">Login with Google</string>
+    <string name="dont_have_account">"Don't have an account? "</string>
+    <string name="register_button">Register</string>
+    <string name="devider_or">OR</string>
+    <string name="email_or_username">Email or Username</string>
+    <string name="password">Password</string>
+    <string name="tilte_register_page">Register now</string>
+    <string name="desc_register_page">Create an account to start managing your tasks efficiently.</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="had_account">"You had an account. "</string>
+    <string name="login_now_button">Login now</string>
+    <string name="completed_tasks">Completed</string>
+    <string name="delete_task">Delete Task</string>
+    <string name="delete_collection">Delete Collection</string>
+    <string name="rename_collection">Rename Collection</string>
+    <string name="sort_by_date">Sort by Date</string>
+    <string name="sort_by_favorite">Sort by Favorite</string>
+    <string name="input_task_collection_name">Input collection name</string>
+    <string name="add_collection_button">Add collection</string>
+    <string name="theme_page_title">Theme Mode</string>
+    <string name="appearance">Appearance</string>
+    <string name="light_mode">Light</string>
+    <string name="dark_mode">Dark</string>
+    <string name="system_mode">System</string>
+    <string name="logout_warning_desc">Are you sure you want to logout?</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="logout_button">Logout</string>
 </resources>

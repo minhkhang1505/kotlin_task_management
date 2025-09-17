@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.CustomTextField
@@ -59,7 +60,7 @@ fun TaskTimeRow(
             Spacer(modifier = Modifier.height(8.dp))
             if (uiState.task?.startTime == null) {
                 Text(
-                    text = "Add start time for this task", modifier = Modifier.padding(horizontal = 16.dp),
+                    text = stringResource(R.string.detail_add_start_time_descrip), modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )

@@ -23,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.R
 
 @Composable
 fun TaskDetailInputRow(
@@ -52,7 +54,7 @@ fun TaskDetailInputRow(
             onValueChange = onDetailChange,
             placeholder = {
                 Text(
-                    text = "Add some detail of task",
+                    text = stringResource(R.string.detail_task_detail_descrip),
                     color = Color.Gray,
                     fontSize = MaterialTheme.typography.bodyMedium.fontSize)
                           },

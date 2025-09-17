@@ -20,8 +20,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
@@ -46,7 +48,6 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
         snapshotFlow { pagerState.currentPage }.collect { index ->
             internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
                 onEvent(HomeEvent.CurrentCollectionId(currentCollectionId))
-                Log.d("PagerTabLayout", "Current page index: $index, CollectionId: $currentCollectionId")
             }
         }
     }
@@ -80,7 +81,8 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
         ModalBottomSheet({
             onEvent(HomeEvent.HideAddNewCollectionButton)
         }) {
-            Text("Input task Collection",
+            Text(
+                stringResource(R.string.input_task_collection_name),
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth())
@@ -100,7 +102,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth()
-            ) { Text("Add collection") }
+            ) { Text(stringResource(R.string.add_new_collecion)) }
         }
     }
 }

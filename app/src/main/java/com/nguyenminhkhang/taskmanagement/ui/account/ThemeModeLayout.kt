@@ -20,8 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.account.state.ThemeModeUiState
 
 @Composable
@@ -45,7 +47,7 @@ fun ThemeModeLayout(
                 Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Back", modifier = Modifier.size(32.dp))
             }
             Text(
-                text = "Theme Mode",
+                text = stringResource(R.string.theme_page_title),
                 style = MaterialTheme.typography.titleLarge,
             )
         }
@@ -57,7 +59,7 @@ fun ThemeModeLayout(
         Column(
             modifier = Modifier.selectableGroup().padding(start = 16.dp, end = 2.dp)
         ) {
-            Text(text = "Appearance", style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.appearance), style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(16.dp))
 
             themeModeUiState.radioOptions.forEach { option ->
@@ -65,10 +67,10 @@ fun ThemeModeLayout(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = option, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
+                    Text(text = stringResource(option), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
                     RadioButton(
-                        selected = (option == themeModeUiState.selectedOption),
-                        onClick = { onEvent(AccountEvent.ThemeModeChanged(option)) }
+                        selected = (option == themeModeUiState.selectedOptionRes),
+                        onClick = {  }
                     )
                     // Radio button can be added here
                 }

@@ -288,15 +288,14 @@ class HomeViewModel @Inject constructor(
 
     private fun requestUpdateCollection(collectionId: Long) {
         val actionsList = listOf(
-            if(!_uiState.value.isShowDeleteButtonVisible) AppMenuItem(title = "Delete Task") { onEvent(HomeEvent.ShowDeleteButton) } else {
+            if(!_uiState.value.isShowDeleteButtonVisible) AppMenuItem(title = strings.getString(R.string.delete_task)) { onEvent(HomeEvent.ShowDeleteButton) } else {
                 AppMenuItem(title = "Done") { onEvent(HomeEvent.HideDeleteButton) }
             },
-            AppMenuItem(title = "Delete Collection") {
+            AppMenuItem(title = strings.getString(R.string.delete_collection)) {
                 deleteCollectionById(collectionId) },
-            AppMenuItem(title = "Rename Collection") {
+            AppMenuItem(title = strings.getString((R.string.rename_collection))) {
                 onEvent(HomeEvent.ClearRenameCollectionName)
                 onEvent(HomeEvent.ShowRenameCollectionDialog)
-                Log.d("HomeViewModel", "Requesting rename collection for id: ${uiState.value.isNewCollectionNameDialogVisible}")
             }
         )
         _uiState.update {
@@ -312,10 +311,10 @@ class HomeViewModel @Inject constructor(
 
     private fun requestSortTasks(collectionId: Long) {
         val menuItems = listOf(
-            AppMenuItem(title = "Sort by Date") {
+            AppMenuItem(title = strings.getString(R.string.sort_by_date)) {
                 sortTaskCollection(collectionId, SortedType.SORTED_BY_DATE)
             },
-            AppMenuItem(title = "Sort by Favorite") {
+            AppMenuItem(title = strings.getString(R.string.sort_by_favorite)) {
                 sortTaskCollection(collectionId, SortedType.SORTED_BY_FAVORITE)
             }
         )
