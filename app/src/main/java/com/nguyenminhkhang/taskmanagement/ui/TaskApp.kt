@@ -18,7 +18,6 @@ import com.nguyenminhkhang.taskmanagement.ui.account.ThemeModePage
 import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
 import com.nguyenminhkhang.taskmanagement.ui.home.HomePage
 import com.nguyenminhkhang.taskmanagement.ui.register.RegisterPage
-import com.nguyenminhkhang.taskmanagement.ui.register.state.RegisterState
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatPage
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchPage
 import com.nguyenminhkhang.taskmanagement.ui.signin.SignInPage
@@ -52,7 +51,7 @@ fun TaskApp() {
                 }
 
                 composable(route = NavScreen.REGISTER.route) {
-                    RegisterPage(registerState = RegisterState(), navController = navController)
+                    RegisterPage(navController = navController)
                 }
 
                 composable(route = NavScreen.HOME.route) { backStackEntry ->

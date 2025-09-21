@@ -33,7 +33,8 @@ import com.nguyenminhkhang.taskmanagement.ui.signin.state.SignInState
 fun SignInLayout(
     loginState: SignInState,
     onGoogleSignInClick: () -> Unit,
-    navController: NavController
+    navController: NavController,
+    onEvent: (SignInEvent) -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -54,7 +55,7 @@ fun SignInLayout(
             Spacer(modifier = Modifier.height(150.dp))
             OutlinedTextField(
                 value = loginState.email,
-                onValueChange = {  },
+                onValueChange = { onEvent(SignInEvent.EmailChanged(it)) },
                 label = { Text(stringResource(R.string.email_or_username)) },
                 placeholder = { Text("Enter your email or username") },
                 leadingIcon = {
@@ -72,7 +73,7 @@ fun SignInLayout(
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = loginState.password,
-                onValueChange = {},
+                onValueChange = { onEvent(SignInEvent.PasswordChanged(it)) },
                 label = { Text(stringResource(R.string.password)) },
                 placeholder = { Text("Enter your password") },
                 leadingIcon = {
@@ -111,9 +112,7 @@ fun SignInLayout(
             }
             Spacer(modifier = Modifier.height(12.dp))
             Button(
-                onClick = {
-                    navController.navigate(NavScreen.HOME.route)
-                },
+                onClick = { onEvent(SignInEvent.SubmitSignInButton) },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth(0.9f).height(60.dp),
                 content = {

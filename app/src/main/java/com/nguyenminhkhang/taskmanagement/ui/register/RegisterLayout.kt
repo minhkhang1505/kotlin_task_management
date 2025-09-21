@@ -36,7 +36,8 @@ import com.nguyenminhkhang.taskmanagement.ui.register.state.RegisterState
 @Composable
 fun RegisterLayout(
     registerState: RegisterState,
-    navController: NavController
+    navController: NavController,
+    onEvent: (RegisterEvent) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -66,7 +67,7 @@ fun RegisterLayout(
             Spacer(modifier = Modifier.height(80.dp))
             OutlinedTextField(
                 value = registerState.email,
-                onValueChange = {  },
+                onValueChange = { onEvent(RegisterEvent.EmailChanged(it)) },
                 label = { Text(stringResource(R.string.email_or_username)) },
                 leadingIcon = {
                     Icon(
@@ -84,7 +85,7 @@ fun RegisterLayout(
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = registerState.password,
-                onValueChange = {},
+                onValueChange = {onEvent(RegisterEvent.PasswordChanged(it)) },
                 label = { Text(stringResource(R.string.password)) },
                 placeholder = { Text("Enter your password") },
                 leadingIcon = {
@@ -113,7 +114,7 @@ fun RegisterLayout(
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = registerState.confirmPassword,
-                onValueChange = {},
+                onValueChange = { onEvent(RegisterEvent.ConfirmPasswordChanged(it)) },
                 label = { Text(stringResource(R.string.confirm_password)) },
                 placeholder = { Text("Confirm your entered password") },
                 leadingIcon = {
@@ -141,7 +142,9 @@ fun RegisterLayout(
             )
             Spacer(modifier = Modifier.height(24.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    onEvent(RegisterEvent.Submit)
+                },
                 modifier = Modifier.fillMaxWidth(0.9f).height(60.dp),
                 shape = RoundedCornerShape(12.dp),
                 content = {

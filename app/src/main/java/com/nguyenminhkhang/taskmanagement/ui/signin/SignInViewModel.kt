@@ -51,4 +51,58 @@ class SignInViewModel @Inject constructor( private val taskRepo: TaskRepo, priva
             }
         }
     }
+
+    fun signInWithEmailAndPassword(email: String, password: String) {
+        if (email.isBlank() || password.isBlank()) {
+            _signInState.value = SignInState(
+                error = "Email and password must not be empty"
+            )
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            _signInState.update { it.copy(isLoading = true) }
+
+            try {
+                auth.signInWithEmailAndPassword(email, password).await()
+                val hasAlreadyClaimed = authRepo.hasClaimedLocalTasksFlow.first()
+                if(!hasAlreadyClaimed) {
+                    taskRepo.claimLocalTasks()
+                    taskRepo.claimLocalTaskCollection()
+                    authRepo.updateHasClaimedLocalTasks(true)
+                }
+                _signInState.update { it.copy(isSuccess = true, isLoading = false) }
+                Log.d("SignInViewModel", "User signed in successfully by ${auth.currentUser?.email} and ${auth.currentUser?.uid}")
+            } catch (e: Exception) {
+                _signInState.update { it.copy(error = e.message, isLoading = false) }
+            }
+        }
+    }
+
+    fun onEvent(event: SignInEvent) {
+        when(event) {
+            is SignInEvent.EmailChanged -> {
+                _signInState.update {
+                    it.copy(email = event.email)
+                }
+            }
+            is SignInEvent.PasswordChanged -> {
+                _signInState.update {
+                    it.copy(password = event.password)
+                }
+            }
+            is SignInEvent.SubmitSignInButton -> {
+                signInWithEmailAndPassword(
+                    _signInState.value.email,
+                    _signInState.value.password
+                )
+            }
+        }
+    }
+}
+
+sealed class SignInEvent {
+    data class EmailChanged(val email: String) : SignInEvent()
+    data class PasswordChanged(val password: String) : SignInEvent()
+    object SubmitSignInButton : SignInEvent()
 }

@@ -78,7 +78,8 @@ fun SignInPage(
     SignInLayout(
         loginState = loginState,
         onGoogleSignInClick = onGoogleSignInClick,
-        navController = navController
+        navController = navController,
+        onEvent = viewModel::onEvent
     )
 
     if (loginState.isLoading) {
