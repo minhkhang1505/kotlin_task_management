@@ -54,8 +54,6 @@ fun ThemeModeLayout(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Content for theme mode settings can be added here
-
         Column(
             modifier = Modifier.selectableGroup().padding(start = 16.dp, end = 2.dp)
         ) {
@@ -70,13 +68,14 @@ fun ThemeModeLayout(
                     Text(text = stringResource(option), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
                     RadioButton(
                         selected = (option == themeModeUiState.selectedOptionRes),
-                        onClick = {  }
+                        onClick = {
+                            onEvent(AccountEvent.ThemeModeChanged(option))
+                            onEvent(AccountEvent.SaveThemeMode(option))
+                        }
                     )
-                    // Radio button can be added here
                 }
                 Spacer(modifier = Modifier.height(4.dp))
             }
         }
     }
 }
-

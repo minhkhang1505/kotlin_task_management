@@ -59,4 +59,6 @@
     <string name="logout_warning_desc">Bạn có chắc muốn đăng xuất không?</string>
     <string name="cancel_button">Huỷ</string>
     <string name="logout_button">Đăng xuất</string>
+    <string name="language_english">English</string>
+    <string name="language_vietnamese">Tiếng Việt</string>
 </resources>

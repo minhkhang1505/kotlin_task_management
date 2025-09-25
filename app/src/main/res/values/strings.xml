@@ -60,4 +60,6 @@
     <string name="logout_warning_desc">Are you sure you want to logout?</string>
     <string name="cancel_button">Cancel</string>
     <string name="logout_button">Logout</string>
+    <string name="language_english">English</string>
+    <string name="language_vietnamese">Vietnamese</string>
 </resources>

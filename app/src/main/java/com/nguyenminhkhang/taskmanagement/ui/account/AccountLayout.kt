@@ -42,14 +42,17 @@ fun AccountLayout(
                 .fillMaxSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Text(
                 text = stringResource(R.string.bottom_bar_ic_account),
                 modifier = Modifier.fillMaxWidth(),
                 style = MaterialTheme.typography.titleLarge
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Avatar(imageUrl = accountUiState.userAvatarUrl, initials = accountUiState.userEmail ?: "")
+            Avatar(
+                imageUrl = accountUiState.userAvatarUrl,
+                initials = accountUiState.userEmail ?: ""
+            )
             Text(
                 text = accountUiState.userEmail ?: "No email",
                 style = MaterialTheme.typography.bodyMedium,
@@ -59,10 +62,13 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{
+                    .clickable {
                         navController.navigate("ThemeMode")
                     }
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerLow,
+                        shape = RoundedCornerShape(10.dp)
+                    ),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -83,10 +89,13 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{
+                    .clickable {
                         navController.navigate("Language")
                     }
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerLow,
+                        shape = RoundedCornerShape(10.dp)
+                    ),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -107,8 +116,11 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{}
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                    .clickable {}
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerLow,
+                        shape = RoundedCornerShape(10.dp)
+                    ),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -129,8 +141,11 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ }
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                    .clickable { }
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerLow,
+                        shape = RoundedCornerShape(10.dp)
+                    ),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -151,8 +166,11 @@ fun AccountLayout(
             Row(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
-                    .clickable{ onEvent(AccountEvent.ShowLogoutDialog) }
-                    .background(MaterialTheme.colorScheme.surfaceContainerLow, shape = RoundedCornerShape(10.dp)),
+                    .clickable { onEvent(AccountEvent.ShowLogoutDialog) }
+                    .background(
+                        MaterialTheme.colorScheme.surfaceContainerLow,
+                        shape = RoundedCornerShape(10.dp)
+                    ),
                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -189,7 +207,7 @@ fun AccountLayout(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 )
             }
-            if(accountUiState.isLogoutDialogVisible) {
+            if (accountUiState.isLogoutDialogVisible) {
                 Dialog(
                     onDismissRequest = { onEvent(AccountEvent.DismissLogoutDialog) },
                 ) {
@@ -197,7 +215,10 @@ fun AccountLayout(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
-                            .background(MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(10.dp)),
+                            .background(
+                                MaterialTheme.colorScheme.surface,
+                                shape = RoundedCornerShape(10.dp)
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Column {
@@ -205,7 +226,8 @@ fun AccountLayout(
                                 text = stringResource(R.string.logout_warning_desc),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+                                modifier = Modifier.padding(16.dp)
+                                    .align(Alignment.CenterHorizontally)
                             )
                             Row(
                                 horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,

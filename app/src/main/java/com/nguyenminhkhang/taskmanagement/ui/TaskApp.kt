@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat.recreate
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
 import androidx.navigation.compose.NavHost
@@ -13,6 +15,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nguyenminhkhang.taskmanagement.ui.account.AccountPage
+import com.nguyenminhkhang.taskmanagement.ui.account.AccountViewModel
 import com.nguyenminhkhang.taskmanagement.ui.account.LanguagePage
 import com.nguyenminhkhang.taskmanagement.ui.account.ThemeModePage
 import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
@@ -25,7 +28,9 @@ import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailPage
 
 @Composable
 fun TaskApp() {
-    TaskManagementTheme {
+    val accountViewModel = hiltViewModel<AccountViewModel>()
+
+    TaskManagementTheme(viewModel = accountViewModel) {
         val navController = rememberNavController()
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
         val showBottomBar = currentRoute in listOf(
@@ -33,6 +38,7 @@ fun TaskApp() {
             NavScreen.SEARCH.route,
             NavScreen.ACCOUNT.route
         )
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             bottomBar = {

@@ -12,8 +12,6 @@ fun LanguagePage(
 ){
     val uiState = accountViewModel.uiState.collectAsState().value
 
-
-
     LanguageLayout(
         uiState = uiState,
         onEvent = accountViewModel::onEvent,

@@ -32,6 +32,4 @@ class App : Application() {
             notificationManager.createNotificationChannel(channel)
         }
     }
-
-
 }

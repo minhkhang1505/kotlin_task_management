@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.account.state
 
-import com.nguyenminhkhang.taskmanagement.ui.account.AppLanguage
-import org.intellij.lang.annotations.Language
+import androidx.annotation.StringRes
+import com.nguyenminhkhang.taskmanagement.R
 
 data class AccountUiState(
     val isLoading: Boolean = false,
@@ -10,5 +10,9 @@ data class AccountUiState(
     val userEmail: String? = null,
     val userAvatarUrl: String? = null,
     val isLogoutDialogVisible: Boolean = false,
-    val language: AppLanguage = AppLanguage.EN,
+
+    @StringRes val languageRadioOption: List<Int> = listOf(
+        R.string.language_english,
+        R.string.language_vietnamese),
+    @StringRes val selectedLanguage: Int = R.string.language_english,
 )

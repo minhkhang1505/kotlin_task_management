@@ -9,7 +9,12 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
+import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.ui.account.AccountViewModel
+import java.util.Locale
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -35,18 +40,28 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun TaskManagementTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
+    viewModel: AccountViewModel,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+
+    val uiState by viewModel.themeUiState.collectAsState()
+    val selectedThemeMode = uiState.selectedOptionRes
+
+    val isDarkTheme = when (selectedThemeMode) {
+        R.string.dark_mode -> true
+        R.string.light_mode -> false
+        R.string.system_mode -> isSystemInDarkTheme()
+        else -> isSystemInDarkTheme() // Mặc định
+    }
+
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
+        isDarkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
 

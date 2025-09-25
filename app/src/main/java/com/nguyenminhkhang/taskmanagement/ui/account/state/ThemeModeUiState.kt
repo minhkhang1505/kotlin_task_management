@@ -1,7 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.account.state
 
 import androidx.annotation.StringRes
-import androidx.compose.ui.res.stringResource
 import com.nguyenminhkhang.taskmanagement.R
 
 data class ThemeModeUiState(
@@ -11,5 +10,5 @@ data class ThemeModeUiState(
         R.string.system_mode
     ),
     @StringRes val selectedOptionRes: Int = R.string.light_mode,
-    val onOptionSelected: String = ""
+    @StringRes val onOptionSelected: Int = R.string.light_mode
 )
