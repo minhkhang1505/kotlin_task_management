@@ -260,7 +260,7 @@ class TaskDetailViewModel @Inject constructor (
             }
             is TaskDetailEvent.CurrentCollectionChanged -> {
                 viewModelScope.launch {
-                    taskRepository.updateTaskCollectionById(taskId, event.collectionId)
+                    taskRepository.moveTaskToCollectionById(taskId, event.collectionId)
                     _taskUiState.update { currentState ->
                         currentState.copy(
                             currentCollection = currentState.collection.find { it.id == event.collectionId }?.content ?: ""

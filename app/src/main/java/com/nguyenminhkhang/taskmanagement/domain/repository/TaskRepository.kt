@@ -30,7 +30,7 @@ interface TaskRepository {
     suspend fun updateTaskFavoriteById(taskId: Long, isFavorite: Boolean): Boolean
     suspend fun deleteTaskById(taskId: Long): Boolean
     suspend fun getCollectionById(): List<TaskCollection>
-    suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean
+    suspend fun moveTaskToCollectionById(taskId: Long, collectionId: Long): Boolean
     suspend fun updateCollectionNameById(collectionId: Long, newCollectionName: String): Boolean
 
     suspend fun claimLocalTasks() : Boolean

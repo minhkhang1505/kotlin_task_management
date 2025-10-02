@@ -4,7 +4,6 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import javax.inject.Inject
 
 class ToggleCompleteUseCase @Inject constructor(
-    // Nó phụ thuộc vào TaskRepo để có thể tương tác với database.
     private val taskRepository: TaskRepository
 ) {
     /**

@@ -342,7 +342,7 @@ class TaskRepositoryImpl (
         }
     }
 
-    override suspend fun updateTaskCollectionById(taskId: Long, collectionId: Long): Boolean {
+    override suspend fun moveTaskToCollectionById(taskId: Long, collectionId: Long): Boolean {
 
         val userEmail = auth.currentUser?.email ?: return false
         val roomUpdateSuccess =  withContext(Dispatchers.IO) {

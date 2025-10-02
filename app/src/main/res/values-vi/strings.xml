@@ -61,4 +61,5 @@
     <string name="logout_button">Đăng xuất</string>
     <string name="language_english">English</string>
     <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="favorite_tab_name">⭐️</string>
 </resources>

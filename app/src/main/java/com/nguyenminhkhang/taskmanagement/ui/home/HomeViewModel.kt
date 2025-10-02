@@ -1,24 +1,28 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
 import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
+import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskGroupsUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleCompleteUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.AddNewCollectionUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.DeleteTaskCollectionUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionNameUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.syncusecase.SyncTasksUseCase
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent.ShowAddTaskSheet
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTabUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,12 +34,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -45,11 +45,28 @@ import javax.inject.Inject
 const val ID_ADD_NEW_LIST = -999L
 const val ID_ADD_FAVORITE_LIST = -1000L
 
+data class TaskUseCases(
+    val addTask: AddTaskUseCase,
+    val toggleFavorite: ToggleTaskFavoriteUseCase,
+    val toggleComplete: ToggleCompleteUseCase,
+    val deleteTask: DeleteTaskUseCase,
+    val syncTasks: SyncTasksUseCase
+)
+
+data class CollectionUseCases(
+    val getGroups: GetTaskGroupsUseCase,
+    val getCollections: GetTaskCollectionsUseCase,
+    val addCollection: AddNewCollectionUseCase,
+    val deleteCollection: DeleteTaskCollectionUseCase,
+    val updateSortType: UpdateCollectionSortTypeUseCase,
+    val updateName: UpdateCollectionNameUseCase
+)
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val taskRepository: TaskRepository,
+    private val taskUseCases: TaskUseCases,
+    private val collectionUseCases: CollectionUseCases,
     private val scheduler: TaskScheduler,
-    private val authRepository : AuthRepository,
     private val strings: StringProvider
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -64,75 +81,22 @@ class HomeViewModel @Inject constructor(
     private var _currentSelectedCollectionId:Long = -1L
 
     init {
-        taskRepository.getTaskCollection()
-            .flatMapLatest { collections ->
-                if (collections.isEmpty()) {
-                    flowOf(emptyList())
-                } else {
-                    val taskFlows = collections.map { collection ->
-                        taskRepository.getAllTaskByCollectionId(collection.id!!)
-                    }
-                    combine(taskFlows) { arrayOfTaskLists ->
-                        collections.mapIndexed { index, collection ->
-                            val tasksForThisCollection = arrayOfTaskLists[index]
-                            val taskUiStates = tasksForThisCollection.map { it.toTaskUiState() }
-
-                            TaskGroupUiState(
-                                tab = collection.toTabUiState(),
-                                page = TaskPageUiState(
-                                    activeTaskList = taskUiStates.filter { !it.completed },
-                                    completedTaskList = taskUiStates.filter { it.completed }
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-            .map { taskGroupsFromDb ->
-                listOf(
-                    TaskGroupUiState(
-                        tab = TabUiState(ID_ADD_FAVORITE_LIST, "⭐️", sortedType = SortedType.SORTED_BY_DATE),
-                        page = TaskPageUiState(
-                            activeTaskList = taskGroupsFromDb.flatMap { it.page.activeTaskList }
-                                .filter { it.isFavorite }
-                                .sortedByDescending { it.updatedAt },
-                            completedTaskList = emptyList()
-                        )
-                    )
-                ) + taskGroupsFromDb.map { tabItem ->
-                    val sortedType = tabItem.tab.sortedType
-                    val activeTaskList = tabItem.page.activeTaskList
-                    tabItem.copy(
-                        tab = tabItem.tab,
-                        page = tabItem.page.copy(
-                            activeTaskList = if (sortedType == SortedType.SORTED_BY_FAVORITE) {
-                                activeTaskList.sortedByDescending { it.isFavorite }
-                            } else {
-                                activeTaskList.sortedByDescending { it.createdAt }
-                            },
-                            completedTaskList = tabItem.page.completedTaskList.sortedByDescending { it.updatedAt }
-                        )
-                    )
-                } + TaskGroupUiState( // Cuối cùng, thêm tab "+ New Tab"
-                    tab = TabUiState(ID_ADD_NEW_LIST, strings.getString(R.string.add_new_collecion), sortedType = SortedType.SORTED_BY_DATE),
-                    page = TaskPageUiState(
-                        activeTaskList = emptyList(),
-                        completedTaskList = emptyList()
-                    )
-                )
-            }
+        collectionUseCases.getGroups.invoke(
+            favoriteTabName = strings.getString(R.string.favorite_tab_name),
+            newTabName = strings.getString(R.string.add_new_collecion)
+        )
             .onEach { finalTabs ->
                 _uiState.update { it.copy(listTabGroup = finalTabs, isLoading = false) }
             }
             .launchIn(viewModelScope)
 
         viewModelScope.launch(Dispatchers.IO) {
-            if (taskRepository.getTaskCollection().first().isEmpty()) {
-                taskRepository.addNewCollection(strings.getString(R.string.collection_one))
-                taskRepository.addNewCollection(strings.getString(R.string.collection_two))
+            if (collectionUseCases.getCollections.invoke().first().isEmpty()) {
+                collectionUseCases.addCollection.invoke(strings.getString(R.string.collection_one))
+                collectionUseCases.addCollection.invoke(strings.getString(R.string.collection_two))
             }
 
-            taskRepository.syncTasksForCurrentUser()
+            taskUseCases.syncTasks.invoke()
         }
     }
 
@@ -148,8 +112,7 @@ class HomeViewModel @Inject constructor(
         val reminderTimeMillis = taskToSave.newTask.reminderTimeMillis
 
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d("HomeViewModel", "Adding new task: $content, collectionId: ${_currentSelectedCollectionId}, detail: $detail, isFavorite: $isFavorite, startDate: $startDate, startTime: $startTime")
-            val insertedTask =taskRepository.addTask(
+            val insertedTask = taskUseCases.addTask.invoke(
                 content = content,
                 collectionId = _currentSelectedCollectionId,
                 taskDetail = detail,
@@ -180,8 +143,7 @@ class HomeViewModel @Inject constructor(
 
     private fun handleToggleFavorite(task: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.updateTaskFavorite(taskId = task.id!!, isFavorite = !task.isFavorite)
-            Log.d("HomeViewModel", "authRepo.getCurrentUserId(): ${authRepository.getAuthState()}")
+            taskUseCases.toggleFavorite.invoke(taskId = task.id!!, isFavorite = !task.isFavorite)
         }
     }
 
@@ -225,7 +187,7 @@ class HomeViewModel @Inject constructor(
         val task = taskToConfirm ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.updateTaskCompleted(task.id!!, !task.completed)
+            taskUseCases.toggleComplete.invoke(task.id!!, !task.completed)
         }
         taskToConfirm = null
     }
@@ -262,12 +224,11 @@ class HomeViewModel @Inject constructor(
 
     private fun updateCurrentCollectionId(collectionId: Long) {
         _currentSelectedCollectionId = collectionId
-        Log.d("HomeViewModel", "Current selected collection id updated to: $_currentSelectedCollectionId")
     }
 
     private fun deleteCollectionById(collectionId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.deleteTaskCollectionById(collectionId)
+            collectionUseCases.deleteCollection.invoke(collectionId)
         }
     }
 
@@ -276,13 +237,13 @@ class HomeViewModel @Inject constructor(
         if (newCollectionName.isBlank()) return
 
         viewModelScope.launch {
-            taskRepository.addNewCollection(newCollectionName)
+            collectionUseCases.addCollection.invoke(newCollectionName)
         }
     }
 
     private fun DeleteSelectedTask(taskId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.deleteTaskById(taskId)
+            taskUseCases.deleteTask.invoke(taskId)
         }
     }
 
@@ -305,7 +266,7 @@ class HomeViewModel @Inject constructor(
 
     private fun sortTaskCollection(collectionId: Long, sortedType: SortedType) {
         viewModelScope.launch {
-            taskRepository.updateCollectionSortedType(collectionId, sortedType)
+            collectionUseCases.updateSortType.invoke(collectionId, sortedType)
         }
     }
 
@@ -370,7 +331,7 @@ class HomeViewModel @Inject constructor(
 
     private fun RenameCollection(newCollectionName: String) {
         viewModelScope.launch {
-            taskRepository.updateCollectionNameById(_currentSelectedCollectionId, newCollectionName)
+            collectionUseCases.updateName.invoke(_currentSelectedCollectionId, newCollectionName)
         }
     }
 
