@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @Composable
@@ -75,7 +76,7 @@ fun RepeatFrequencySelector(
                 onDismissRequest = { onEvent(RepeatEvent.OnIntervalDropdownDismiss) },
                 modifier = Modifier.width(uiState.textFieldWidth)
             ) {
-                uiState.availableIntervals.forEach { type ->
+                RepeatConstants.AvailableIntervals.forEach { type ->
                     DropdownMenuItem(
                         text = { Text(type) },
                         onClick = {

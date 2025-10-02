@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +40,7 @@ val endOfDay = today.plusDays(1).atStartOfDay(zoneId).toEpochSecond() * 1000 - 1
 @RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val taskRepo: TaskRepo,
+    private val taskRepository: TaskRepository,
 ) : ViewModel() {
     private val _searchUiState = MutableStateFlow(SearchUiState())
     val searchUiState : StateFlow<SearchUiState> = _searchUiState.asStateFlow()
@@ -54,7 +54,7 @@ class SearchViewModel @Inject constructor(
             if (query.length < 2) {
                 flowOf(emptyList())
             } else {
-                taskRepo.SearchTasks(query)
+                taskRepository.SearchTasks(query)
             }
         }
         .stateIn(
@@ -65,7 +65,7 @@ class SearchViewModel @Inject constructor(
 
     private fun getTodayTasks(startDate: Long, endDate: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.getTodayTasks(startDate, endDate).collect { todayTasks ->
+            taskRepository.getTodayTasks(startDate, endDate).collect { todayTasks ->
                 Log.d("SearchVM", "todayTasks=${todayTasks.size}")
                 _searchUiState.update { it.copy(todayTaskResult = todayTasks) }
             }
@@ -98,7 +98,7 @@ class SearchViewModel @Inject constructor(
             is SearchEvent.CollapseSearchBar -> { _searchUiState.update { it.copy(expanded = false) } }
             is SearchEvent.OnToggleFavoriteClick -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    taskRepo.updateTaskFavoriteById(event.taskId, event.isFavorite)
+                    taskRepository.updateTaskFavoriteById(event.taskId, event.isFavorite)
                 }
             }
         }

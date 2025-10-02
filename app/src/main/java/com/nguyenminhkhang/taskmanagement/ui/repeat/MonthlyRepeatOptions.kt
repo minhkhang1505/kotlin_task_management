@@ -16,8 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.common.DateDropDownMenu
-import com.nguyenminhkhang.taskmanagement.ui.common.DayDropDownMenu
+import com.nguyenminhkhang.taskmanagement.ui.common.components.DateDropDownMenu
+import com.nguyenminhkhang.taskmanagement.ui.common.components.DayDropDownMenu
+import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @Composable
@@ -28,7 +29,7 @@ fun MonthlyRepeatOptions(
     Column(
         modifier = Modifier.fillMaxWidth().selectableGroup()
     ) {
-        uiState.monthRepeatOptions.forEach { option ->
+        RepeatConstants.MonthRepeatOptions.all.forEach { option ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -62,13 +63,13 @@ fun MonthlyRepeatOptions(
                             DayDropDownMenu(
                                 selectedDay = uiState.selectedWeekOrder,
                                 onDaySelected = { order -> onEvent(RepeatEvent.WeekOrderChanged(order)) },
-                                data = uiState.weekOrderOptions
+                                data = RepeatConstants.WeekOrder.all
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             DayDropDownMenu(
                                 selectedDay = uiState.selectedWeekDay,
                                 onDaySelected = { day -> onEvent(RepeatEvent.WeekDayChanged(day)) },
-                                data = uiState.weekDayOptions
+                                data = RepeatConstants.DateItems.all
                             )
                         }
                     }

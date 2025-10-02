@@ -24,7 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.common.CustomTextField
+import com.nguyenminhkhang.taskmanagement.ui.common.components.CustomTextField
 
 
 @Composable

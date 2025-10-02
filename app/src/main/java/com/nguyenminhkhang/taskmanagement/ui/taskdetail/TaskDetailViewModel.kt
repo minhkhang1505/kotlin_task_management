@@ -7,9 +7,9 @@ import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
+import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
-    private val taskRepo : TaskRepo,
+    private val taskRepository : TaskRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -41,8 +41,8 @@ class TaskDetailViewModel @Inject constructor (
     private val taskId: Long = savedStateHandle.get<Long>("taskId")!!
 
     init {
-        val taskFlow = taskRepo.getTaskById(taskId)
-        val collectionsFlow = taskRepo.getTaskCollection()
+        val taskFlow = taskRepository.getTaskById(taskId)
+        val collectionsFlow = taskRepository.getTaskCollection()
 
         viewModelScope.launch {
             combine(taskFlow, collectionsFlow) { taskEntity, collections ->
@@ -68,7 +68,7 @@ class TaskDetailViewModel @Inject constructor (
 
     fun onMarkAsDoneClicked() {
         viewModelScope.launch {
-            taskRepo.updateTaskCompleted(taskId, true)
+            taskRepository.updateTaskCompleted(taskId, true)
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }
@@ -77,7 +77,7 @@ class TaskDetailViewModel @Inject constructor (
         viewModelScope.launch {
             val currentTask = _taskUiState.value.task ?: return@launch
             val isFavorite = !currentTask.favorite
-            taskRepo.updateTaskFavorite(taskId, isFavorite)
+            taskRepository.updateTaskFavorite(taskId, isFavorite)
             _snackbarEvent.emit(SnackbarEvent("Task ${if (isFavorite) "added to" else "removed from"} favorites"))
         }
     }
@@ -92,7 +92,7 @@ class TaskDetailViewModel @Inject constructor (
     fun saveTitle() {
         viewModelScope.launch {
             val currentTask = _taskUiState.value.task ?: return@launch
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
             _snackbarEvent.emit(SnackbarEvent("Task updated"))
         }
     }
@@ -116,7 +116,7 @@ class TaskDetailViewModel @Inject constructor (
     fun saveDetail() {
         viewModelScope.launch {
             val currentDetail = _taskUiState.value.task ?: return@launch
-            taskRepo.updateTask(currentDetail)
+            taskRepository.updateTask(currentDetail)
             _snackbarEvent.emit(SnackbarEvent("Task detail updated"))
         }
     }
@@ -130,7 +130,7 @@ class TaskDetailViewModel @Inject constructor (
         val currentTask = _taskUiState.value.task ?: return
 
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -142,7 +142,7 @@ class TaskDetailViewModel @Inject constructor (
         val currentTask = _taskUiState.value.task ?: return
 
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -161,7 +161,7 @@ class TaskDetailViewModel @Inject constructor (
         }
         val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -173,7 +173,7 @@ class TaskDetailViewModel @Inject constructor (
         val currentTask = _taskUiState.value.task ?: return
 
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -260,7 +260,7 @@ class TaskDetailViewModel @Inject constructor (
             }
             is TaskDetailEvent.CurrentCollectionChanged -> {
                 viewModelScope.launch {
-                    taskRepo.updateTaskCollectionById(taskId, event.collectionId)
+                    taskRepository.updateTaskCollectionById(taskId, event.collectionId)
                     _taskUiState.update { currentState ->
                         currentState.copy(
                             currentCollection = currentState.collection.find { it.id == event.collectionId }?.content ?: ""

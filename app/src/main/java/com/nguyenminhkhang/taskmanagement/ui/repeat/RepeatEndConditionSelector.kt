@@ -20,7 +20,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @Composable
@@ -32,7 +33,7 @@ fun RepeatEndConditionSelector(
     Column(
         modifier = Modifier.selectableGroup()
     ) {
-        uiState.endConditionOptions.forEach { option ->
+        RepeatConstants.EndCondition.all.forEach { option ->
             Row(
                 modifier = Modifier.padding(vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically

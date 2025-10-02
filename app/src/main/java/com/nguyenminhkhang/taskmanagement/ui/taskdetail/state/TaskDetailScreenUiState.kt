@@ -1,8 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail.state
 
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskCollection
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 
 data class TaskDetailScreenUiState(
     val task: TaskEntity? = null,

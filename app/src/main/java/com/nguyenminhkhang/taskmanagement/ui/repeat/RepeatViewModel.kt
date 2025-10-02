@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.repeat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
+import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RepeatViewModel @Inject constructor(
-    private  val taskRepo: TaskRepo,
+    private  val taskRepository: TaskRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val taskId: Long = savedStateHandle.get<Long>("taskId") ?: 0L
@@ -31,7 +31,7 @@ class RepeatViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            taskRepo.getTaskById(taskId).collect { taskEntity ->
+            taskRepository.getTaskById(taskId).collect { taskEntity ->
                 _taskUiState.update {currentState ->
                     currentState.copy(
                         task = taskEntity,
@@ -50,7 +50,7 @@ class RepeatViewModel @Inject constructor(
         }
         val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -63,7 +63,7 @@ class RepeatViewModel @Inject constructor(
         }
         val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -97,7 +97,7 @@ class RepeatViewModel @Inject constructor(
         }
         val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepo.updateTask(currentTask)
+            taskRepository.updateTask(currentTask)
         }
     }
 
@@ -128,7 +128,7 @@ class RepeatViewModel @Inject constructor(
 
     fun onClearTimeSelected() {
         viewModelScope.launch {
-            taskRepo.clearTimeSelected(taskId)
+            taskRepository.clearTimeSelected(taskId)
         }
     }
 
@@ -137,7 +137,7 @@ class RepeatViewModel @Inject constructor(
         val taskToUpdate = currentState.task ?: return // Nếu task null thì không làm gì
 
         viewModelScope.launch {
-            taskRepo.updateTask(taskToUpdate)
+            taskRepository.updateTask(taskToUpdate)
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
         }
     }

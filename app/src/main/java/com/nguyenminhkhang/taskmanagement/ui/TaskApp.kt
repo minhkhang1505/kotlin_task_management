@@ -5,25 +5,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.core.app.ActivityCompat.recreate
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
-import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
+import com.nguyenminhkhang.taskmanagement.ui.common.theme.TaskManagementTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.nguyenminhkhang.taskmanagement.ui.account.AccountPage
-import com.nguyenminhkhang.taskmanagement.ui.account.AccountViewModel
-import com.nguyenminhkhang.taskmanagement.ui.account.LanguagePage
-import com.nguyenminhkhang.taskmanagement.ui.account.ThemeModePage
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountPage
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguagePage
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModePage
 import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
 import com.nguyenminhkhang.taskmanagement.ui.home.HomePage
-import com.nguyenminhkhang.taskmanagement.ui.register.RegisterPage
+import com.nguyenminhkhang.taskmanagement.ui.auth.register.RegisterPage
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatPage
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchPage
-import com.nguyenminhkhang.taskmanagement.ui.signin.SignInPage
+import com.nguyenminhkhang.taskmanagement.ui.auth.signin.SignInPage
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailPage
 
 @Composable

@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.state
 
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 

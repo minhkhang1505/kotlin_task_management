@@ -24,9 +24,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.common.CustomTextField
-import com.nguyenminhkhang.taskmanagement.ui.common.RoundedOutlinedTextField
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.common.components.CustomTextField
+import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
 

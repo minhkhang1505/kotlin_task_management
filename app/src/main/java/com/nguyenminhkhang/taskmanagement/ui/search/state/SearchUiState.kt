@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.search.state
 
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 
 data class SearchUiState(
     val todayTaskResult: List<TaskEntity> = emptyList(),

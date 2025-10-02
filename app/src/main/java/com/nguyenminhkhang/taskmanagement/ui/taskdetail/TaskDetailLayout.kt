@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.picker.DatePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.picker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 

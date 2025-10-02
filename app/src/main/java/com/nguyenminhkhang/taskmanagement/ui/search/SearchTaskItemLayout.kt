@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
 
 @Composable

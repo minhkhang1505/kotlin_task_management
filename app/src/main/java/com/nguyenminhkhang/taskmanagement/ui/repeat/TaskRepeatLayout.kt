@@ -8,8 +8,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.DatePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.datepicker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.picker.DatePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.picker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
@@ -39,7 +39,6 @@ fun TaskRepeatLayout(
             )
             if (currentTask.task!!.repeatInterval == "Week") {
                 WeekDaySelector(
-                    allDays = currentTask.dayItems,
                     selectedDays = currentTask.task.repeatDaysOfWeek ?: emptyList(),
                     onDayClick = { day -> onEvent(RepeatEvent.WeekDayClicked(day))  }
                 )

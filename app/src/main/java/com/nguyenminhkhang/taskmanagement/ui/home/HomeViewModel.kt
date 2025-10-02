@@ -4,11 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.database.entity.SortedType
-import com.nguyenminhkhang.taskmanagement.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.SortedType
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
-import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
-import com.nguyenminhkhang.taskmanagement.repository.authrepository.AuthRepo
+import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
+import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent.ShowAddTaskSheet
@@ -47,9 +47,9 @@ const val ID_ADD_FAVORITE_LIST = -1000L
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val taskRepo: TaskRepo,
+    private val taskRepository: TaskRepository,
     private val scheduler: TaskScheduler,
-    private val authRepo : AuthRepo,
+    private val authRepository : AuthRepository,
     private val strings: StringProvider
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -64,13 +64,13 @@ class HomeViewModel @Inject constructor(
     private var _currentSelectedCollectionId:Long = -1L
 
     init {
-        taskRepo.getTaskCollection()
+        taskRepository.getTaskCollection()
             .flatMapLatest { collections ->
                 if (collections.isEmpty()) {
                     flowOf(emptyList())
                 } else {
                     val taskFlows = collections.map { collection ->
-                        taskRepo.getAllTaskByCollectionId(collection.id!!)
+                        taskRepository.getAllTaskByCollectionId(collection.id!!)
                     }
                     combine(taskFlows) { arrayOfTaskLists ->
                         collections.mapIndexed { index, collection ->
@@ -127,12 +127,12 @@ class HomeViewModel @Inject constructor(
             .launchIn(viewModelScope)
 
         viewModelScope.launch(Dispatchers.IO) {
-            if (taskRepo.getTaskCollection().first().isEmpty()) {
-                taskRepo.addNewCollection(strings.getString(R.string.collection_one))
-                taskRepo.addNewCollection(strings.getString(R.string.collection_two))
+            if (taskRepository.getTaskCollection().first().isEmpty()) {
+                taskRepository.addNewCollection(strings.getString(R.string.collection_one))
+                taskRepository.addNewCollection(strings.getString(R.string.collection_two))
             }
 
-            taskRepo.syncTasksForCurrentUser()
+            taskRepository.syncTasksForCurrentUser()
         }
     }
 
@@ -149,7 +149,7 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             Log.d("HomeViewModel", "Adding new task: $content, collectionId: ${_currentSelectedCollectionId}, detail: $detail, isFavorite: $isFavorite, startDate: $startDate, startTime: $startTime")
-            val insertedTask =taskRepo.addTask(
+            val insertedTask =taskRepository.addTask(
                 content = content,
                 collectionId = _currentSelectedCollectionId,
                 taskDetail = detail,
@@ -180,8 +180,8 @@ class HomeViewModel @Inject constructor(
 
     private fun handleToggleFavorite(task: TaskUiState) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.updateTaskFavorite(taskId = task.id!!, isFavorite = !task.isFavorite)
-            Log.d("HomeViewModel", "authRepo.getCurrentUserId(): ${authRepo.getAuthState()}")
+            taskRepository.updateTaskFavorite(taskId = task.id!!, isFavorite = !task.isFavorite)
+            Log.d("HomeViewModel", "authRepo.getCurrentUserId(): ${authRepository.getAuthState()}")
         }
     }
 
@@ -225,7 +225,7 @@ class HomeViewModel @Inject constructor(
         val task = taskToConfirm ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.updateTaskCompleted(task.id!!, !task.completed)
+            taskRepository.updateTaskCompleted(task.id!!, !task.completed)
         }
         taskToConfirm = null
     }
@@ -267,7 +267,7 @@ class HomeViewModel @Inject constructor(
 
     private fun deleteCollectionById(collectionId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.deleteTaskCollectionById(collectionId)
+            taskRepository.deleteTaskCollectionById(collectionId)
         }
     }
 
@@ -276,13 +276,13 @@ class HomeViewModel @Inject constructor(
         if (newCollectionName.isBlank()) return
 
         viewModelScope.launch {
-            taskRepo.addNewCollection(newCollectionName)
+            taskRepository.addNewCollection(newCollectionName)
         }
     }
 
     private fun DeleteSelectedTask(taskId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskRepo.deleteTaskById(taskId)
+            taskRepository.deleteTaskById(taskId)
         }
     }
 
@@ -305,7 +305,7 @@ class HomeViewModel @Inject constructor(
 
     private fun sortTaskCollection(collectionId: Long, sortedType: SortedType) {
         viewModelScope.launch {
-            taskRepo.updateCollectionSortedType(collectionId, sortedType)
+            taskRepository.updateCollectionSortedType(collectionId, sortedType)
         }
     }
 
@@ -370,7 +370,7 @@ class HomeViewModel @Inject constructor(
 
     private fun RenameCollection(newCollectionName: String) {
         viewModelScope.launch {
-            taskRepo.updateCollectionNameById(_currentSelectedCollectionId, newCollectionName)
+            taskRepository.updateCollectionNameById(_currentSelectedCollectionId, newCollectionName)
         }
     }
 

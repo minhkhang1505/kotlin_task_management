@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.di
 
 import android.content.Context
-import com.nguyenminhkhang.taskmanagement.database.AppDb
-import com.nguyenminhkhang.taskmanagement.database.dao.TaskDAO
+import com.nguyenminhkhang.taskmanagement.data.local.database.AppDb
+import com.nguyenminhkhang.taskmanagement.data.local.database.dao.TaskDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

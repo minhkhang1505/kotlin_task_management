@@ -8,20 +8,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.StringRes
-import androidx.compose.material3.SnackbarHostState
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.nguyenminhkhang.taskmanagement.helper.LocaleHelper
-import com.nguyenminhkhang.taskmanagement.repository.TaskRepo
 import com.nguyenminhkhang.taskmanagement.ui.TaskApp
-import com.nguyenminhkhang.taskmanagement.ui.account.AccountViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import java.util.Locale
 
 @AndroidEntryPoint
