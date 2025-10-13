@@ -10,6 +10,9 @@ import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.ui.home.action.buildActionMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.sort.buildSortMenuItems
 import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import kotlinx.coroutines.launch
 
@@ -21,6 +24,7 @@ fun HomePage(
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val strings = homeViewModel.stringProvider
 
     LaunchedEffect(key1 = true) {
         launch {
@@ -45,7 +49,7 @@ fun HomePage(
                 if(result == SnackbarResult.ActionPerformed) {
                     when (event.actionType) {
                         SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
-                            homeViewModel.onEvent(HomeEvent.UndoToggleComplete)
+                            homeViewModel.onEvent(TaskEvent.UndoToggleComplete)
                         }
                         null -> {}
                     }
@@ -54,8 +58,22 @@ fun HomePage(
         }
     }
 
+    val sortMenuItems = buildSortMenuItems(
+        strings = strings,
+        collectionId = uiState.currentCollectionId,
+        onEvent = homeViewModel::onEvent
+    )
+
+    val actionMenuItems = buildActionMenuItem(
+        strings = strings,
+        collectionId = uiState.currentCollectionId,
+        onEvent = homeViewModel::onEvent
+    )
+
     HomeLayout(
         uiState = uiState,
+        sortMenuItems = sortMenuItems,
+        actionMenuItems = actionMenuItems,
         onEvent = homeViewModel::onEvent,
         snackbarHostState = snackbarHostState,
         navController = navController

@@ -32,7 +32,9 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.TaskItemLayout
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
@@ -121,7 +123,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                         .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            onEvent(HomeEvent.RequestSortTasks(state.tab.id))
+                            onEvent(CollectionEvent.RequestSortTasks(state.tab.id))
                         },
                 )
                 Icon(
@@ -130,7 +132,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                         .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            onEvent(HomeEvent.UpdateCollectionRequested(state.tab.id))
+                            onEvent(CollectionEvent.UpdateCollectionRequested(state.tab.id))
                         },
                 )
             }

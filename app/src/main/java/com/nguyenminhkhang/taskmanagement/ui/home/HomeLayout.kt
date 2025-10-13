@@ -1,25 +1,28 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
+import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.floataction.AppFloatActionButton
+import com.nguyenminhkhang.taskmanagement.ui.home.action.ActionDialog
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.sort.SortDialog
+import com.nguyenminhkhang.taskmanagement.ui.home.sort.buildSortMenuItems
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
@@ -27,6 +30,8 @@ import com.nguyenminhkhang.taskmanagement.ui.topbar.TopBar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeLayout(
+    sortMenuItems: List<SortMenuItem>,
+    actionMenuItems: List<ActionMenuItem>,
     uiState: HomeUiState,
     navController: NavController,
     snackbarHostState: SnackbarHostState,
@@ -49,7 +54,7 @@ fun HomeLayout(
         SnackbarHost(hostState = snackbarHostState)
 
         AppFloatActionButton(
-            onClick = { onEvent(HomeEvent.ShowAddTaskSheet) },
+            onClick = { onEvent(UiEvent.ShowAddTaskSheet) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp)
@@ -66,29 +71,18 @@ fun HomeLayout(
             AddTaskBottomSheet(uiState = uiState, onEvent = onEvent,)
         }
 
-        if (uiState.menuListButtonSheet.isNullOrEmpty() == false) {
-            ModalBottomSheet(
-                onDismissRequest = { onEvent(HomeEvent.ResetMenuListButtonSheet) }
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    uiState.menuListButtonSheet.forEach { item ->
-                        Text(item.title, modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp)
-                            .clickable {
-                                item.action.invoke()
-                                onEvent(HomeEvent.ResetMenuListButtonSheet)
-                            }
-                        )
-                    }
-                }
-            }
+        if (uiState.sortMenuButtonSheet.isNullOrEmpty() == false) {
+            SortDialog(
+                items = sortMenuItems,
+                onDismiss = {  }
+            )
+        }
+
+        if (uiState.actionMenuButtonSheet.isNullOrEmpty() == false) {
+            ActionDialog(
+                items = actionMenuItems,
+                onDismiss = {  }
+            )
         }
     }
 }

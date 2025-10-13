@@ -31,6 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.components.RoundedOutlinedTextField
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
 import com.nguyenminhkhang.taskmanagement.ui.picker.DatePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.picker.TimePickerModal
 import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
@@ -45,12 +48,12 @@ fun AddTaskBottomSheet(
     onEvent: (HomeEvent) -> Unit
 ) {
     ModalBottomSheet(onDismissRequest = {
-        onEvent(HomeEvent.HideAddTaskSheet)
-        onEvent(HomeEvent.NewTaskCleared)
+        onEvent(UiEvent.HideAddTaskSheet)
+        onEvent(TaskEvent.NewTaskCleared)
     }) {
         TextField(
             value= uiState.newTask?.content ?: "",
-            onValueChange = { onEvent(HomeEvent.TaskContentChanged(it)) },
+            onValueChange = { onEvent(TaskEvent.TaskContentChanged(it)) },
             placeholder = { Text(stringResource(R.string.new_task_name_description), style = TextStyle(color = Color.Gray.copy(0.5f))) },
             modifier = Modifier
                 .padding(horizontal = 16.dp)
@@ -69,7 +72,7 @@ fun AddTaskBottomSheet(
             Text(stringResource(R.string.new_task_detail_title), modifier = Modifier.padding(horizontal = 16.dp))
             TextField(
                 value=uiState.newTask?.taskDetail ?: "",
-                onValueChange = { onEvent(HomeEvent.TaskDetailChanged(it)) },
+                onValueChange = { onEvent(TaskEvent.TaskDetailChanged(it)) },
                 placeholder = { Text(stringResource(R.string.new_task_detail), style = TextStyle(fontSize = 12.sp, color = Color.Gray.copy(0.5f))) },
                 modifier = Modifier
                     .padding(horizontal = 16.dp,)
@@ -99,7 +102,7 @@ fun AddTaskBottomSheet(
                 RoundedOutlinedTextField(
                     contentDateTime.toString(),
                     onClick = {
-                        onEvent(HomeEvent.SelectedDateTimeCleared)
+                        onEvent(TaskEvent.SelectedDateTimeCleared)
                     }
                 )
             }
@@ -113,7 +116,7 @@ fun AddTaskBottomSheet(
         ) {
             Row {
                 IconButton(
-                    onClick = { onEvent(HomeEvent.ShowAddDetailTextField) },
+                    onClick = { onEvent(UiEvent.ShowAddDetailTextField) },
                 ) {
                     Icon(
                         Icons.Default.Menu, contentDescription = "Menu Icon",
@@ -123,7 +126,7 @@ fun AddTaskBottomSheet(
                     )
                 }
                 IconButton(
-                    onClick = { onEvent(HomeEvent.ShowDatePicker) },
+                    onClick = { onEvent(UiEvent.ShowDatePicker) },
                 ) {
                     Icon(
                         Icons.Default.DateRange, contentDescription = "Date Icon",
@@ -133,7 +136,7 @@ fun AddTaskBottomSheet(
                     )
                 }
                 IconButton(
-                    onClick = { onEvent(HomeEvent.ShowTimePicker) }
+                    onClick = { onEvent(UiEvent.ShowTimePicker) }
                 ) {
                     Icon(painter = painterResource(R.drawable.baseline_access_time_24), contentDescription = "Time Icon",
                         modifier = Modifier
@@ -141,7 +144,7 @@ fun AddTaskBottomSheet(
                             .clip(RoundedCornerShape(12.dp))
                     )
                 }
-                IconButton(onClick = { onEvent(HomeEvent.ToggleNewTaskFavorite) }) {
+                IconButton(onClick = { onEvent(TaskEvent.ToggleNewTaskFavorite) }) {
                     Icon(painter = if(uiState.newTask?.favorite == true) {
                         painterResource(R.drawable.baseline_star_24)
                     } else {
@@ -155,14 +158,15 @@ fun AddTaskBottomSheet(
             }
             Button(
                 onClick = {
-                    onEvent(HomeEvent.CombineDateAndTime(
+                    onEvent(
+                        TaskEvent.CombineDateAndTime(
                         date = uiState.newTask?.startDate ?: 0L,
                         hour = uiState.selectedReminderHour,
                         minute = uiState.selectedReminderMinute
                     ))
-                    onEvent(HomeEvent.SaveNewTask)
-                    onEvent(HomeEvent.HideAddTaskSheet)
-                    onEvent(HomeEvent.NewTaskCleared)
+                    onEvent(TaskEvent.SaveNewTask)
+                    onEvent(UiEvent.HideAddTaskSheet)
+                    onEvent(TaskEvent.NewTaskCleared)
                 }
             ) {
                 Text(stringResource(R.string.save_button))
@@ -171,19 +175,19 @@ fun AddTaskBottomSheet(
 
         if(uiState.isDatePickerVisible) {
             DatePickerModal(
-                onDismiss = { onEvent(HomeEvent.HideDatePicker) },
-                onDateSelected = { onEvent(HomeEvent.DateSelected(it)) },
+                onDismiss = { onEvent(UiEvent.HideDatePicker) },
+                onDateSelected = { onEvent(UiEvent.DateSelected(it)) },
             )
         }
 
         if (uiState.isTimePickerVisible) {
             TimePickerModal(
-                onDismiss = { onEvent(HomeEvent.HideTimePicker) },
+                onDismiss = { onEvent(UiEvent.HideTimePicker) },
                 onConfirm = {time ->
                     val hour = time.hour
                     val minute = time.minute
-                    onEvent(HomeEvent.OnReminderTimeSelected(hour, minute))
-                    onEvent(HomeEvent.TimeSelected(time.toHourMinute()))  },
+                    onEvent(TaskEvent.OnReminderTimeSelected(hour, minute))
+                    onEvent(UiEvent.TimeSelected(time.toHourMinute()))  },
             )
         }
     }

@@ -1,13 +1,16 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.state
 
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
+import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 
 data class HomeUiState(
     val isShowAddNewCollectionSheetVisible : Boolean = false,
     val newTask: TaskEntity? = TaskEntity(content = ""),
-    val menuListButtonSheet: List<AppMenuItem>? = null,
+    val sortMenuButtonSheet: List<SortMenuItem>? = null,
+    val actionMenuButtonSheet: List<ActionMenuItem>? = null,
     val newCollectionName: String = "",
     val isNewCollectionNameDialogVisible: Boolean = false,
     var listTabGroup: List<TaskGroupUiState> = emptyList(),
@@ -20,4 +23,6 @@ data class HomeUiState(
     val selectedReminderHour: Int? = null,
     val selectedReminderMinute: Int? = null,
     val isShowDeleteButtonVisible: Boolean = false,
+
+    val currentCollectionId: Long = 0L
 )

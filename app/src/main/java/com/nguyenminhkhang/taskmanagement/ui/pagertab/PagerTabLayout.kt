@@ -1,6 +1,5 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab
 
-import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,8 +23,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
+import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import kotlinx.coroutines.launch
 
@@ -47,7 +48,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { index ->
             internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
-                onEvent(HomeEvent.CurrentCollectionId(currentCollectionId))
+                onEvent(CollectionEvent.CurrentCollectionId(currentCollectionId))
             }
         }
     }
@@ -60,7 +61,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
             listTabs = state.listTabGroup.map{ it.tab },
             onTabSelected = {index ->
                 if(( state.listTabGroup.getOrNull(index)?.tab?.id ?: 0) == ID_ADD_NEW_LIST) {
-                    onEvent(HomeEvent.ShowAddNewCollectionButton)
+                    onEvent(UiEvent.ShowAddNewCollectionButton)
                 } else {
                     scope.launch {
                         pagerState.scrollToPage(index)
@@ -79,7 +80,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
     if(state.isShowAddNewCollectionSheetVisible) {
 
         ModalBottomSheet({
-            onEvent(HomeEvent.HideAddNewCollectionButton)
+            onEvent(UiEvent.HideAddNewCollectionButton)
         }) {
             Text(
                 stringResource(R.string.input_task_collection_name),
@@ -88,16 +89,16 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
                     .fillMaxWidth())
             TextField(
                 value = state.newTaskCollectionName,
-                onValueChange = { newValue -> onEvent(HomeEvent.NewCollectionNameChanged(newValue)) },
+                onValueChange = { newValue -> onEvent(CollectionEvent.OnCollectionNameChanged(newValue)) },
                 modifier = Modifier
                     .padding(16.dp)
                     .fillMaxWidth())
 
             Button(
                 onClick = {
-                    onEvent(HomeEvent.AddNewCollectionRequested(state.newTaskCollectionName))
-                    onEvent(HomeEvent.HideAddNewCollectionButton)
-                    onEvent(HomeEvent.NewCollectionNameCleared)
+                    onEvent(CollectionEvent.AddNewCollectionRequested(state.newTaskCollectionName))
+                    onEvent(UiEvent.HideAddNewCollectionButton)
+                    onEvent(CollectionEvent.NewCollectionNameCleared)
                 },
                 modifier = Modifier
                     .padding(16.dp)

@@ -19,7 +19,11 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.Updat
 import com.nguyenminhkhang.taskmanagement.domain.usecase.syncusecase.SyncTasksUseCase
 import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent.ShowAddTaskSheet
+import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.MenuEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
@@ -78,7 +82,12 @@ class HomeViewModel @Inject constructor(
     private var pendingCompleteAction : Job? = null
     private var taskToConfirm : TaskUiState? = null
 
+    private var _menuEvent = MutableSharedFlow<List<AppMenuItem>>()
+    val menuEvent = _menuEvent.asSharedFlow()
+
     private var _currentSelectedCollectionId:Long = -1L
+    val stringProvider: StringProvider get() = strings
+
 
     init {
         collectionUseCases.getGroups.invoke(
@@ -241,7 +250,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun DeleteSelectedTask(taskId: Long) {
+    private fun deleteSelectedTask(taskId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             taskUseCases.deleteTask.invoke(taskId)
         }
@@ -249,18 +258,19 @@ class HomeViewModel @Inject constructor(
 
     private fun requestUpdateCollection(collectionId: Long) {
         val actionsList = listOf(
-            if(!_uiState.value.isShowDeleteButtonVisible) AppMenuItem(title = strings.getString(R.string.delete_task)) { onEvent(HomeEvent.ShowDeleteButton) } else {
-                AppMenuItem(title = "Done") { onEvent(HomeEvent.HideDeleteButton) }
+            if(!_uiState.value.isShowDeleteButtonVisible) AppMenuItem(title = strings.getString(R.string.delete_task)) { onEvent(
+                UiEvent.ShowDeleteButton) } else {
+                AppMenuItem(title = "Done") { onEvent(UiEvent.HideDeleteButton) }
             },
             AppMenuItem(title = strings.getString(R.string.delete_collection)) {
                 deleteCollectionById(collectionId) },
             AppMenuItem(title = strings.getString((R.string.rename_collection))) {
-                onEvent(HomeEvent.ClearRenameCollectionName)
-                onEvent(HomeEvent.ShowRenameCollectionDialog)
+                onEvent(CollectionEvent.ClearRenameCollectionName)
+                onEvent(CollectionEvent.ShowRenameCollectionDialog)
             }
         )
         _uiState.update {
-            it.copy(menuListButtonSheet = actionsList)
+            it.copy(sortMenuButtonSheet = actionsList)
         }
     }
 
@@ -268,24 +278,6 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             collectionUseCases.updateSortType.invoke(collectionId, sortedType)
         }
-    }
-
-    private fun requestSortTasks(collectionId: Long) {
-        val menuItems = listOf(
-            AppMenuItem(title = strings.getString(R.string.sort_by_date)) {
-                sortTaskCollection(collectionId, SortedType.SORTED_BY_DATE)
-            },
-            AppMenuItem(title = strings.getString(R.string.sort_by_favorite)) {
-                sortTaskCollection(collectionId, SortedType.SORTED_BY_FAVORITE)
-            }
-        )
-        _uiState.update {
-            it.copy(menuListButtonSheet = menuItems)
-        }
-    }
-
-    private fun NewCollectionNameChanged(name: String) {
-        _uiState.update { it.copy(newTaskCollectionName = name) }
     }
 
     fun onReminderTimeSelected(hour: Int, minute: Int) {
@@ -313,23 +305,23 @@ class HomeViewModel @Inject constructor(
         return calendar.timeInMillis
     }
 
-    private fun CloseRenameCollectionDialog() {
+    private fun closeRenameCollectionDialog() {
         _uiState.update { it.copy(isNewCollectionNameDialogVisible = false) }
     }
 
-    private fun ShowRenameCollectionDialog() {
+    private fun showRenameCollectionDialog() {
         _uiState.update { it.copy(isNewCollectionNameDialogVisible = true) }
     }
 
-    private fun ClearRenameCollectionName() {
+    private fun clearRenameCollectionName() {
         _uiState.update { it.copy(newCollectionName = "") }
     }
 
-    private fun OnCollectionNameChange(newCollectionName: String) {
-        _uiState.update { it.copy(newCollectionName = newCollectionName) }
+    private fun changeCollectionName(name: String) {
+        _uiState.update { it.copy(newTaskCollectionName = name) }
     }
 
-    private fun RenameCollection(newCollectionName: String) {
+    private fun renameCollection(newCollectionName: String) {
         viewModelScope.launch {
             collectionUseCases.updateName.invoke(_currentSelectedCollectionId, newCollectionName)
         }
@@ -337,63 +329,63 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is ShowAddTaskSheet -> _uiState.update {
+            is UiEvent.ShowAddTaskSheet -> _uiState.update {
                 if ( _currentSelectedCollectionId>0L ) {
                     it.copy(isAddTaskSheetVisible = true)
                 } else {
                     it.copy(isAddTaskSheetVisible = false)
                 }
             }
-            is HomeEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
-            is HomeEvent.TaskContentChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(content = event.content)) }
-            is HomeEvent.TaskDetailChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(taskDetail = event.detail)) }
-            is HomeEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTask = it.newTask!!.copy(favorite = !it.newTask.favorite)) }
-            is HomeEvent.ShowAddDetailTextField -> _uiState.update { it.copy(isShowAddDetailTextField = true) }
-            is HomeEvent.ShowDatePicker -> _uiState.update { it.copy(isDatePickerVisible = true) }
-            is HomeEvent.HideDatePicker -> _uiState.update { it.copy(isDatePickerVisible = false) }
-            is HomeEvent.DateSelected -> _uiState.update { it.copy(newTask = it.newTask!!.copy(startDate = event.date)) }
-            is HomeEvent.ShowTimePicker -> _uiState.update { it.copy(isTimePickerVisible = true) }
-            is HomeEvent.HideTimePicker -> _uiState.update { it.copy(isTimePickerVisible = false) }
-            is HomeEvent.TimeSelected -> _uiState.update { it.copy(newTask = it.newTask!!.copy(startTime = event.time)) }
-            is HomeEvent.SelectedDateTimeCleared -> _uiState.update {
+            is UiEvent.HideAddTaskSheet -> _uiState.update { it.copy(isAddTaskSheetVisible = false) }
+            is TaskEvent.TaskContentChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(content = event.content)) }
+            is TaskEvent.TaskDetailChanged -> _uiState.update { it.copy(newTask = it.newTask!!.copy(taskDetail = event.detail)) }
+            is TaskEvent.ToggleNewTaskFavorite -> _uiState.update { it.copy(newTask = it.newTask!!.copy(favorite = !it.newTask.favorite)) }
+            is UiEvent.ShowAddDetailTextField -> _uiState.update { it.copy(isShowAddDetailTextField = true) }
+            is UiEvent.ShowDatePicker -> _uiState.update { it.copy(isDatePickerVisible = true) }
+            is UiEvent.HideDatePicker -> _uiState.update { it.copy(isDatePickerVisible = false) }
+            is UiEvent.DateSelected -> _uiState.update { it.copy(newTask = it.newTask!!.copy(startDate = event.date)) }
+            is UiEvent.ShowTimePicker -> _uiState.update { it.copy(isTimePickerVisible = true) }
+            is UiEvent.HideTimePicker -> _uiState.update { it.copy(isTimePickerVisible = false) }
+            is UiEvent.TimeSelected -> _uiState.update { it.copy(newTask = it.newTask!!.copy(startTime = event.time)) }
+            is TaskEvent.SelectedDateTimeCleared -> _uiState.update {
                 it.copy(
                     newTask = it.newTask!!.copy(startDate = null, startTime = null),
                     selectedReminderHour = null,
                     selectedReminderMinute = null
                 )
             }
-            is HomeEvent.SaveNewTask -> addNewTask()
-            is HomeEvent.NewTaskCleared -> _uiState.update {
+            is TaskEvent.SaveNewTask -> addNewTask()
+            is TaskEvent.NewTaskCleared -> _uiState.update {
                 it.copy(
                     newTask = TaskEntity(content = "")
                 )
             }
-            is HomeEvent.ToggleFavorite -> handleToggleFavorite(event.task)
-            is HomeEvent.ToggleComplete -> handleToggleComplete(event.task)
-            is HomeEvent.RequestSortTasks -> requestSortTasks(event.collectionId)
-            is HomeEvent.UpdateCollectionRequested -> requestUpdateCollection(event.collectionId)
-            is HomeEvent.ResetMenuListButtonSheet -> _uiState.update { it.copy(menuListButtonSheet = null) }
-            is HomeEvent.ShowAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = true) }
-            is HomeEvent.HideAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = false) }
-            is HomeEvent.CurrentCollectionId -> updateCurrentCollectionId(event.collectionId)
-            is HomeEvent.AddNewCollectionRequested -> requestAddNewCollection(event.name)
-            is HomeEvent.NewCollectionNameChanged -> NewCollectionNameChanged(event.name)
-            is HomeEvent.NewCollectionNameCleared -> _uiState.update { it.copy(newTaskCollectionName = "") }
-            is HomeEvent.RequestShowButtonSheetOption -> _uiState.update { it.copy(menuListButtonSheet = event.list) }
-            is HomeEvent.UndoToggleComplete -> undoToggleComplete()
-            is HomeEvent.UpdateReminderTimeMillis -> _uiState.update{ it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = event.reminder)) }
-            is HomeEvent.OnReminderTimeSelected -> onReminderTimeSelected(event.hour, event.minute)
-            is HomeEvent.CombineDateAndTime -> combineDateAndTime(dateMillis = event.date, hour = event.hour, minute = event.minute)?.let { reminderTimeMillis ->
+            is TaskEvent.ToggleFavorite -> handleToggleFavorite(event.task)
+            is TaskEvent.ToggleComplete -> handleToggleComplete(event.task)
+            is CollectionEvent.UpdateCollectionRequested -> requestUpdateCollection(event.collectionId)
+            is MenuEvent.ResetMenuListButtonSheet -> _uiState.update { it.copy(sortMenuButtonSheet = null) }
+            is UiEvent.ShowAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = true) }
+            is UiEvent.HideAddNewCollectionButton -> _uiState.update { it.copy(isShowAddNewCollectionSheetVisible = false) }
+            is CollectionEvent.CurrentCollectionId -> updateCurrentCollectionId(event.collectionId)
+            is CollectionEvent.AddNewCollectionRequested -> requestAddNewCollection(event.name)
+            is CollectionEvent.OnCollectionNameChanged -> changeCollectionName(event.name)
+            is CollectionEvent.NewCollectionNameCleared -> _uiState.update { it.copy(newTaskCollectionName = "") }
+            is MenuEvent.RequestShowButtonSheetOption -> _uiState.update { it.copy(sortMenuButtonSheet = event.list) }
+            is TaskEvent.UndoToggleComplete -> undoToggleComplete()
+            is TaskEvent.UpdateReminderTimeMillis -> _uiState.update{ it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = event.reminder)) }
+            is TaskEvent.OnReminderTimeSelected -> onReminderTimeSelected(event.hour, event.minute)
+            is TaskEvent.CombineDateAndTime -> combineDateAndTime(dateMillis = event.date, hour = event.hour, minute = event.minute)?.let { reminderTimeMillis ->
                 _uiState.update { it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = reminderTimeMillis)) }
             }
-            is HomeEvent.ShowDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = true) }
-            is HomeEvent.HideDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = false) }
-            is HomeEvent.DeleteTask -> DeleteSelectedTask(event.taskId)
-            is HomeEvent.ShowRenameCollectionDialog -> ShowRenameCollectionDialog()
-            is HomeEvent.HideRenameCollectionDialog -> CloseRenameCollectionDialog()
-            is HomeEvent.ClearRenameCollectionName -> ClearRenameCollectionName()
-            is HomeEvent.OnCollectionNameChange -> OnCollectionNameChange(event.newCollectionName)
-            is HomeEvent.RenameCollection -> RenameCollection(event.newCollectionName)
+            is UiEvent.ShowDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = true) }
+            is UiEvent.HideDeleteButton -> _uiState.update { it.copy(isShowDeleteButtonVisible = false) }
+            is TaskEvent.DeleteTask -> deleteSelectedTask(event.taskId)
+            is CollectionEvent.ShowRenameCollectionDialog -> showRenameCollectionDialog()
+            is CollectionEvent.HideRenameCollectionDialog -> closeRenameCollectionDialog()
+            is CollectionEvent.ClearRenameCollectionName -> clearRenameCollectionName()
+            is CollectionEvent.RenameCollection -> renameCollection(event.newCollectionName)
+            is MenuEvent.SortCollection -> sortTaskCollection(event.collectionId, event.sortedType)
+            is CollectionEvent.DeleteCollection -> deleteCollectionById(event.collectionId)
         }
     }
 }

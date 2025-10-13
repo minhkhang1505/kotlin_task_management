@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString

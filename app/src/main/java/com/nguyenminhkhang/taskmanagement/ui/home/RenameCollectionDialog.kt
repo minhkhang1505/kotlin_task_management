@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 
 @Composable
 fun RenameCollectionDialog(
@@ -28,7 +30,7 @@ fun RenameCollectionDialog(
 ) {
     Dialog(
         onDismissRequest = {
-            onEvent(HomeEvent.HideRenameCollectionDialog)
+            onEvent(CollectionEvent.HideRenameCollectionDialog)
         }
     ) {
         Surface(
@@ -54,7 +56,7 @@ fun RenameCollectionDialog(
                 TextField(
                     value = newCollectionName,
                     onValueChange = {
-                        onEvent(HomeEvent.OnCollectionNameChange(it))
+                        onEvent(CollectionEvent.OnCollectionNameChanged(it))
                     },
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier.fillMaxWidth(),
@@ -73,7 +75,7 @@ fun RenameCollectionDialog(
                 ) {
                     TextButton(
                         onClick = {
-                            onEvent(HomeEvent.HideRenameCollectionDialog)
+                            onEvent(CollectionEvent.HideRenameCollectionDialog)
                         }
                     ) {
                         Text("Cancel")
@@ -83,8 +85,8 @@ fun RenameCollectionDialog(
 
                     Button(
                         onClick = {
-                            onEvent(HomeEvent.RenameCollection(newCollectionName))
-                            onEvent(HomeEvent.HideRenameCollectionDialog)
+                            onEvent(CollectionEvent.RenameCollection(newCollectionName))
+                            onEvent(CollectionEvent.HideRenameCollectionDialog)
                         }
                     ) {
                         Text("Rename")
