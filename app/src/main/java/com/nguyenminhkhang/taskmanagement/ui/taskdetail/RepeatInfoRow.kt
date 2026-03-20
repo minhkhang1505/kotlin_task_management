@@ -49,7 +49,8 @@ fun RepeatInfoRow(
             verticalArrangement = Arrangement.Center,
         ) {
             Icon(
-                painter = painterResource(R.drawable.baseline_repeat_24),
+                painter = painterResource(R.drawable.ic_repeat),
+                tint = MaterialTheme.colorScheme.primary,
                 contentDescription = "Time Icon",
                 modifier = Modifier
                     .size(24.dp)

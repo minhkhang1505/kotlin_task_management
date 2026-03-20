@@ -21,11 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.components.CustomTextField
-import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
 
@@ -52,7 +53,8 @@ fun TaskDateRow(
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Icon(
-                Icons.Default.DateRange, contentDescription = "Date Icon",
+                painter = painterResource(R.drawable.ic_calendar), contentDescription = "Date Icon",
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(24.dp)
                     .clip(RoundedCornerShape(12.dp))

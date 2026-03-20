@@ -3,8 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.home.state
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
 import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
-import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
 
 data class HomeUiState(
     val isShowAddNewCollectionSheetVisible : Boolean = false,

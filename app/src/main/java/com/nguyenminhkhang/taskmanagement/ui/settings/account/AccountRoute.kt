@@ -1,11 +1,9 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.account
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 
 @Composable
 fun AccountRoute(
@@ -23,7 +21,7 @@ fun AccountRoute(
 //        }
 //    }
 
-    AccountScreen(
+    SettingScreen(
         accountUiState = accountUiState,
         onEvent = accountViewModel::onEvent,
         onNavigateToTheme = onNavigateToTheme,

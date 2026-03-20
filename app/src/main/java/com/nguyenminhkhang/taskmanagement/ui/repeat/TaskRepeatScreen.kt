@@ -8,9 +8,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.picker.DatePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.picker.TimePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.DatePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toHourMinute
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @OptIn(ExperimentalMaterial3Api::class)

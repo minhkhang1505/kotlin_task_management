@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.event
 
 import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
-import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.home.AppMenuItem
 
 sealed class MenuEvent : HomeEvent {
     object ResetMenuListButtonSheet : MenuEvent()

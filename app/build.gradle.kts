@@ -69,6 +69,9 @@ dependencies {
     // Timber for logging
     implementation("com.jakewharton.timber:timber:5.0.1")
 
+    //System Ui controller
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -80,6 +83,7 @@ dependencies {
 
     //Add the Room dependencies
     implementation(libs.androidx.room)
+    implementation(libs.androidx.compose.foundation)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.paging)

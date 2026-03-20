@@ -53,10 +53,11 @@ fun TaskTitleField(
         trailingIcon = {
             Icon(
                 painter = painterResource(if (isInEditMode) {
-                    R.drawable.baseline_done_all_24
+                    R.drawable.ic_check
                 } else {
-                    R.drawable.baseline_edit_24}),
+                    R.drawable.ic_edit}),
                 contentDescription = "Edit Title",
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(24.dp)
                     .clip(RoundedCornerShape(12.dp))

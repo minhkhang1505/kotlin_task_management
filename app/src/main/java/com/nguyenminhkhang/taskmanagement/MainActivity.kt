@@ -13,7 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.helper.LocaleHelper
-import com.nguyenminhkhang.taskmanagement.ui.common.theme.TaskManagementTheme
+import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
 import com.nguyenminhkhang.taskmanagement.ui.navigation.TaskAppNavHost
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountViewModel
 

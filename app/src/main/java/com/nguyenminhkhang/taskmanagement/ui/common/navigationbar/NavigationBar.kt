@@ -1,12 +1,17 @@
 package com.nguyenminhkhang.taskmanagement.ui.common.navigationbar
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -36,7 +41,12 @@ fun NavigationBottomBar(navController: NavController) {
                         }
                     }
                 },
-                icon = { Icon(item.icon, contentDescription = stringResource(item.contentDescription)) },
+                icon = {
+                    Icon(painter = painterResource(item.icon),
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = stringResource(item.contentDescription))
+                },
                 label = { Text(stringResource(item.label)) }
             )
         }

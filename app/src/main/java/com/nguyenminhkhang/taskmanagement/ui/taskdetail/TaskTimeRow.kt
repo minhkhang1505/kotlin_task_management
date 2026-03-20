@@ -24,7 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.components.CustomTextField
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toHourMinuteString
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
 @Composable
@@ -50,8 +50,9 @@ fun TaskTimeRow(
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
             Icon(
-                painter = painterResource(R.drawable.baseline_access_time_24),
+                painter = painterResource(R.drawable.ic_clock),
                 contentDescription = "Time Icon",
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .size(24.dp)
                     .clip(RoundedCornerShape(12.dp)),

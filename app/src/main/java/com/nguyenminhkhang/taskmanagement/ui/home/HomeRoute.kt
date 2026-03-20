@@ -1,7 +1,80 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavBackStackEntry
+import com.nguyenminhkhang.taskmanagement.ui.home.action.buildActionMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.sort.buildSortMenuItems
+import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarActionType
+import kotlinx.coroutines.launch
 
 @Composable
-fun HomeRoute() {
+fun HomeRoute(
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    onNavigateToTaskDetail: (Long) -> Unit,
+    backStackEntry: NavBackStackEntry,
+) {
+    val uiState by homeViewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val strings = homeViewModel.stringProvider
+
+    LaunchedEffect(key1 = true) {
+        launch {
+            backStackEntry.savedStateHandle
+                .getStateFlow<Long?>("task_completed_id", null)
+                .collect { taskId ->
+                    if (taskId != null) {
+                        backStackEntry.savedStateHandle.remove<Long>("task_completed_id")
+                    }
+                }
+        }
+
+        launch {
+            homeViewModel.snackBarEvent.collect { event ->
+                snackbarHostState.currentSnackbarData?.dismiss()
+                val result = snackbarHostState.showSnackbar(
+                    message = event.message,
+                    actionLabel = event.actionLabel,
+                    duration = event.duration
+                )
+
+                if(result == SnackbarResult.ActionPerformed) {
+                    when (event.actionType) {
+                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
+                            homeViewModel.onEvent(TaskEvent.UndoToggleComplete)
+                        }
+                        null -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    val sortMenuItems = buildSortMenuItems(
+        strings = strings,
+        collectionId = uiState.currentCollectionId,
+        onEvent = homeViewModel::onEvent
+    )
+
+    val actionMenuItems = buildActionMenuItem(
+        strings = strings,
+        collectionId = uiState.currentCollectionId,
+        onEvent = homeViewModel::onEvent
+    )
+
+    HomeScreen(
+        uiState = uiState,
+        sortMenuItems = sortMenuItems,
+        actionMenuItems = actionMenuItems,
+        onEvent = homeViewModel::onEvent,
+        snackBarHostState = snackbarHostState,
+        onNavigateToTaskDetail = onNavigateToTaskDetail
+    )
 }

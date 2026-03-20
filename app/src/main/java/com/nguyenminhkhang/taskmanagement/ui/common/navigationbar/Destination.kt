@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.common.navigationbar
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
@@ -15,7 +16,7 @@ import kotlin.reflect.KClass
 data class BottomDestination<T>(
     val route: T,
     @StringRes val label: Int,
-    val icon: ImageVector,
+    @DrawableRes val icon: Int,
     @StringRes val contentDescription: Int
 )
 
@@ -23,19 +24,19 @@ val BottomDestinations = listOf(
     BottomDestination(
         route = HomeRoute,
         label = R.string.bottom_bar_ic_home,
-        icon = Icons.Outlined.Home,
+        icon = R.drawable.ic_home,
         contentDescription = R.string.bottom_bar_ic_home
     ),
     BottomDestination(
         route = SearchRoute,
         label = R.string.bottom_bar_ic_search,
-        icon = Icons.Outlined.Search,
+        icon = R.drawable.ic_search,
         contentDescription = R.string.bottom_bar_ic_search
     ),
     BottomDestination(
         route = AccountRoute,
         label = R.string.bottom_bar_ic_account,
-        icon = Icons.Outlined.AccountCircle,
+        icon = R.drawable.ic_setting,
         contentDescription = R.string.bottom_bar_ic_account
     ),
 )

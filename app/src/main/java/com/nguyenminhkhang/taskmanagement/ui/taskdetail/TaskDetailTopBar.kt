@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
@@ -24,6 +25,8 @@ fun TaskDetailTopAppBar (
     onFavoriteClick: () -> Unit,
     onNavigateBack: () -> Unit
 ) {
+    val tintColor = if (isFavorite) Color.Yellow else MaterialTheme.colorScheme.primary
+
     Row(
         modifier = Modifier.fillMaxWidth().size(56.dp)
             .padding(horizontal = 4.dp),
@@ -42,15 +45,10 @@ fun TaskDetailTopAppBar (
             onClick = { onFavoriteClick() },
             content = {
                 Icon(
-                    painter = painterResource(
-                        id = if (isFavorite) {
-                            R.drawable.baseline_star_24
-                        } else {
-                            R.drawable.baseline_star_outline_24
-                        },
-                    ),
+                    painter = painterResource(id = R.drawable.ic_favorite),
                     contentDescription = "Favorite",
-                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                    tint = tintColor,
+                    modifier = Modifier.size(32.dp)
                 )
             }
         )

@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.picker.DatePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.picker.TimePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.DatePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toHourMinute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 
 @OptIn(ExperimentalMaterial3Api::class)

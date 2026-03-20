@@ -17,7 +17,7 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTa
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionNameUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.syncusecase.SyncTasksUseCase
-import com.nguyenminhkhang.taskmanagement.ui.AppMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.home.AppMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
@@ -25,10 +25,10 @@ import com.nguyenminhkhang.taskmanagement.ui.home.event.MenuEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
-import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
-import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarActionType
+import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

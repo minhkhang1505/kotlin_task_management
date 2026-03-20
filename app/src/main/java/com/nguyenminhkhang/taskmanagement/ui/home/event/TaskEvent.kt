@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.event
 
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
 
 sealed class TaskEvent : HomeEvent {
 

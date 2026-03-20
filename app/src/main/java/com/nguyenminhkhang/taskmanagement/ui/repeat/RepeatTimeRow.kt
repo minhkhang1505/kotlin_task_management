@@ -12,7 +12,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toHourMinuteString
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @Composable

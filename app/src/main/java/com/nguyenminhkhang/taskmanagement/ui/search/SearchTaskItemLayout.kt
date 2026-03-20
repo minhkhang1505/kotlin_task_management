@@ -16,11 +16,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.millisToDateString
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.millisToDateString
 
 @Composable
 fun SearchTaskItemLayout(
@@ -58,9 +59,9 @@ fun SearchTaskItemLayout(
             )
         }
         Icon(
-            painter = painterResource(if(taskResult.favorite) R.drawable.baseline_star_24 else R.drawable.baseline_star_outline_24),
+            painter = painterResource(R.drawable.ic_favorite),
             contentDescription = "Favorite Icon",
-            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
+            tint = if(taskResult.favorite) Color.Yellow else MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(end = 10.dp).clickable {
                 onEvent(SearchEvent.OnToggleFavoriteClick(taskResult.id!!, !taskResult.favorite))
             }

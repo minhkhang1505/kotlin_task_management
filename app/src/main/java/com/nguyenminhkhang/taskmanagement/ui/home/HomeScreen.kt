@@ -1,81 +1,86 @@
 package com.nguyenminhkhang.taskmanagement.ui.home
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.ui.home.action.buildActionMenuItem
-import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
-import com.nguyenminhkhang.taskmanagement.ui.home.sort.buildSortMenuItems
-import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
-import kotlinx.coroutines.launch
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
+import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
+import com.nguyenminhkhang.taskmanagement.ui.common.floataction.AppFloatActionButton
+import com.nguyenminhkhang.taskmanagement.ui.home.action.ActionDialog
+import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.sort.SortDialog
+import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.PagerTabLayout
+import com.nguyenminhkhang.taskmanagement.ui.common.topbar.TopBar
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    homeViewModel: HomeViewModel = hiltViewModel(),
+    sortMenuItems: List<SortMenuItem>,
+    actionMenuItems: List<ActionMenuItem>,
+    uiState: HomeUiState,
     onNavigateToTaskDetail: (Long) -> Unit,
-    backStackEntry: NavBackStackEntry,
+    snackBarHostState: SnackbarHostState,
+    onEvent: (HomeEvent) -> Unit,
 ) {
-    val uiState by homeViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
-    val strings = homeViewModel.stringProvider
-
-    LaunchedEffect(key1 = true) {
-        launch {
-            backStackEntry.savedStateHandle
-                .getStateFlow<Long?>("task_completed_id", null)
-                .collect { taskId ->
-                    if (taskId != null) {
-                        backStackEntry.savedStateHandle.remove<Long>("task_completed_id")
-                    }
-                }
+    Box(
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 0.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TopBar()
+            PagerTabLayout(uiState, onEvent, onNavigateToTaskDetail)
         }
 
-        launch {
-            homeViewModel.snackBarEvent.collect { event ->
-                snackbarHostState.currentSnackbarData?.dismiss()
-                val result = snackbarHostState.showSnackbar(
-                    message = event.message,
-                    actionLabel = event.actionLabel,
-                    duration = event.duration
-                )
+        SnackbarHost(hostState = snackBarHostState)
 
-                if(result == SnackbarResult.ActionPerformed) {
-                    when (event.actionType) {
-                        SnackbarActionType.UNDO_TOGGLE_COMPLETE -> {
-                            homeViewModel.onEvent(TaskEvent.UndoToggleComplete)
-                        }
-                        null -> {}
-                    }
-                }
-            }
+        AppFloatActionButton(
+            onClick = { onEvent(UiEvent.ShowAddTaskSheet) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        )
+
+        if (uiState.isNewCollectionNameDialogVisible) {
+            RenameCollectionDialog(
+                newCollectionName = uiState.newCollectionName,
+                onEvent = onEvent
+            )
+        }
+
+        if (uiState.isAddTaskSheetVisible) {
+            AddTaskBottomSheet(uiState = uiState, onEvent = onEvent,)
+        }
+
+        if (uiState.sortMenuButtonSheet.isNullOrEmpty() == false) {
+            SortDialog(
+                items = sortMenuItems,
+                onDismiss = {  }
+            )
+        }
+
+        if (uiState.actionMenuButtonSheet.isNullOrEmpty() == false) {
+            ActionDialog(
+                items = actionMenuItems,
+                onDismiss = {  }
+            )
         }
     }
-
-    val sortMenuItems = buildSortMenuItems(
-        strings = strings,
-        collectionId = uiState.currentCollectionId,
-        onEvent = homeViewModel::onEvent
-    )
-
-    val actionMenuItems = buildActionMenuItem(
-        strings = strings,
-        collectionId = uiState.currentCollectionId,
-        onEvent = homeViewModel::onEvent
-    )
-
-    HomeLayout(
-        uiState = uiState,
-        sortMenuItems = sortMenuItems,
-        actionMenuItems = actionMenuItems,
-        onEvent = homeViewModel::onEvent,
-        snackbarHostState = snackbarHostState,
-        onNavigateToTaskDetail = onNavigateToTaskDetail
-    )
 }

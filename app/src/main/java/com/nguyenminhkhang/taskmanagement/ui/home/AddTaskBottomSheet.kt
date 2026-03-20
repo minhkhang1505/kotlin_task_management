@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -30,16 +31,17 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.ui.common.components.CustomInputTextField
 import com.nguyenminhkhang.taskmanagement.ui.common.components.RoundedOutlinedTextField
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
-import com.nguyenminhkhang.taskmanagement.ui.picker.DatePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.picker.TimePickerModal
-import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.DatePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.TimePickerModal
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinute
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toHourMinuteString
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toHourMinute
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toHourMinuteString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,22 +53,12 @@ fun AddTaskBottomSheet(
         onEvent(UiEvent.HideAddTaskSheet)
         onEvent(TaskEvent.NewTaskCleared)
     }) {
-        TextField(
+        CustomInputTextField(
             value= uiState.newTask?.content ?: "",
             onValueChange = { onEvent(TaskEvent.TaskContentChanged(it)) },
-            placeholder = { Text(stringResource(R.string.new_task_name_description), style = TextStyle(color = Color.Gray.copy(0.5f))) },
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp)),
-            maxLines = 1,
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent
-            )
+            placeholderDescription =  stringResource(R.string.new_task_name_description)
         )
+
         Spacer(modifier = Modifier.height(8.dp))
         if(uiState.isShowAddDetailTextField) {
             Text(stringResource(R.string.new_task_detail_title), modifier = Modifier.padding(horizontal = 16.dp))
@@ -119,7 +111,9 @@ fun AddTaskBottomSheet(
                     onClick = { onEvent(UiEvent.ShowAddDetailTextField) },
                 ) {
                     Icon(
-                        Icons.Default.Menu, contentDescription = "Menu Icon",
+                        painter = painterResource(R.drawable.ic_more),
+                        contentDescription = "Menu Icon",
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(12.dp))
@@ -129,7 +123,9 @@ fun AddTaskBottomSheet(
                     onClick = { onEvent(UiEvent.ShowDatePicker) },
                 ) {
                     Icon(
-                        Icons.Default.DateRange, contentDescription = "Date Icon",
+                        painter = painterResource(R.drawable.ic_calendar),
+                        contentDescription = "Date Icon",
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(12.dp))
@@ -138,18 +134,18 @@ fun AddTaskBottomSheet(
                 IconButton(
                     onClick = { onEvent(UiEvent.ShowTimePicker) }
                 ) {
-                    Icon(painter = painterResource(R.drawable.baseline_access_time_24), contentDescription = "Time Icon",
+                    Icon(painter = painterResource(R.drawable.ic_clock),
+                        contentDescription = "Time Icon",
+                        tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(12.dp))
                     )
                 }
                 IconButton(onClick = { onEvent(TaskEvent.ToggleNewTaskFavorite) }) {
-                    Icon(painter = if(uiState.newTask?.favorite == true) {
-                        painterResource(R.drawable.baseline_star_24)
-                    } else {
-                        painterResource(R.drawable.baseline_star_outline_24)
-                    }, contentDescription = "Favorite Icon",
+                    Icon(painter = painterResource(R.drawable.ic_favorite),
+                        contentDescription = "Favorite Icon",
+                        tint = if (uiState.newTask?.favorite == true) Color.Yellow else MaterialTheme.colorScheme.primary,
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(12.dp))

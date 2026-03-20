@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -66,7 +67,10 @@ fun SearchScreen(
                         Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Close search", modifier = Modifier.size(34.dp) )
                     }
                 } else {
-                    Icon(Icons.Default.Search, contentDescription = "Search icon")
+                    Icon(painter = painterResource(R.drawable.ic_search),
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                        contentDescription = "Search icon")
                 }
             },
             placeholder = { Text(stringResource(R.string.search_task)) },

@@ -5,11 +5,11 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_FAVORITE_LIST
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskGroupUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TaskPageUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTabUiState
-import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.toTaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TabUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskPageUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toTabUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toTaskUiState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest

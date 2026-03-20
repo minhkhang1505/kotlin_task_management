@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyenminhkhang.taskmanagement.ui.picker.convertMillisToDate
-import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarEvent
+import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow

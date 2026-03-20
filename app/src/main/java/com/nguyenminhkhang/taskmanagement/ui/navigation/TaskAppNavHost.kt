@@ -17,7 +17,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.nguyenminhkhang.taskmanagement.ui.auth.register.RegisterRoute
 import com.nguyenminhkhang.taskmanagement.ui.auth.signin.SignInRoute
 import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBottomBar
-import com.nguyenminhkhang.taskmanagement.ui.home.HomeScreen
+import com.nguyenminhkhang.taskmanagement.ui.home.HomeRoute
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatRoute
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountRoute
@@ -95,7 +95,7 @@ fun TaskAppNavHost(
             }
 
             composable<HomeRoute> { backStackEntry ->
-                HomeScreen(
+                HomeRoute(
                     onNavigateToTaskDetail = { taskId ->
                         Timber.d("Before navigate to TaskDetail with taskId: ${taskId}")
                         navController.navigate(TaskDetailRoute(taskId))

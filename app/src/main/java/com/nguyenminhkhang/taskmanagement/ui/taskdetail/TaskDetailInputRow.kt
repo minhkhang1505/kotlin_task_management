@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -43,7 +44,7 @@ fun TaskDetailInputRow(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            Icons.Default.Menu, contentDescription = "Menu Icon",
+            painter = painterResource(R.drawable.ic_more), contentDescription = "Menu Icon",
             modifier = Modifier
                 .size(24.dp)
                 .padding(start = 12.dp)
