@@ -26,17 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.NavScreen
 import com.nguyenminhkhang.taskmanagement.ui.common.components.Divider
 import com.nguyenminhkhang.taskmanagement.ui.auth.signin.state.SignInState
 
 @Composable
-fun SignInLayout(
-    loginState: SignInState,
+fun SignInScreen(
+    signInState: SignInState,
     onGoogleSignInClick: () -> Unit,
-    navController: NavController,
+    onNavigateToHome: () -> Unit,
     onEvent: (SignInEvent) -> Unit,
 ) {
     Box(
@@ -57,7 +55,7 @@ fun SignInLayout(
             )
             Spacer(modifier = Modifier.height(150.dp))
             OutlinedTextField(
-                value = loginState.email,
+                value = signInState.email,
                 onValueChange = { onEvent(SignInEvent.EmailChanged(it)) },
                 label = { Text(stringResource(R.string.email_or_username)) },
                 placeholder = { Text("Enter your email or username") },
@@ -75,7 +73,7 @@ fun SignInLayout(
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
-                value = loginState.password,
+                value = signInState.password,
                 onValueChange = { onEvent(SignInEvent.PasswordChanged(it)) },
                 label = { Text(stringResource(R.string.password)) },
                 placeholder = { Text("Enter your password") },
@@ -89,7 +87,7 @@ fun SignInLayout(
                 },
                 trailingIcon = {
                     Icon(
-                        painter = if (loginState.isPasswordVisible)
+                        painter = if (signInState.isPasswordVisible)
                             painterResource(R.drawable.baseline_visibility_24)
                         else
                             painterResource(R.drawable.baseline_visibility_off_24),
@@ -148,7 +146,7 @@ fun SignInLayout(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(start = 4.dp)
-                        .clickable { navController.navigate(NavScreen.REGISTER.route) }
+                        .clickable { onNavigateToHome() }
                 )
             }
         }

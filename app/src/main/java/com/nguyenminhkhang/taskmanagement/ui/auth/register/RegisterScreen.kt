@@ -29,14 +29,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.auth.register.state.RegisterUiState
 
 @Composable
-fun RegisterLayout(
+fun RegisterScreen(
     registerUiState: RegisterUiState,
-    navController: NavController,
+    onNavigateToSignIn: () -> Unit,
     onEvent: (RegisterEvent) -> Unit
 ) {
     Box(
@@ -180,7 +179,7 @@ fun RegisterLayout(
                             textDecoration = TextDecoration.Underline
                         ),
                         modifier = Modifier
-                            .clickable { navController.navigate("Login") }
+                            .clickable { onNavigateToSignIn() }
                     )
                 }
             }

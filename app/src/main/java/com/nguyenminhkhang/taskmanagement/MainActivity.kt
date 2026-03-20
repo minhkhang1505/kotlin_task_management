@@ -10,8 +10,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.StringRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.helper.LocaleHelper
-import com.nguyenminhkhang.taskmanagement.ui.TaskApp
+import com.nguyenminhkhang.taskmanagement.ui.common.theme.TaskManagementTheme
+import com.nguyenminhkhang.taskmanagement.ui.navigation.TaskAppNavHost
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -22,7 +26,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TaskApp( )
+            val navController = rememberNavController()
+            val accountViewModel = hiltViewModel<AccountViewModel>()
+            TaskManagementTheme(accountViewModel) {
+                TaskAppNavHost(navController)
+            }
         }
         requestNotificationPermissionIfNeeded()
     }

@@ -36,11 +36,11 @@ import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchLayout(
+fun SearchScreen(
     searchUiState: SearchUiState,
     searchResults: List<TaskEntity>,
     onEvent: (SearchEvent) -> Unit,
-    navController: NavController
+    onNavigateToTaskDetail: (Long) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -92,7 +92,7 @@ fun SearchLayout(
             SearchContent(
                 searchResults = searchResults,
                 searchQuery = searchUiState.searchQuery,
-                navController = navController,
+                onNavigateToTaskDetail = onNavigateToTaskDetail,
                 onEvent = onEvent
             )
         }
@@ -100,7 +100,7 @@ fun SearchLayout(
         AnimatedVisibility(!searchUiState.expanded) {
             DefaultContent(
                 todayTasks = searchUiState,
-                navController = navController,
+                onNavigateToTaskDetail = onNavigateToTaskDetail,
                 onEvent = onEvent
             )
         }

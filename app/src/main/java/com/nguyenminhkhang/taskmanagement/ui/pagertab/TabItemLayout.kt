@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.nguyenminhkhang.taskmanagement.ui.pagertab.state.TabUiState
@@ -39,6 +40,8 @@ fun TabItemLayout(state: TabUiState, isSelected: Boolean, onTabSelected: () -> U
     ) {
         Text(
             text = state.title,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black
         )
     }

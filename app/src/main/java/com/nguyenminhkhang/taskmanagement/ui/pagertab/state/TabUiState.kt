@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.pagertab.state
 
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.SortedType
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.toSortType
+import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyenminhkhang.taskmanagement.domain.model.toSortType
 
 data class TabUiState(
     val id: Long,

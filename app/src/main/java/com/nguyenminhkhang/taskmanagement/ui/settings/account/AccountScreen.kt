@@ -29,10 +29,11 @@ import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.AccountUiState
 
 @Composable
-fun AccountLayout(
+fun AccountScreen(
     accountUiState: AccountUiState,
     onEvent: (AccountEvent) -> Unit,
-    navController: NavController
+    onNavigateToTheme: () -> Unit,
+    onNavigateToLanguage: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -63,7 +64,7 @@ fun AccountLayout(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
                     .clickable {
-                        navController.navigate("ThemeMode")
+                        onNavigateToTheme()
                     }
                     .background(
                         MaterialTheme.colorScheme.surfaceContainerLow,
@@ -90,7 +91,7 @@ fun AccountLayout(
                 modifier = Modifier.fillMaxWidth()
                     .height(56.dp)
                     .clickable {
-                        navController.navigate("Language")
+                        onNavigateToLanguage()
                     }
                     .background(
                         MaterialTheme.colorScheme.surfaceContainerLow,

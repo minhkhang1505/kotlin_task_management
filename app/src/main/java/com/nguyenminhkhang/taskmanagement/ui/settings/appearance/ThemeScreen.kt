@@ -28,10 +28,10 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountEvent
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
 
 @Composable
-fun ThemeModeLayout(
+fun ThemeScreen(
     themeModeUiState: ThemeModeUiState,
     onEvent: (AccountEvent) -> Unit,
-    navController: NavController
+    onPopBackStack: () -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -43,7 +43,7 @@ fun ThemeModeLayout(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.popBackStack() }
+                onClick = onPopBackStack
             ) {
                 Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Back", modifier = Modifier.size(32.dp))
             }

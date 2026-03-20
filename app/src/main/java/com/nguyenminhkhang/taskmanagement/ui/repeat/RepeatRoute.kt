@@ -5,17 +5,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 
 @Composable
-fun RepeatPage(navController: NavController, repeatViewModel: RepeatViewModel = hiltViewModel()) {
+fun RepeatRoute(onPopBackStack: () -> Unit ) {
+    val repeatViewModel: RepeatViewModel = hiltViewModel()
     val currentTask by repeatViewModel.uiState.collectAsState()
     if (currentTask.isLoading) {
         CircularProgressIndicator()
     } else {
-        TaskRepeatLayout(
+        TaskRepeatScreen(
             currentTask = currentTask,
-            onNavigationBack = { navController.popBackStack() },
+            onPopBackStack = onPopBackStack,
             onEvent = repeatViewModel::onEvent,
         )
     }

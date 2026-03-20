@@ -13,20 +13,3 @@ data class RepeatUiModel(
     val endCondition: String = "Never", // Never, At, After
     val endDate: Long? = null, // Only for end condition At
 )
-
-
-fun RepeatUiModel.toRepeatEntity(): RepeatEntity {
-    return RepeatEntity(
-        id = this.id,
-        repeatInterval = this.repeatInterval,
-        repeatDaysOfWeek = this.repeatDaysOfWeek,
-        repeatMonthlyOption = this.repeatMonthlyOption,
-        repeatMonthlyDate = this.repeatMonthlyDate,
-        repeatMonthlyWeekOrder = this.repeatMonthlyWeekOrder,
-        repeatMonthlyDayOfWeek = this.repeatMonthlyDayOfWeek,
-        startDate = this.startDate,
-        timeOfDay = this.timeOfDay,
-        endCondition = this.endCondition,
-        endDate = this.endDate,
-    )
-}

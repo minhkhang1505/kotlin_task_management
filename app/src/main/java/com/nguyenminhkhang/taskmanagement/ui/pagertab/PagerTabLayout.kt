@@ -32,7 +32,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navController: NavController) {
+fun PagerTabLayout(
+    state: HomeUiState,
+    onEvent: (HomeEvent) -> Unit,
+    onNavigateToTaskDetail: (Long) -> Unit
+) {
     var pageCount by remember { mutableStateOf(0) }
     val pagerState = rememberPagerState(pageCount = { pageCount })
     var internalState by remember {
@@ -74,7 +78,7 @@ fun PagerTabLayout(state: HomeUiState, onEvent: (HomeEvent) -> Unit, navControll
     HorizontalPager(
         pagerState, key = { it }, beyondViewportPageCount = 2
     ) { pageIndex ->
-        TaskListPage(state,state = state.listTabGroup[pageIndex], onEvent, navController)
+        TaskListPage(state,state = state.listTabGroup[pageIndex], onEvent, onNavigateToTaskDetail)
     }
 
     if(state.isShowAddNewCollectionSheetVisible) {

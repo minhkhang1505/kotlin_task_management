@@ -29,10 +29,10 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountEvent
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.AccountUiState
 
 @Composable
-fun LanguageLayout(
+fun LanguageScreen(
     uiState : AccountUiState,
     onEvent: (AccountEvent) -> Unit,
-    navController: NavController
+    onPopBackStack: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -46,7 +46,7 @@ fun LanguageLayout(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start
         ) {
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton(onClick = onPopBackStack) {
                 Icon(imageVector = Icons.Default.KeyboardArrowLeft, contentDescription = "Back", modifier = Modifier.size(32.dp))
             }
             Text(stringResource(R.string.account_language), style = MaterialTheme.typography.titleLarge)

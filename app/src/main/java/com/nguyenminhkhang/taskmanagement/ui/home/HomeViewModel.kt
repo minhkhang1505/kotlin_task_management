@@ -49,7 +49,7 @@ import javax.inject.Inject
 const val ID_ADD_NEW_LIST = -999L
 const val ID_ADD_FAVORITE_LIST = -1000L
 
-data class TaskUseCases(
+data class TaskUseCases @Inject constructor(
     val addTask: AddTaskUseCase,
     val toggleFavorite: ToggleTaskFavoriteUseCase,
     val toggleComplete: ToggleCompleteUseCase,
@@ -57,7 +57,7 @@ data class TaskUseCases(
     val syncTasks: SyncTasksUseCase
 )
 
-data class CollectionUseCases(
+data class CollectionUseCases @Inject constructor(
     val getGroups: GetTaskGroupsUseCase,
     val getCollections: GetTaskCollectionsUseCase,
     val addCollection: AddNewCollectionUseCase,
@@ -269,9 +269,9 @@ class HomeViewModel @Inject constructor(
                 onEvent(CollectionEvent.ShowRenameCollectionDialog)
             }
         )
-        _uiState.update {
-            it.copy(sortMenuButtonSheet = actionsList)
-        }
+//        _uiState.update {
+//            it.copy(sortMenuButtonSheet = actionsList)
+//        }
     }
 
     private fun sortTaskCollection(collectionId: Long, sortedType: SortedType) {
@@ -370,7 +370,10 @@ class HomeViewModel @Inject constructor(
             is CollectionEvent.AddNewCollectionRequested -> requestAddNewCollection(event.name)
             is CollectionEvent.OnCollectionNameChanged -> changeCollectionName(event.name)
             is CollectionEvent.NewCollectionNameCleared -> _uiState.update { it.copy(newTaskCollectionName = "") }
-            is MenuEvent.RequestShowButtonSheetOption -> _uiState.update { it.copy(sortMenuButtonSheet = event.list) }
+            is MenuEvent.RequestShowButtonSheetOption -> {}
+//                _uiState.update {
+//                it.copy(sortMenuButtonSheet = event.list)
+//            }
             is TaskEvent.UndoToggleComplete -> undoToggleComplete()
             is TaskEvent.UpdateReminderTimeMillis -> _uiState.update{ it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = event.reminder)) }
             is TaskEvent.OnReminderTimeSelected -> onReminderTimeSelected(event.hour, event.minute)

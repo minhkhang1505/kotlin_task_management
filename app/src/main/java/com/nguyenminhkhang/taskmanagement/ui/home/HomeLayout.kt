@@ -33,7 +33,7 @@ fun HomeLayout(
     sortMenuItems: List<SortMenuItem>,
     actionMenuItems: List<ActionMenuItem>,
     uiState: HomeUiState,
-    navController: NavController,
+    onNavigateToTaskDetail: (Long) -> Unit,
     snackbarHostState: SnackbarHostState,
     onEvent: (HomeEvent) -> Unit,
 ) {
@@ -48,7 +48,7 @@ fun HomeLayout(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             TopBar()
-            PagerTabLayout(uiState, onEvent, navController)
+            PagerTabLayout(uiState, onEvent, onNavigateToTaskDetail)
         }
 
         SnackbarHost(hostState = snackbarHostState)

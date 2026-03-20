@@ -42,7 +42,7 @@ fun LazyItemScope.TaskItemLayout(
         Checkbox(
             checked = state.completed,
             onCheckedChange = {isChecked ->
-                onEvent(HomeEvent.ToggleComplete(state))
+//                onEvent(HomeEvent.ToggleComplete(state))
             }
         )
         Column(
@@ -75,7 +75,7 @@ fun LazyItemScope.TaskItemLayout(
                 contentDescription = "Favorite Icon",
                 tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f),
                 modifier = Modifier.padding(end = 10.dp).clickable {
-                    onEvent(HomeEvent.ToggleFavorite(state))
+//                    onEvent(HomeEvent.ToggleFavorite(state))
                 }
             )
         }
@@ -84,7 +84,7 @@ fun LazyItemScope.TaskItemLayout(
                 painter = painterResource(R.drawable.baseline_delete_outline_24),
                 contentDescription = "Delete Icon",
                 modifier = Modifier.padding(end = 10.dp).clickable {
-                    onEvent(HomeEvent.DeleteTask(state.id!!))
+//                    onEvent(HomeEvent.DeleteTask(state.id!!))
                 }
             )
         }

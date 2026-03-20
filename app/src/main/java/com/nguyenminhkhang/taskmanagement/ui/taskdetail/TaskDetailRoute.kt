@@ -14,28 +14,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 
 @Composable
-fun TaskDetailPage(
-    taskDetailViewModel: TaskDetailViewModel = hiltViewModel(),
-    navController: NavController
+fun TaskDetailRoute(
+    onNavigateToRepeat: (Long) -> Unit,
+    onPopBackStack: () -> Unit,
 ) {
+    val taskDetailViewModel: TaskDetailViewModel = hiltViewModel()
     val uiState by taskDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        taskDetailViewModel.navigationEvent.collect { event ->
-            when (event) {
-                is NavigationEvent.NavigateBackWithResult -> {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("task_completed_id", event.taskId)
-                    navController.popBackStack()
-                }
-            }
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        taskDetailViewModel.navigationEvent.collect { event ->
+//            when (event) {
+//                is NavigationEvent.NavigateBackWithResult -> {
+//                    navController.previousBackStackEntry
+//                        ?.savedStateHandle
+//                        ?.set("task_completed_id", event.taskId)
+//                    onPopBackStack()
+//                }
+//            }
+//        }
+//    }
 
     if (uiState.isLoading) {
         Column (
@@ -49,11 +49,11 @@ fun TaskDetailPage(
             )
         }
     } else {
-        TaskDetailLayout(
+        TaskDetailScreen(
             context = context,
             uiState = uiState,
-            onNavigateBack = { navController.popBackStack() },
-            onNavigateTo = { route -> navController.navigate(route) },
+            onPopBackStack = onPopBackStack,
+            onNavigateToRepeat = onNavigateToRepeat,
             onEvent = taskDetailViewModel::onEvent
         )
     }

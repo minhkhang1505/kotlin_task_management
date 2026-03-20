@@ -15,16 +15,16 @@ import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskRepeatLayout(
+fun TaskRepeatScreen(
     currentTask: RepeatUiState,
     onEvent: (RepeatEvent) -> Unit,
-    onNavigationBack: () -> Unit,
+    onPopBackStack: () -> Unit,
 ) {
     Scaffold(
         topBar = {
             RepeatTopAppBar(
                 onSave = { onEvent(RepeatEvent.OnSaveRepeatTaskSetup) },
-                onNavigationBack = { onNavigationBack() }
+                onNavigationBack = { onPopBackStack() }
             )
         }
     ) {

@@ -22,11 +22,11 @@ import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDetailLayout(
+fun TaskDetailScreen(
     context: Context,
     uiState: TaskDetailScreenUiState,
-    onNavigateBack: () -> Unit,
-    onNavigateTo: (String) -> Unit,
+    onPopBackStack: () -> Unit,
+    onNavigateToRepeat: (Long) -> Unit,
     onEvent: (TaskDetailEvent) -> Unit
 ) {
     Box(
@@ -38,7 +38,7 @@ fun TaskDetailLayout(
             TaskDetailTopAppBar(
                 isFavorite = uiState.task?.favorite ?: false,
                 onFavoriteClick = { onEvent(TaskDetailEvent.ToggleFavorite) },
-                onNavigateBack = { onNavigateBack() },
+                onNavigateBack = onPopBackStack,
             )
             // collection name row
             CurrentCollectionRow(
@@ -76,7 +76,7 @@ fun TaskDetailLayout(
             RepeatInfoRow(
                 summaryText = uiState.repeatSummaryText,
                 onClick = {
-                    onNavigateTo("Repeat/${uiState.task.id}")
+                    uiState.task.id?.let { onNavigateToRepeat(it) }
                 }
             )
             AddToCalendarButton(

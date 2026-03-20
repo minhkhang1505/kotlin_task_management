@@ -6,26 +6,27 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.nguyenminhkhang.taskmanagement.ui.NavScreen
 
 @Composable
-fun AccountPage(
-    accountViewModel: AccountViewModel = hiltViewModel(),
-    navController: NavController
+fun AccountRoute(
+    onNavigateToLanguage: () -> Unit,
+    onNavigateToTheme: () -> Unit
 ) {
+    val accountViewModel: AccountViewModel = hiltViewModel()
     val accountUiState by accountViewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        accountViewModel.logoutEvent.collect {
-            navController.navigate(NavScreen.LOGIN.route) {
-                popUpTo(0)
-            }
-        }
-    }
+//    LaunchedEffect(Unit) {
+//        accountViewModel.logoutEvent.collect {
+//            navController.navigate(NavScreen.SIGNIN.route) {
+//                popUpTo(0)
+//            }
+//        }
+//    }
 
-    AccountLayout(
+    AccountScreen(
         accountUiState = accountUiState,
         onEvent = accountViewModel::onEvent,
-        navController = navController
+        onNavigateToTheme = onNavigateToTheme,
+        onNavigateToLanguage = onNavigateToLanguage
     )
 }

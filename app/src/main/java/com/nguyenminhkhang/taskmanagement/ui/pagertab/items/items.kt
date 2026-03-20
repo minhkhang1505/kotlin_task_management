@@ -123,7 +123,7 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                         .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            onEvent(CollectionEvent.RequestSortTasks(state.tab.id))
+//                            onEvent(CollectionEvent.RequestSortTasks(state.tab.id))
                         },
                 )
                 Icon(
@@ -164,7 +164,7 @@ fun LazyListScope.completeTasksHeader(key: String, state: TaskGroupUiState, onTo
     }
 }
 
-fun LazyListScope.listTaskItems(taskState: HomeUiState, key: String, state : List<TaskUiState>, onEvent: (HomeEvent) -> Unit, navController: NavController) {
+fun LazyListScope.listTaskItems(taskState: HomeUiState, key: String, state : List<TaskUiState>, onEvent: (HomeEvent) -> Unit, onNavigateToTaskDetail: (Long) -> Unit) {
     itemsIndexed(
         state,
         key = { _, item -> "$key${item.id}" },
@@ -174,7 +174,9 @@ fun LazyListScope.listTaskItems(taskState: HomeUiState, key: String, state : Lis
                 .fillMaxWidth()
                 .background(color = itemBgColor)
         ) {
-            TaskItemLayout(taskState= taskState,item, onEvent = onEvent, onTaskClick = {navController.navigate("TaskDetail/${it}") })
+            TaskItemLayout(taskState= taskState,item, onEvent = onEvent, onTaskClick = {
+                onNavigateToTaskDetail(it)
+            })
         }
     }
 }

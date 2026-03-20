@@ -17,9 +17,9 @@ import com.nguyenminhkhang.taskmanagement.ui.snackbar.SnackbarActionType
 import kotlinx.coroutines.launch
 
 @Composable
-fun HomePage(
+fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController,
+    onNavigateToTaskDetail: (Long) -> Unit,
     backStackEntry: NavBackStackEntry,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
@@ -76,6 +76,6 @@ fun HomePage(
         actionMenuItems = actionMenuItems,
         onEvent = homeViewModel::onEvent,
         snackbarHostState = snackbarHostState,
-        navController = navController
+        onNavigateToTaskDetail = onNavigateToTaskDetail
     )
 }

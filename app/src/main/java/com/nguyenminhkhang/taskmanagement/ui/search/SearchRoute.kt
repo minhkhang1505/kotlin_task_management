@@ -11,17 +11,17 @@ import androidx.navigation.NavController
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SearchPage(
-    viewModel: SearchViewModel = hiltViewModel(),
-    navController: NavController,
+fun SearchRoute(
+    onNavigateToTaskDetail: (Long) -> Unit,
 ) {
+    val viewModel: SearchViewModel = hiltViewModel()
     val searchState by viewModel.searchUiState.collectAsState()
     val results by viewModel.searchResults.collectAsStateWithLifecycle()
 
-    SearchLayout(
+    SearchScreen(
         searchResults = results,
         searchUiState = searchState,
         onEvent = viewModel::onEvent,
-        navController = navController
+        onNavigateToTaskDetail = onNavigateToTaskDetail
     )
 }

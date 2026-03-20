@@ -19,18 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.NavScreen
 
 @Composable
-fun SignInPage(
-    viewModel: SignInViewModel = hiltViewModel(),
-    navController: NavController
+fun SignInRoute(
+    onNavigateToHome: () -> Unit
 ) {
+    val viewModel: SignInViewModel = hiltViewModel()
     val loginState by viewModel.signInState.collectAsState()
     val webClientId = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
@@ -69,16 +67,14 @@ fun SignInPage(
 
     LaunchedEffect(loginState) {
         if (loginState.isSuccess) {
-            navController.navigate(NavScreen.HOME.route) {
-                popUpTo("login") { inclusive = true }
-            }
+            onNavigateToHome()
         }
     }
 
-    SignInLayout(
-        loginState = loginState,
+    SignInScreen(
+        signInState = loginState,
         onGoogleSignInClick = onGoogleSignInClick,
-        navController = navController,
+        onNavigateToHome = onNavigateToHome,
         onEvent = viewModel::onEvent
     )
 
