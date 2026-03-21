@@ -20,10 +20,11 @@ import com.nguyenminhkhang.taskmanagement.ui.common.floataction.AppFloatActionBu
 import com.nguyenminhkhang.taskmanagement.ui.home.action.ActionDialog
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
-import com.nguyenminhkhang.taskmanagement.ui.home.sort.SortDialog
+import com.nguyenminhkhang.taskmanagement.ui.home.sort.SortModalBottomSheet
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.PagerTabLayout
 import com.nguyenminhkhang.taskmanagement.ui.common.topbar.TopBar
+import com.nguyenminhkhang.taskmanagement.ui.home.event.MenuEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,17 +70,21 @@ fun HomeScreen(
             AddTaskBottomSheet(uiState = uiState, onEvent = onEvent,)
         }
 
-        if (uiState.sortMenuButtonSheet.isNullOrEmpty() == false) {
-            SortDialog(
+        if (uiState.isSortDialogVisible) {
+            SortModalBottomSheet(
                 items = sortMenuItems,
-                onDismiss = {  }
+                onDismiss = {
+                    onEvent(MenuEvent.DismissSortDialog)
+                }
             )
         }
 
-        if (uiState.actionMenuButtonSheet.isNullOrEmpty() == false) {
+        if (uiState.isActionBottomSheetVisible) {
             ActionDialog(
                 items = actionMenuItems,
-                onDismiss = {  }
+                onDismiss = {
+                    onEvent(MenuEvent.DismissActionBottomSheet)
+                }
             )
         }
     }

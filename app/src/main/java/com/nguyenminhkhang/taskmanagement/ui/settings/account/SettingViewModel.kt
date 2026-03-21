@@ -33,7 +33,7 @@ import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
-class AccountViewModel @Inject constructor(
+class SettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val taskRepository: TaskRepository
 ) : ViewModel() {

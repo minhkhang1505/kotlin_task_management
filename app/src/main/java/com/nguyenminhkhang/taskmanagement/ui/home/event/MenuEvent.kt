@@ -9,4 +9,8 @@ sealed class MenuEvent : HomeEvent {
 
     // Sort
     data class SortCollection(val collectionId: Long, val sortedType: SortedType) : MenuEvent()
+    object DismissSortDialog : MenuEvent()
+    object ShowSortDialog : MenuEvent()
+    object DismissActionBottomSheet: MenuEvent()
+    object ShowActionBottomSheet: MenuEvent()
 }

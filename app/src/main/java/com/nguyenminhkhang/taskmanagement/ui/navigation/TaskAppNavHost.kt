@@ -20,7 +20,7 @@ import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBott
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeRoute
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatRoute
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchRoute
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountRoute
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguageRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeRoute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailRoute
@@ -61,11 +61,14 @@ fun TaskAppNavHost(
         ) {
 
             composable<SignInRoute> {
-                SignInRoute(onNavigateToHome = {
+                SignInRoute(onNavigateToRegister = {
                     Timber.d("Before navigate to Home Route")
-                    navController.navigate(HomeRoute)
+                    navController.navigate(RegisterRoute)
                     Timber.d("Navigate to Home Route success")
-                })
+                    Timber.d("Navigate to Home Route success")
+                },
+                    onNavigateToHome = {navController.navigate(HomeRoute)}
+                )
             }
 
             composable<RegisterRoute> {
@@ -73,8 +76,15 @@ fun TaskAppNavHost(
             }
 
             composable<AccountRoute> {
-                AccountRoute(onNavigateToLanguage = { navController.navigate(LanguageRoute)},
-                    onNavigateToTheme = { navController.navigate(ThemeRoute)},)
+                SettingRoute(
+                    onNavigateToLanguage = { navController.navigate(LanguageRoute)},
+                    onNavigateToTheme = { navController.navigate(ThemeRoute)},
+                    onNavigateToLogin = {
+                        navController.navigate(SignInRoute) {
+                            popUpTo(0)
+                        }
+                    }
+                )
             }
 
             composable<SearchRoute> {

@@ -3,6 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.ui.common.bottomsheet.BottomSheetItem
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import kotlinx.coroutines.launch
 
@@ -71,26 +73,21 @@ fun ModelButtonChangeCollection(
             modifier = Modifier.padding(16.dp),
         )
         uiState.collection.forEach { collection ->
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 4.dp)
-                    .fillMaxWidth()
-                    .height(48.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f), shape = RoundedCornerShape(12.dp))
-                    .clickable {
-                        scope.launch {
-                            sheetState.hide()
-                        }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                onEvent(TaskDetailEvent.CurrentCollectionChanged(collection.id!!))
-                            }
+            BottomSheetItem(
+                title = collection.content,
+                onClick = {
+                    scope.launch {
+                        sheetState.hide()
+                    }.invokeOnCompletion {
+                        if (!sheetState.isVisible) {
+                            onEvent(
+                                TaskDetailEvent.CurrentCollectionChanged(collection.id!!)
+                            )
                         }
-                    },
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = collection.content, modifier = Modifier.padding(horizontal = 16.dp))
-            }
+                    }
+                }
+            )
+            Spacer(Modifier.height(8.dp))
         }
     }
 }

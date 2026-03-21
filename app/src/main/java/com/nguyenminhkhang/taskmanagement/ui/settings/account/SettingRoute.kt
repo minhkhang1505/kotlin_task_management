@@ -1,29 +1,29 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.account
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun AccountRoute(
+fun SettingRoute(
     onNavigateToLanguage: () -> Unit,
-    onNavigateToTheme: () -> Unit
+    onNavigateToTheme: () -> Unit,
+    onNavigateToLogin: () -> Unit
 ) {
-    val accountViewModel: AccountViewModel = hiltViewModel()
-    val accountUiState by accountViewModel.uiState.collectAsState()
+    val settingViewModel: SettingViewModel = hiltViewModel()
+    val accountUiState by settingViewModel.uiState.collectAsState()
 
-//    LaunchedEffect(Unit) {
-//        accountViewModel.logoutEvent.collect {
-//            navController.navigate(NavScreen.SIGNIN.route) {
-//                popUpTo(0)
-//            }
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        settingViewModel.logoutEvent.collect {
+            onNavigateToLogin()
+        }
+    }
 
     SettingScreen(
         accountUiState = accountUiState,
-        onEvent = accountViewModel::onEvent,
+        onEvent = settingViewModel::onEvent,
         onNavigateToTheme = onNavigateToTheme,
         onNavigateToLanguage = onNavigateToLanguage
     )

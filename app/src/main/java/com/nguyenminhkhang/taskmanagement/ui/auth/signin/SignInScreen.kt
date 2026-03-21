@@ -34,7 +34,7 @@ import com.nguyenminhkhang.taskmanagement.ui.auth.signin.state.SignInState
 fun SignInScreen(
     signInState: SignInState,
     onGoogleSignInClick: () -> Unit,
-    onNavigateToHome: () -> Unit,
+    onNavigateToRegister: () -> Unit,
     onEvent: (SignInEvent) -> Unit,
 ) {
     Box(
@@ -146,7 +146,7 @@ fun SignInScreen(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(start = 4.dp)
-                        .clickable { onNavigateToHome() }
+                        .clickable { onNavigateToRegister() }
                 )
             }
         }

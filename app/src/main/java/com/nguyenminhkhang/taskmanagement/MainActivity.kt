@@ -15,7 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.helper.LocaleHelper
 import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
 import com.nguyenminhkhang.taskmanagement.ui.navigation.TaskAppNavHost
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
@@ -27,8 +27,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            val accountViewModel = hiltViewModel<AccountViewModel>()
-            TaskManagementTheme(accountViewModel) {
+            val settingViewModel = hiltViewModel<SettingViewModel>()
+            TaskManagementTheme(settingViewModel) {
                 TaskAppNavHost(navController)
             }
         }

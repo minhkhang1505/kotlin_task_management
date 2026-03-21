@@ -23,5 +23,7 @@ data class HomeUiState(
     val selectedReminderMinute: Int? = null,
     val isShowDeleteButtonVisible: Boolean = false,
 
-    val currentCollectionId: Long = 0L
+    val currentCollectionId: Long = 0L,
+    val isSortDialogVisible: Boolean = false,
+    val isActionBottomSheetVisible: Boolean = false
 )

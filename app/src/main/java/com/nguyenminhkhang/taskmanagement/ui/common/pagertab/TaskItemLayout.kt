@@ -23,6 +23,7 @@ import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.millisToDateString
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
+import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 
 @Composable
@@ -43,8 +44,8 @@ fun LazyItemScope.TaskItemLayout(
     ) {
         Checkbox(
             checked = state.completed,
-            onCheckedChange = {isChecked ->
-//                onEvent(HomeEvent.ToggleComplete(state))
+            onCheckedChange = {
+                onEvent(TaskEvent.ToggleComplete(state))
             }
         )
         Column(
@@ -78,7 +79,7 @@ fun LazyItemScope.TaskItemLayout(
                 tint = if (state.isFavorite) Color.Yellow else MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(end = 10.dp).size(22.dp)
                     .clickable {
-//                    onEvent(HomeEvent.ToggleFavorite(state))
+                    onEvent(TaskEvent.ToggleFavorite(state))
                     }
             )
         }

@@ -26,7 +26,8 @@ import com.nguyenminhkhang.taskmanagement.R
 
 @Composable
 fun SignInRoute(
-    onNavigateToHome: () -> Unit
+    onNavigateToRegister: () -> Unit,
+    onNavigateToHome:() -> Unit
 ) {
     val viewModel: SignInViewModel = hiltViewModel()
     val loginState by viewModel.signInState.collectAsState()
@@ -74,7 +75,7 @@ fun SignInRoute(
     SignInScreen(
         signInState = loginState,
         onGoogleSignInClick = onGoogleSignInClick,
-        onNavigateToHome = onNavigateToHome,
+        onNavigateToRegister = onNavigateToRegister,
         onEvent = viewModel::onEvent
     )
 

@@ -7,7 +7,7 @@ import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SortDialog(
+fun SortModalBottomSheet(
     items: List<SortMenuItem>,
     onDismiss: () -> Unit,
 ) {

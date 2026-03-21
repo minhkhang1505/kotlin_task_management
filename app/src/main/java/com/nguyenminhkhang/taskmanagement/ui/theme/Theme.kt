@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -41,7 +41,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun TaskManagementTheme(
-    viewModel: AccountViewModel,
+    viewModel: SettingViewModel,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {

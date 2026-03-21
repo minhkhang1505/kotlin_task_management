@@ -22,7 +22,7 @@ fun HomeRoute(
     backStackEntry: NavBackStackEntry,
 ) {
     val uiState by homeViewModel.uiState.collectAsState()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val strings = homeViewModel.stringProvider
 
     LaunchedEffect(key1 = true) {
@@ -38,8 +38,8 @@ fun HomeRoute(
 
         launch {
             homeViewModel.snackBarEvent.collect { event ->
-                snackbarHostState.currentSnackbarData?.dismiss()
-                val result = snackbarHostState.showSnackbar(
+                snackBarHostState.currentSnackbarData?.dismiss()
+                val result = snackBarHostState.showSnackbar(
                     message = event.message,
                     actionLabel = event.actionLabel,
                     duration = event.duration
@@ -74,7 +74,7 @@ fun HomeRoute(
         sortMenuItems = sortMenuItems,
         actionMenuItems = actionMenuItems,
         onEvent = homeViewModel::onEvent,
-        snackBarHostState = snackbarHostState,
+        snackBarHostState = snackBarHostState,
         onNavigateToTaskDetail = onNavigateToTaskDetail
     )
 }

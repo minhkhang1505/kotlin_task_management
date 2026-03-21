@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.common.pagertab.items
 
+import android.view.Menu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +41,7 @@ import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.home.event.MenuEvent
 
 @Composable
 fun itemBgColor(): Color {
@@ -118,13 +121,14 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
             )
             if( state.tab.id > 0) {
                 Icon(
-                    painter = painterResource(R.drawable.baseline_filter_alt_24),
-                    contentDescription = "Filter",
+                    painter = painterResource(R.drawable.ic_sort),
+                    contentDescription = "Sort",
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
-                        .padding(start = 8.dp, top = 8.dp, bottom = 8.dp)
+                        .padding(start = 8.dp, top = 8.dp, bottom = 8.dp).size(24.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-//                            onEvent(CollectionEvent.RequestSortTasks(state.tab.id))
+                            onEvent(MenuEvent.ShowSortDialog)
                         },
                 )
                 Icon(
@@ -133,7 +137,8 @@ fun LazyListScope.activeTasksHeader(key: String, state: TaskGroupUiState, onEven
                         .padding(start = 8.dp, end = 6.dp, top = 8.dp, bottom = 8.dp)
                         .clip(RoundedCornerShape(8.dp))
                         .clickable {
-                            onEvent(CollectionEvent.UpdateCollectionRequested(state.tab.id))
+                            onEvent(MenuEvent.ShowActionBottomSheet)
+//                            onEvent(CollectionEvent.UpdateCollectionRequested(state.tab.id))
                         },
                 )
             }
