@@ -23,7 +23,7 @@ fun buildSortMenuItems(
             title = strings.getString(R.string.sort_by_favorite),
             sortedType = SortedType.SORTED_BY_FAVORITE,
         ) {
-            onEvent(MenuEvent.SortCollection(collectionId, SortedType.SORTED_BY_DATE))
+            onEvent(MenuEvent.SortCollection(collectionId, SortedType.SORTED_BY_FAVORITE))
         }
     )
 }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Singleton
 
@@ -229,7 +230,7 @@ class TaskRepositoryImpl (
                     .document(collectionId.toString())
                     .delete()
                     .await()
-                Log.d("TaskRepoImpl", "Collection deleted in Firestore")
+                Timber.d( "Collection deleted in Firestore")
                 true
             } catch (e: Exception) {
                 Log.e("TaskRepoImpl", "Error deleting collection in Firestore", e)
@@ -244,6 +245,7 @@ class TaskRepositoryImpl (
         return withContext(Dispatchers.IO) {
             taskDAO.updateCollectionSortedType(collectionId, sortedType.value) > 0
         }
+        Timber.d("updateCollectionSortedType() - After call to DAO with sortType: ${sortedType}")
     }
 
     override fun getTaskById(taskId: Long): Flow<TaskEntity>{
@@ -370,8 +372,30 @@ class TaskRepositoryImpl (
     }
 
     override suspend fun updateCollectionNameById(collectionId: Long, newCollectionName: String) : Boolean {
-        return withContext(Dispatchers.IO) {
+        val userEmail = auth.currentUser?.email ?: return false
+        val roomUpdateSuccess =  withContext(Dispatchers.IO) {
             taskDAO.updateCollectionName(collectionId, newCollectionName) > 0
+        }
+        return if(roomUpdateSuccess) {
+            try {
+                firestore.collection("users").document(userEmail)
+                    .collection("task_collections")
+                    .document(collectionId.toString())
+                    .update(
+                        mapOf(
+                            "content" to newCollectionName,
+                            "updatedAt" to System.currentTimeMillis()
+                        )
+                    )
+                    .await()
+                Log.d("TaskRepoImpl", "Collection updated in Firestore")
+                true
+            } catch(e: Exception) {
+                Log.e("TaskRepoImpl", "Error updating collection in Firestore", e)
+                false
+            }
+        } else {
+            false
         }
     }
 

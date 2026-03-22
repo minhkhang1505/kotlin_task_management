@@ -4,7 +4,7 @@
     <string name="default_web_client_id" translatable="false">396229359784-9ov28t0fqroam7ls16kmqsi0a5ggq2rr.apps.googleusercontent.com</string>
     <string name="collection_one">Personal</string>
     <string name="collection_two">Work</string>
-    <string name="add_new_collecion">+ New tab</string>
+    <string name="add_new_collecion">Add</string>
     <string name="new_task_name_description">What\'s your next task?</string>
     <string name="new_task_detail">Add detail</string>
     <string name="save_button">Save</string>

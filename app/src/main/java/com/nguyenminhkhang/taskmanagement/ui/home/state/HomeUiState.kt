@@ -18,7 +18,6 @@ data class HomeUiState(
     val isAddTaskSheetVisible: Boolean = false,
     val isDatePickerVisible: Boolean = false,
     val isTimePickerVisible: Boolean = false,
-    val newTaskCollectionName: String = "",
     val selectedReminderHour: Int? = null,
     val selectedReminderMinute: Int? = null,
     val isShowDeleteButtonVisible: Boolean = false,

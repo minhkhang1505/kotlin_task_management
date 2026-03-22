@@ -16,8 +16,8 @@ fun ActionDialog(
     ) {
         ActionMenuList(
             items = items,
-            onItemSelected = {
-//                it.onClick()
+            onItemSelected = { item ->
+                item.action()
                 onDismiss()
             }
         )

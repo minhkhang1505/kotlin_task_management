@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Collection
 import kotlinx.coroutines.flow.Flow
 
 @Dao

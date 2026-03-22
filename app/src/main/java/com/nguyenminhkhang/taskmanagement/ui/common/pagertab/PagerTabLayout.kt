@@ -31,6 +31,7 @@ import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,8 +56,10 @@ fun PagerTabLayout(
         snapshotFlow { pagerState.currentPage }.collect { index ->
             internalState.getOrNull(index)?.tab?.id?.let { currentCollectionId ->
                 onEvent(CollectionEvent.CurrentCollectionId(currentCollectionId))
+                Timber.tag("PagerTabLayout").d("LaunchedEffect - pagerState.currentPage: ${pagerState.currentPage}")
             }
         }
+        
     }
 
     // TabBar
@@ -98,14 +101,14 @@ fun PagerTabLayout(
                     .fillMaxWidth())
 
             CustomInputTextField(
-                value = state.newTaskCollectionName,
+                value = state.newCollectionName,
                 onValueChange = { newValue -> onEvent(CollectionEvent.OnCollectionNameChanged(newValue)) },
                 placeholderDescription = "Enter new collection name"
             )
 
             Button(
                 onClick = {
-                    onEvent(CollectionEvent.AddNewCollectionRequested(state.newTaskCollectionName))
+                    onEvent(CollectionEvent.AddNewCollectionRequested(state.newCollectionName))
                     onEvent(UiEvent.HideAddNewCollectionButton)
                     onEvent(CollectionEvent.NewCollectionNameCleared)
                 },

@@ -88,9 +88,12 @@ fun LazyItemScope.TaskItemLayout(
                 painter = painterResource(R.drawable.ic_delete),
                 contentDescription = "Delete Icon",
                 tint = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(end = 10.dp).size(22.dp).clickable {
-//                    onEvent(HomeEvent.DeleteTask(state.id!!))
-                }
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .size(22.dp)
+                    .clickable {
+                        onEvent(TaskEvent.DeleteTask(state.id!!))
+                    }
             )
         }
     }

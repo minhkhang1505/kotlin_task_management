@@ -19,7 +19,8 @@ sealed class UiEvent : HomeEvent {
     object ShowAddNewCollectionButton : UiEvent()
     object HideAddNewCollectionButton : UiEvent()
 
-    // Delete button
-    object ShowDeleteButton : UiEvent()
-    object HideDeleteButton : UiEvent()
+//    // Delete button
+//    object ShowDeleteButton : UiEvent()
+//    object HideDeleteButton : UiEvent()
+    object OnToggleDeleteButton: UiEvent()
 }

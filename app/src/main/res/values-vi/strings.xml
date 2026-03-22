@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Quản lý công việc</string>
     <string name="collection_one">Cá nhân</string>
-    <string name="add_new_collecion">+ Thẻ mới</string>
+    <string name="add_new_collecion">Thêm</string>
     <string name="new_task_name_description">Công việc tiếp theo của bạn là gì?</string>
     <string name="new_task_detail">Thêm chi tiết</string>
     <string name="save_button">Lưu</string>
