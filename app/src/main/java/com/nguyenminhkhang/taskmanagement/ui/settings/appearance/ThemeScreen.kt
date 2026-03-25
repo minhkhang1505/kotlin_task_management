@@ -1,5 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.appearance
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -63,16 +64,17 @@ fun ThemeScreen(
 
             themeModeUiState.radioOptions.forEach { option ->
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().clickable{
+                        onEvent(AccountEvent.ThemeModeChanged(option))
+                        onEvent(AccountEvent.SaveThemeMode(option))
+                    },
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(text = stringResource(option), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
                     RadioButton(
                         selected = (option == themeModeUiState.selectedOptionRes),
-                        onClick = {
-                            onEvent(AccountEvent.ThemeModeChanged(option))
-                            onEvent(AccountEvent.SaveThemeMode(option))
-                        }
+                        onClick = {}
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))

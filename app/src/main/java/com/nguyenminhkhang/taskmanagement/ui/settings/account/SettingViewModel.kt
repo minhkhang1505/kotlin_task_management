@@ -2,7 +2,6 @@ package com.nguyenminhkhang.taskmanagement.ui.settings.account
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -11,13 +10,12 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.datastore.AccountDataStoreKeys.LANGUAGE_KEY
-import com.nguyenminhkhang.taskmanagement.datastore.AccountDataStoreKeys.THEME_MODE_KEY
-import com.nguyenminhkhang.taskmanagement.datastore.dataStore
 import com.nguyenminhkhang.taskmanagement.datastore.getSystemLanguageResId
 import com.nguyenminhkhang.taskmanagement.datastore.getSystemThemeModeResId
+import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.AccountUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -29,16 +27,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.Locale
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val taskRepository: TaskRepository
+    private val taskRepository: TaskRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(AccountUiState())
-    val uiState = _uiState.asStateFlow()
+    companion object {
+        private const val TAG = "SettingsViewModel"
+    }
+
+    private val _settingsUiState = MutableStateFlow(SettingUiState())
+    val settingsUiState = _settingsUiState.asStateFlow()
 
     private val _themeModeUiState = MutableStateFlow(ThemeModeUiState())
     val themeUiState = _themeModeUiState.asStateFlow()
@@ -48,47 +51,50 @@ class SettingViewModel @Inject constructor(
     private val _logoutEvent = MutableSharedFlow<Unit>()
     val logoutEvent = _logoutEvent.asSharedFlow()
 
-    private val settingsDataStore = context.dataStore
-
     private fun getUserInfo (): String {
         return auth.currentUser?.email ?: "UnidentifiedUser"
     }
 
-    private fun getLanguageCode(@StringRes languageRes: Int): String {
-        return when (languageRes) {
-            R.string.language_english -> "en"
-            R.string.language_vietnamese -> "vi"
-            else -> Locale.getDefault().language
-        }
-    }
-
     init {
-        _uiState.value = AccountUiState(
+        Timber.tag(TAG).d("SettingViewModel created")
+
+        _settingsUiState.value = SettingUiState(
             userEmail = getUserInfo(),
             userAvatarUrl = auth.currentUser?.photoUrl?.toString()
         )
 
         viewModelScope.launch {
-            settingsDataStore.data.collect { prefs ->
-                val themeMode = prefs[THEME_MODE_KEY] ?: getSystemThemeModeResId(context)
-                val language = prefs[LANGUAGE_KEY] ?: getSystemLanguageResId()
+            settingsRepository.settingsFlow.collect { prefs ->
+                val themeMode = prefs.themeModeRes ?: getSystemThemeModeResId(context)
+                val language = prefs.languageCode ?: getSystemLanguageResId()
+                Timber.tag(TAG).d(
+                    "settingsFlow emit - languageCode=%s, resolvedLanguage=%s, themeMode=%s",
+                    prefs.languageCode,
+                    language,
+                    themeMode
+                )
                 _themeModeUiState.update { it.copy(selectedOptionRes = themeMode) }
-                _uiState.update { it.copy(selectedLanguage = language) }
+                _settingsUiState.update { it.copy(languageRadioOption = language) }
+                Timber.tag(TAG).d(
+                    "uiState updated - languageRadioOption=%s",
+                    _settingsUiState.value.languageRadioOption
+                )
             }
+        }
+    }
 
+    private fun changeLanguage(selectedLanguage: LanguageOption) {
+        Timber.tag(TAG).d(
+            "changeLanguage() - Current value: ${settingsUiState.value.languageRadioOption}, New value: $selectedLanguage"
+        )
+        viewModelScope.launch {
+            settingsRepository.setLanguage(selectedLanguage)
+            Timber.tag(TAG).d("changeLanguage() - saved language=%s", selectedLanguage.code)
         }
     }
 
     private suspend fun saveThemeMode(@StringRes themeMode: Int) {
-        settingsDataStore.edit { reference ->
-            reference[THEME_MODE_KEY] = themeMode
-        }
-    }
-
-    private suspend fun saveLanguage(@StringRes language: Int) {
-        settingsDataStore.edit { reference ->
-            reference[LANGUAGE_KEY] = language
-        }
+        settingsRepository.setThemeMode(themeMode)
     }
 
     fun onEvent(event: AccountEvent) {
@@ -106,17 +112,17 @@ class SettingViewModel @Inject constructor(
                 }
             }
             is AccountEvent.ShowLogoutDialog -> {
-                _uiState.update { currentState ->
+                _settingsUiState.update { currentState ->
                     currentState.copy(isLogoutDialogVisible = true)
                 }
             }
             is AccountEvent.HideLogoutDialog -> {
-                _uiState.update { currentState ->
+                _settingsUiState.update { currentState ->
                     currentState.copy(isLogoutDialogVisible = false)
                 }
             }
             is AccountEvent.DismissLogoutDialog -> {
-                _uiState.update { currentState ->
+                _settingsUiState.update { currentState ->
                     currentState.copy(isLogoutDialogVisible = false)
                 }
             }
@@ -131,13 +137,11 @@ class SettingViewModel @Inject constructor(
                 }
             }
             is AccountEvent.LanguageChanged -> {
-                _uiState.update {
-                    it.copy(selectedLanguage = event.language)
+                Timber.tag(TAG).d("onEvent(LanguageChanged) - newLanguage=%s", event.language.code)
+                _settingsUiState.update {
+                    it.copy(languageRadioOption = event.language.code)
                 }
-                viewModelScope.launch {
-                    saveLanguage(event.language)
-                    _logoutEvent.emit(Unit)
-                }
+                changeLanguage(event.language)
             }
         }
     }

@@ -23,11 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.AccountUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
 
 @Composable
 fun SettingScreen(
-    accountUiState: AccountUiState,
+    settingUiState: SettingUiState,
     onEvent: (AccountEvent) -> Unit,
     onNavigateToTheme: () -> Unit,
     onNavigateToLanguage: () -> Unit
@@ -48,11 +48,11 @@ fun SettingScreen(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Avatar(
-                imageUrl = accountUiState.userAvatarUrl,
-                initials = accountUiState.userEmail ?: ""
+                imageUrl = settingUiState.userAvatarUrl,
+                initials = settingUiState.userEmail ?: ""
             )
             Text(
-                text = accountUiState.userEmail ?: "No email",
+                text = settingUiState.userEmail ?: "No email",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(top = 8.dp)
             )
@@ -111,7 +111,7 @@ fun SettingScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                 )
             }
-            if (accountUiState.isLogoutDialogVisible) {
+            if (settingUiState.isLogoutDialogVisible) {
                 Dialog(
                     onDismissRequest = { onEvent(AccountEvent.DismissLogoutDialog) },
                 ) {

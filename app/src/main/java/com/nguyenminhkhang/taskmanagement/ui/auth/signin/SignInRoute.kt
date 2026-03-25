@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.nguyenminhkhang.taskmanagement.R
+import timber.log.Timber
 
 @Composable
 fun SignInRoute(
@@ -45,20 +46,22 @@ fun SignInRoute(
     val googleSignInLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
+        Timber.d("Result code: ${result.resultCode}")
         if (result.resultCode == Activity.RESULT_OK) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
             try {
                 val account = task.getResult(ApiException::class.java)
+                Timber.d("SUCCESS: ${account.email}")
                 if (account.idToken != null) {
                     viewModel.signInWithGoogle(account.idToken!!)
                 } else {
-                    Log.e("SignInPage", "idToken is NULL! Check your default_web_client_id and SHA keys.")
+                    Timber.d("idToken NULL")
                 }
             } catch (e: ApiException) {
-                Log.e("SignInPage", "Google sign in failed: ${e.statusCode}", e)
+                Timber.e(e, "ApiException code: ${e.statusCode}")
             }
         } else {
-            Log.e("SignInPage", "Google Sign-In canceled or failed.")
+            Timber.d("Google Sign-In canceled or failed.")
         }
     }
 

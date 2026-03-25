@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Task Management</string>
 
-    <string name="default_web_client_id" translatable="false">809217476728-k6klqvg0fcb42bsulhkt1pjapr9bkkit.apps.googleusercontent.com</string>
     <string name="collection_one">Personal</string>
     <string name="collection_two">Work</string>
     <string name="add_new_collecion">Add</string>

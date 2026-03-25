@@ -21,6 +21,7 @@ import com.nguyenminhkhang.taskmanagement.ui.home.HomeRoute
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatRoute
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingRoute
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguageRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeRoute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailRoute
@@ -30,7 +31,8 @@ import kotlin.let
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskAppNavHost(
-    navController: NavHostController
+    navController: NavHostController,
+    settingViewModel: SettingViewModel
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
 
@@ -77,6 +79,7 @@ fun TaskAppNavHost(
 
             composable<AccountRoute> {
                 SettingRoute(
+                    settingViewModel = settingViewModel,
                     onNavigateToLanguage = { navController.navigate(LanguageRoute)},
                     onNavigateToTheme = { navController.navigate(ThemeRoute)},
                     onNavigateToLogin = {
@@ -96,11 +99,16 @@ fun TaskAppNavHost(
             }
 
             composable<ThemeRoute> {
-                ThemeRoute(onPopBackStack = { navController.popBackStack() })
+                ThemeRoute(
+                    settingViewModel = settingViewModel,
+                    onPopBackStack = { navController.popBackStack() }
+                )
             }
 
             composable<LanguageRoute> {
-                LanguageRoute( onPopBackStack = { navController.popBackStack() }
+                LanguageRoute(
+                    settingViewModel = settingViewModel,
+                    onPopBackStack = { navController.popBackStack() }
                 )
             }
 

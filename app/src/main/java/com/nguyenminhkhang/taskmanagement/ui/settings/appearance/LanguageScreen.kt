@@ -1,15 +1,14 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.appearance
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -23,17 +22,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountEvent
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.AccountUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
+import timber.log.Timber
 
 @Composable
 fun LanguageScreen(
-    uiState : AccountUiState,
+    uiState : SettingUiState,
     onEvent: (AccountEvent) -> Unit,
     onPopBackStack: () -> Unit
 ) {
+    val languageOptions = listOf(
+        LanguageOption.ENGLISH,
+        LanguageOption.VIETNAMESE
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -51,20 +56,29 @@ fun LanguageScreen(
             }
             Text(stringResource(R.string.account_language), style = MaterialTheme.typography.titleLarge)
         }
-        uiState.languageRadioOption.forEach { lang ->
+        languageOptions.forEach { languageItem ->
+            val languageLabel = when (languageItem) {
+                LanguageOption.ENGLISH -> stringResource(R.string.language_english)
+                LanguageOption.VIETNAMESE -> stringResource(R.string.language_vietnamese)
+            }
+
             Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth().padding(start = 16.dp, end = 2.dp).clickable{
+                        Timber.tag("LanguageScreen").d("Row clicked - language=%s", languageItem.code)
+                        onEvent(AccountEvent.LanguageChanged(languageItem))
+                    },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                Text(text = languageLabel, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
                 RadioButton(
-                    selected =( uiState.selectedLanguage == lang),
+                    selected =( uiState.languageRadioOption == languageItem.code),
                     onClick = {
-                        onEvent(AccountEvent.LanguageChanged(lang))
+                        Timber.tag("LanguageScreen").d("Radio clicked - language=%s", languageItem.code)
+                        onEvent(AccountEvent.LanguageChanged(languageItem))
                     },
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text = stringResource(lang), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
             }
         }
     }

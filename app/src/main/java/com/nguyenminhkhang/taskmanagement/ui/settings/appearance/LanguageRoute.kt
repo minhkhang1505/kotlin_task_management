@@ -2,15 +2,14 @@ package com.nguyenminhkhang.taskmanagement.ui.settings.appearance
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 
 @Composable
 fun LanguageRoute(
+    settingViewModel: SettingViewModel,
     onPopBackStack: () -> Unit
 ){
-    val settingViewModel: SettingViewModel = hiltViewModel()
-    val uiState = settingViewModel.uiState.collectAsState().value
+    val uiState = settingViewModel.settingsUiState.collectAsState().value
 
     LanguageScreen(
         uiState = uiState,
