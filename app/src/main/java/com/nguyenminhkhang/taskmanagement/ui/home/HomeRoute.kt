@@ -75,6 +75,7 @@ fun HomeRoute(
         actionMenuItems = actionMenuItems,
         onEvent = homeViewModel::onEvent,
         snackBarHostState = snackBarHostState,
-        onNavigateToTaskDetail = onNavigateToTaskDetail
+        onNavigateToTaskDetail = onNavigateToTaskDetail,
+        onScreenShown = homeViewModel::onScreenShown
     )
 }

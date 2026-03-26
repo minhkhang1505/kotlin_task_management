@@ -17,6 +17,7 @@ fun RepeatRoute(onPopBackStack: () -> Unit ) {
             currentTask = currentTask,
             onPopBackStack = onPopBackStack,
             onEvent = repeatViewModel::onEvent,
+            onScreenShown = repeatViewModel::onScreenShown
         )
     }
 }

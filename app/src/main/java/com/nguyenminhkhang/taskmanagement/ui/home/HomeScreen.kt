@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,12 @@ fun HomeScreen(
     onNavigateToTaskDetail: (Long) -> Unit,
     snackBarHostState: SnackbarHostState,
     onEvent: (HomeEvent) -> Unit,
+    onScreenShown: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        onScreenShown()
+    }
+
     Box(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)
     ) {

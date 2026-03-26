@@ -22,6 +22,7 @@ fun SearchRoute(
         searchResults = results,
         searchUiState = searchState,
         onEvent = viewModel::onEvent,
-        onNavigateToTaskDetail = onNavigateToTaskDetail
+        onNavigateToTaskDetail = onNavigateToTaskDetail,
+        onScreenShow = viewModel::onScreenShow
     )
 }

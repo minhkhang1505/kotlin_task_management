@@ -3,6 +3,8 @@ package com.nguyenminhkhang.taskmanagement.ui.repeat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
@@ -19,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class RepeatViewModel @Inject constructor(
     private  val taskRepository: TaskRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
     private val taskId: Long = savedStateHandle.get<Long>("taskId") ?: 0L
 
@@ -40,6 +43,12 @@ class RepeatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun onScreenShown() {
+        analyticsTracker.trackEvent(
+            AnalyticsEvent.ScreenView("RepeatScreen")
+        )
     }
 
     fun onRepeatEveryChanged(repeatEvery: Long) {

@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,8 +31,12 @@ fun SettingScreen(
     settingUiState: SettingUiState,
     onEvent: (AccountEvent) -> Unit,
     onNavigateToTheme: () -> Unit,
-    onNavigateToLanguage: () -> Unit
+    onNavigateToLanguage: () -> Unit,
+    onScreenShow: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        onScreenShow()
+    }
     Box(
         modifier = Modifier.fillMaxSize(),
     ) {

@@ -7,6 +7,8 @@ import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
@@ -26,7 +28,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
     private val taskRepository : TaskRepository,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val analyticsTracker : AnalyticsTracker
 ): ViewModel() {
 
     private val _taskUiState = MutableStateFlow(TaskDetailScreenUiState())
@@ -64,6 +67,12 @@ class TaskDetailViewModel @Inject constructor (
                 _taskUiState.value = combinedUiState
             }
         }
+    }
+
+    fun onScreenShow() {
+        analyticsTracker.trackEvent(
+            AnalyticsEvent.ScreenView("TaskDetailScreen")
+        )
     }
 
     fun onMarkAsDoneClicked() {

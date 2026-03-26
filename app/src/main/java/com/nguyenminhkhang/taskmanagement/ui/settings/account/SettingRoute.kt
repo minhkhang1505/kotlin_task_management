@@ -24,6 +24,7 @@ fun SettingRoute(
         settingUiState = accountUiState,
         onEvent = settingViewModel::onEvent,
         onNavigateToTheme = onNavigateToTheme,
-        onNavigateToLanguage = onNavigateToLanguage
+        onNavigateToLanguage = onNavigateToLanguage,
+        onScreenShow = settingViewModel::onScreenShow
     )
 }

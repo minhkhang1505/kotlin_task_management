@@ -10,8 +10,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.datastore.getSystemLanguageResId
-import com.nguyenminhkhang.taskmanagement.datastore.getSystemThemeModeResId
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
+import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemLanguageResId
+import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemThemeModeResId
 import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
@@ -34,7 +36,8 @@ import javax.inject.Inject
 class SettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val taskRepository: TaskRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
     companion object {
         private const val TAG = "SettingsViewModel"
@@ -81,6 +84,12 @@ class SettingViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun onScreenShow() {
+        analyticsTracker.trackEvent(
+            AnalyticsEvent.ScreenView("SettingScreen")
+        )
     }
 
     private fun changeLanguage(selectedLanguage: LanguageOption) {

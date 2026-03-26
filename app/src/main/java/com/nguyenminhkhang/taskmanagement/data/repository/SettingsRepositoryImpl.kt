@@ -2,14 +2,14 @@ package com.nguyenminhkhang.taskmanagement.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import com.nguyenminhkhang.taskmanagement.datastore.setLanguage
-import com.nguyenminhkhang.taskmanagement.datastore.setThemeMode
-import com.nguyenminhkhang.taskmanagement.datastore.settingsFlow
+import com.nguyenminhkhang.taskmanagement.data.datastore.setLanguage
+import com.nguyenminhkhang.taskmanagement.data.datastore.setThemeMode
+import com.nguyenminhkhang.taskmanagement.data.datastore.settingsFlow
 import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onEach
-import com.nguyenminhkhang.taskmanagement.datastore.SettingsPreferenceData
+import com.nguyenminhkhang.taskmanagement.data.datastore.SettingsPreferenceData
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton

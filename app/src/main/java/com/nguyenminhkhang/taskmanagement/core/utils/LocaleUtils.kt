@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.utils
+package com.nguyenminhkhang.taskmanagement.core.utils
 
 import android.content.Context
 import android.content.res.Configuration

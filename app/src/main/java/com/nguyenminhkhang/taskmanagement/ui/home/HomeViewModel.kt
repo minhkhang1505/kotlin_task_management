@@ -3,6 +3,8 @@ package com.nguyenminhkhang.taskmanagement.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
 import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
@@ -71,7 +73,8 @@ class HomeViewModel @Inject constructor(
     private val taskUseCases: TaskUseCases,
     private val collectionUseCases: CollectionUseCases,
     private val scheduler: TaskScheduler,
-    private val strings: StringProvider
+    private val strings: StringProvider,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
 
     companion object {
@@ -111,6 +114,12 @@ class HomeViewModel @Inject constructor(
         Timber.tag(TAG).d("HomeViewModel created")
     }
 
+    fun onScreenShown() {
+        analyticsTracker.trackEvent(
+            AnalyticsEvent.ScreenView("HomeScreen")
+        )
+    }
+
     private fun addNewTask() {
         val taskToSave = _uiState.value
         if (taskToSave.newTask!!.content.isBlank() || _currentSelectedCollectionId <= 0) return
@@ -123,31 +132,31 @@ class HomeViewModel @Inject constructor(
         val reminderTimeMillis = taskToSave.newTask.reminderTimeMillis
 
         viewModelScope.launch(Dispatchers.IO) {
-            val insertedTask = taskUseCases.addTask.invoke(
-                content = content,
-                collectionId = _currentSelectedCollectionId,
-                taskDetail = detail,
-                isFavorite = isFavorite,
-                startDate = startDate,
-                startTime = startTime,
-                reminderTimeMillis = reminderTimeMillis
-            )
-
-            if(insertedTask != null) {
-                val updatedTask = insertedTask.copy(
+            runCatching {
+                taskUseCases.addTask.invoke(
                     content = content,
+                    collectionId = _currentSelectedCollectionId,
                     taskDetail = detail,
-                    favorite = isFavorite,
+                    isFavorite = isFavorite,
                     startDate = startDate,
                     startTime = startTime,
                     reminderTimeMillis = reminderTimeMillis
                 )
+            }.onSuccess{ task ->
+                task ?: return@onSuccess
 
                 if (taskToSave.newTask.reminderTimeMillis != null) {
-                    scheduler.schedule(updatedTask)
+                    scheduler.schedule(task)
                 } else {
-                    scheduler.cancel(updatedTask)
+                    scheduler.cancel(task)
                 }
+                task.id?.let { taskId ->
+                    analyticsTracker.trackEvent(
+                        AnalyticsEvent.AddTask(taskId)
+                    )
+                }
+            }.onFailure {
+                Timber.e(it, "Add task fail")
             }
         }
     }
@@ -236,17 +245,24 @@ class HomeViewModel @Inject constructor(
     private fun updateCurrentCollectionId(collectionId: Long) {
         Timber.tag(TAG).d("updateCurrentCollectionId() - with id: ${collectionId}")
         _currentSelectedCollectionId = collectionId
-        _uiState.update { it.copy(
-            currentCollectionId = collectionId
-        ) }
+        _uiState.update { it.copy(currentCollectionId = collectionId) }
         Timber.tag(TAG).d("After update uiState.currentCollectionId: ${_uiState.value.currentCollectionId}")
     }
 
     private fun deleteCollectionById(collectionId: Long) {
         Timber.tag(TAG).d("Current collection: ${_currentSelectedCollectionId}")
         Timber.tag(TAG).d("deleteCollectionById() - with ID: ${collectionId}")
+
         viewModelScope.launch(Dispatchers.IO) {
-            collectionUseCases.deleteCollection.invoke(collectionId)
+            runCatching {
+                collectionUseCases.deleteCollection.invoke(collectionId)
+            }.onSuccess {
+                analyticsTracker.trackEvent(
+                    AnalyticsEvent.DeleteCollection(collectionId)
+                )
+            }.onFailure {
+                Timber.e(it,"Delete collection fail")
+            }
         }
     }
 
@@ -254,14 +270,30 @@ class HomeViewModel @Inject constructor(
         val newCollectionName = name
         if (newCollectionName.isBlank()) return
 
-        viewModelScope.launch {
-            collectionUseCases.addCollection.invoke(newCollectionName)
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                collectionUseCases.addCollection.invoke(newCollectionName)
+            }.onSuccess {
+                analyticsTracker.trackEvent(
+                    AnalyticsEvent.CreateCollection(name)
+                )
+            }.onFailure {
+                Timber.e(it, " Create new collection fail")
+            }
         }
     }
 
     private fun deleteSelectedTask(taskId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            taskUseCases.deleteTask.invoke(taskId)
+            runCatching {
+                taskUseCases.deleteTask.invoke(taskId)
+            }.onSuccess {
+                analyticsTracker.trackEvent(
+                    AnalyticsEvent.DeleteTask(taskId)
+                )
+            }.onFailure{
+                Timber.e(it, "Delete task fail")
+            }
         }
     }
 
@@ -339,7 +371,18 @@ class HomeViewModel @Inject constructor(
 
     private fun renameCollection(newCollectionName: String) {
         viewModelScope.launch {
-            collectionUseCases.updateName.invoke(_currentSelectedCollectionId, newCollectionName)
+            runCatching {
+                collectionUseCases.updateName.invoke(
+                    _currentSelectedCollectionId,
+                    newCollectionName
+                )
+            }.onSuccess {
+                analyticsTracker.trackEvent(
+                    AnalyticsEvent.RenameCollection(_currentSelectedCollectionId)
+                )
+            }.onFailure{
+                Timber.e(it, "Rename collection fail")
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.datastore
+package com.nguyenminhkhang.taskmanagement.data.datastore
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
 

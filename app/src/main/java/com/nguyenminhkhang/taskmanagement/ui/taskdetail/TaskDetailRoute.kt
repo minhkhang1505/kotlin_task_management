@@ -24,18 +24,15 @@ fun TaskDetailRoute(
     val uiState by taskDetailViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
-//    LaunchedEffect(Unit) {
-//        taskDetailViewModel.navigationEvent.collect { event ->
-//            when (event) {
-//                is NavigationEvent.NavigateBackWithResult -> {
-//                    navController.previousBackStackEntry
-//                        ?.savedStateHandle
-//                        ?.set("task_completed_id", event.taskId)
-//                    onPopBackStack()
-//                }
-//            }
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        taskDetailViewModel.navigationEvent.collect { event ->
+            when (event) {
+                is NavigationEvent.NavigateBackWithResult -> {
+                    onPopBackStack()
+                }
+            }
+        }
+    }
 
     if (uiState.isLoading) {
         Column (
@@ -54,7 +51,8 @@ fun TaskDetailRoute(
             uiState = uiState,
             onPopBackStack = onPopBackStack,
             onNavigateToRepeat = onNavigateToRepeat,
-            onEvent = taskDetailViewModel::onEvent
+            onEvent = taskDetailViewModel::onEvent,
+            onScreenShow = taskDetailViewModel::onScreenShow
         )
     }
 }

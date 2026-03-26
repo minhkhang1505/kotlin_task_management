@@ -10,6 +10,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,8 +28,12 @@ fun TaskDetailScreen(
     uiState: TaskDetailScreenUiState,
     onPopBackStack: () -> Unit,
     onNavigateToRepeat: (Long) -> Unit,
-    onEvent: (TaskDetailEvent) -> Unit
+    onEvent: (TaskDetailEvent) -> Unit,
+    onScreenShow: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        onScreenShow()
+    }
     Box(
         modifier = Modifier
             .padding(8.dp)

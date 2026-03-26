@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
+import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
@@ -41,6 +43,7 @@ val endOfDay = today.plusDays(1).atStartOfDay(zoneId).toEpochSecond() * 1000 - 1
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
+    private val analyticsTracker: AnalyticsTracker
 ) : ViewModel() {
     private val _searchUiState = MutableStateFlow(SearchUiState())
     val searchUiState : StateFlow<SearchUiState> = _searchUiState.asStateFlow()
@@ -63,6 +66,11 @@ class SearchViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    init {
+        Log.d("SearchVM", "start=$startOfDay, end=$endOfDay")
+        getTodayTasks(startOfDay, endOfDay)
+    }
+
     private fun getTodayTasks(startDate: Long, endDate: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             taskRepository.getTodayTasks(startDate, endDate).collect { todayTasks ->
@@ -72,9 +80,10 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    init {
-        Log.d("SearchVM", "start=$startOfDay, end=$endOfDay")
-        getTodayTasks(startOfDay, endOfDay)
+    fun onScreenShow() {
+        analyticsTracker.trackEvent(
+            AnalyticsEvent.ScreenView("SearchScreen")
+        )
     }
 
     fun onEvent(event: SearchEvent) {
