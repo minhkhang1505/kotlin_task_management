@@ -5,9 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import android.util.Log
-import com.google.firebase.BuildConfig
-import com.nguyenminhkhang.taskmanagement.notice.NotificationConstants
+import com.nguyenminhkhang.taskmanagement.notification.NotificationConstants
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 

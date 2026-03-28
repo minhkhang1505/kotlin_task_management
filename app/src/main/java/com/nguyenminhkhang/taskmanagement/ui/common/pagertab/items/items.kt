@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,12 +66,13 @@ fun LazyListScope.emptyState (
                 )
                 LottieAnimation(lottieComposition)
                 Text(
-                    "Not have any tasks yet",
+                    stringResource(R.string.have_any_tasks_yet),
                     fontSize = 24.sp,
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(vertical = 30.dp),
+                    textAlign = TextAlign.Center
                 )
-                Text("Add some tasks and follow it on Task Management Workspace",
+                Text(stringResource(R.string.empty_task_description),
                     fontSize = 14.sp, style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(start = 50.dp, end = 50.dp, bottom = 30.dp),
                     textAlign = TextAlign.Center

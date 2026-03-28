@@ -7,7 +7,7 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
-import com.nguyenminhkhang.taskmanagement.notice.TaskScheduler
+import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskGroupsUseCase

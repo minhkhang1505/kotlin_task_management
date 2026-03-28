@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.notice
+package com.nguyenminhkhang.taskmanagement.notification
 
 import dagger.Binds
 import dagger.Module

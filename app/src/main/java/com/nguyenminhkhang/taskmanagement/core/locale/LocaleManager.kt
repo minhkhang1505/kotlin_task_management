@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.helper
+package com.nguyenminhkhang.taskmanagement.core.locale
 
 import android.content.Context
 import android.content.res.Configuration
@@ -14,4 +14,14 @@ object LocaleHelper {
 
         return context.createConfigurationContext(config)
     }
+}
+
+fun Context.setLocale(languageCode: String): Context {
+    val locale = Locale(languageCode)
+    Locale.setDefault(locale)
+
+    val config = Configuration(resources.configuration)
+    config.setLocale(locale)
+
+    return createConfigurationContext(config)
 }

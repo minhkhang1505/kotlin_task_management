@@ -62,4 +62,6 @@
     <string name="language_english">English</string>
     <string name="language_vietnamese">Vietnamese</string>
     <string name="favorite_tab_name">⭐️</string>
+    <string name="have_any_tasks_yet">Not have any tasks yet</string>
+    <string name="empty_task_description">Add some tasks and follow it on Task Management Workspace</string>
 </resources>

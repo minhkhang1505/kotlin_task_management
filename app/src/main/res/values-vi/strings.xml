@@ -62,4 +62,6 @@
     <string name="language_english">English</string>
     <string name="language_vietnamese">Tiếng Việt</string>
     <string name="favorite_tab_name">⭐️</string>
+    <string name="have_any_tasks_yet">Chưa có tác vụ nào được thêm vào</string>
+    <string name="empty_task_description">Thêm các tác vụ vào không gian quản lý công việc để dễ dàng theo dõi</string>
 </resources>

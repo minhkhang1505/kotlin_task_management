@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.notice
+package com.nguyenminhkhang.taskmanagement.notification
 
 object NotificationConstants {
     const val CHANNEL_ID = "task_reminder_channel"

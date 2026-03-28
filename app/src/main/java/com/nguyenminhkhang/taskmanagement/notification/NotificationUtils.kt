@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.notice
+package com.nguyenminhkhang.taskmanagement.notification
 
 import android.Manifest
 import android.app.PendingIntent
