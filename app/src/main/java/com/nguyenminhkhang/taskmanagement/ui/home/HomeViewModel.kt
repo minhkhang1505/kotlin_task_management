@@ -89,7 +89,9 @@ class HomeViewModel @Inject constructor(
     private var pendingCompleteAction : Job? = null
     private var taskToConfirm : TaskUiState? = null
 
-    private var _currentSelectedCollectionId:Long = -1L
+    private val currentSelectedCollectionId: Long
+        get() = _uiState.value.currentCollectionId
+
     val stringProvider: StringProvider get() = strings
 
     init {
@@ -122,7 +124,7 @@ class HomeViewModel @Inject constructor(
 
     private fun addNewTask() {
         val taskToSave = _uiState.value
-        if (taskToSave.newTask!!.content.isBlank() || _currentSelectedCollectionId <= 0) return
+        if (taskToSave.newTask!!.content.isBlank() || currentSelectedCollectionId <= 0) return
 
         val content = taskToSave.newTask.content.trim()
         val detail = taskToSave.newTask.taskDetail
@@ -135,7 +137,7 @@ class HomeViewModel @Inject constructor(
             runCatching {
                 taskUseCases.addTask.invoke(
                     content = content,
-                    collectionId = _currentSelectedCollectionId,
+                    collectionId = currentSelectedCollectionId,
                     taskDetail = detail,
                     isFavorite = isFavorite,
                     startDate = startDate,
@@ -217,7 +219,7 @@ class HomeViewModel @Inject constructor(
         val isCompleting = !taskToChange.completed
 
         return currentList.map { group->
-            if(group.tab.id == _currentSelectedCollectionId) {
+            if(group.tab.id == currentSelectedCollectionId) {
                 val newActiveList = if(isCompleting) {
                     group.page.activeTaskList.filter { it.id != taskToChange.id }
                 } else {
@@ -244,13 +246,12 @@ class HomeViewModel @Inject constructor(
 
     private fun updateCurrentCollectionId(collectionId: Long) {
         Timber.tag(TAG).d("updateCurrentCollectionId() - with id: ${collectionId}")
-        _currentSelectedCollectionId = collectionId
         _uiState.update { it.copy(currentCollectionId = collectionId) }
         Timber.tag(TAG).d("After update uiState.currentCollectionId: ${_uiState.value.currentCollectionId}")
     }
 
     private fun deleteCollectionById(collectionId: Long) {
-        Timber.tag(TAG).d("Current collection: ${_currentSelectedCollectionId}")
+        Timber.tag(TAG).d("Current collection: ${currentSelectedCollectionId}")
         Timber.tag(TAG).d("deleteCollectionById() - with ID: ${collectionId}")
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -373,12 +374,12 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 collectionUseCases.updateName.invoke(
-                    _currentSelectedCollectionId,
+                    currentSelectedCollectionId,
                     newCollectionName
                 )
             }.onSuccess {
                 analyticsTracker.trackEvent(
-                    AnalyticsEvent.RenameCollection(_currentSelectedCollectionId)
+                    AnalyticsEvent.RenameCollection(currentSelectedCollectionId)
                 )
             }.onFailure{
                 Timber.e(it, "Rename collection fail")
@@ -389,7 +390,7 @@ class HomeViewModel @Inject constructor(
     private fun handleUiEvent(event: UiEvent) {
         when(event) {
             is UiEvent.ShowAddTaskSheet -> _uiState.update {
-                if ( _currentSelectedCollectionId>0L ) {
+                if (currentSelectedCollectionId > 0L) {
                     it.copy(isAddTaskSheetVisible = true)
                 } else {
                     it.copy(isAddTaskSheetVisible = false)
