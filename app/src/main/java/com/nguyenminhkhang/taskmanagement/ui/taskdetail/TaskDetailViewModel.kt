@@ -111,7 +111,11 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     fun onExitEditMode() {
-        saveTitle()
+        // Only save if user was actually editing. Prevents saving stale data
+        // when focus is lost due to navigation (e.g. going to RepeatScreen).
+        if (_taskUiState.value.isInEditMode) {
+            saveTitle()
+        }
         _taskUiState.update { it.copy(isInEditMode = false) }
     }
 

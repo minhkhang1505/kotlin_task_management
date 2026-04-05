@@ -137,7 +137,11 @@ fun TaskAppNavHost(
 
             composable<RepeatRoute>{
                 RepeatRoute(
-                    onPopBackStack = { navController.popBackStack() }
+                    onPopBackStack = {
+                        Timber.tag("NavHost").d("RepeatRoute popBackStack - current: ${navController.currentDestination?.route}")
+                        val result = navController.popBackStack()
+                        Timber.tag("NavHost").d("RepeatRoute popBackStack result=$result, now at: ${navController.currentDestination?.route}")
+                    }
                 )
             }
         }

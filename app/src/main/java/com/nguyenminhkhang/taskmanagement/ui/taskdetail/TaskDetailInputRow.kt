@@ -40,7 +40,7 @@ fun TaskDetailInputRow(
             .fillMaxWidth()
             .padding(horizontal = 8.dp)
             .height(100.dp)
-            .background(Color(0xFFCBE6F7), shape = RoundedCornerShape(12.dp)),
+            .background(MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

@@ -43,7 +43,7 @@ fun TaskDateRow(
             .height(100.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { onShowDatePicker() }
-            .background(Color(0xFFDCE3EB), shape = RoundedCornerShape(12.dp)),
+            .background(MaterialTheme.colorScheme.primaryContainer, shape = RoundedCornerShape(12.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(8.dp))

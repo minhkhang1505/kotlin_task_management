@@ -29,6 +29,13 @@ class TaskRepositoryImpl (
     private val auth: FirebaseAuth = Firebase.auth
     private val firestore: FirebaseFirestore = Firebase.firestore
 
+    /**
+     * Flag to prevent the Firestore snapshot listener from overwriting
+     * local Room data during an active save operation.
+     */
+    @Volatile
+    private var isSyncing = false
+
     override fun getTaskCollection(): Flow<List<TaskCollection>>  {
         Log.d("TaskRepoImpl", "getTaskCollection: ${auth.currentUser?.uid ?: "local_user"}")
         return taskDAO.getAllTaskCollection(auth.currentUser?.uid ?: "local_user")
@@ -45,15 +52,20 @@ class TaskRepositoryImpl (
 
         userDoc.collection("tasks").addSnapshotListener { tasksSnapshot, error ->
             if (error != null) {
-                Log.w("FirestoreSync", "Listen for tasks failed.", error)
+                Timber.tag(TAG).w(error, "syncTasksForCurrentUser() - Listen for tasks failed")
+                return@addSnapshotListener
+            }
+            if (isSyncing) {
+                Timber.tag(TAG).d("syncTasksForCurrentUser() - SKIPPED: local save in progress")
                 return@addSnapshotListener
             }
             if (tasksSnapshot != null) {
                 val onlineTasks = tasksSnapshot.toObjects(TaskEntity::class.java)
+                Timber.tag(TAG).d("syncTasksForCurrentUser() - Firestore snapshot received: ${onlineTasks.size} tasks, isFromCache=${tasksSnapshot.metadata.isFromCache}")
                 CoroutineScope(Dispatchers.IO).launch {
                     taskDAO.syncTasksForUser(userId, onlineTasks)
                     onlineTasks.forEach { task ->
-                        Log.d("TaskSync", "Synced Task: ${task}")
+                        Timber.tag(TAG).d("syncTasksForCurrentUser() - Synced task: id=${task.id}, startDate=${task.startDate}, startTime=${task.startTime}, interval=${task.repeatInterval}, updatedAt=${task.updatedAt}")
                     }
                 }
             }
@@ -278,9 +290,20 @@ class TaskRepositoryImpl (
             Timber.tag(TAG).w("updateTask() - No user email available, aborting")
             return false
         }
-        Timber.tag(TAG).d("updateTask() - Saving to Room: id=${task.id}, interval=${task.repeatInterval}, every=${task.repeatEvery}, endType=${task.repeatEndType}")
-        val roomResult = taskDAO.updateTask(task = task) > 0
-        Timber.tag(TAG).d("updateTask() - Room update result: success=$roomResult")
+
+        // Block the sync listener while saving to prevent it from
+        // overwriting Room with stale Firestore snapshot data.
+        isSyncing = true
+        Timber.tag(TAG).d("updateTask() - isSyncing=true, saving to Room: id=${task.id}, interval=${task.repeatInterval}, every=${task.repeatEvery}, endType=${task.repeatEndType}, startDate=${task.startDate}, startTime=${task.startTime}, updatedAt=${task.updatedAt}")
+
+        val rowsAffected = taskDAO.updateTask(task = task)
+        val roomSuccess = rowsAffected > 0
+        Timber.tag(TAG).d("updateTask() - Room update result: rowsAffected=$rowsAffected, success=$roomSuccess")
+        if (!roomSuccess) {
+            isSyncing = false
+            Timber.tag(TAG).e("updateTask() - Room update FAILED for taskId=${task.id}, 0 rows affected")
+            return false
+        }
         try {
             Timber.tag(TAG).d("updateTask() - Syncing to Firestore: users/$userEmail/tasks/${task.id}")
             firestore.collection("users").document(userEmail)
@@ -288,9 +311,12 @@ class TaskRepositoryImpl (
                 .document(task.id.toString())
                 .set(task)
                 .await()
-            Timber.tag(TAG).d("updateTask() - Firestore sync successful")
+            Timber.tag(TAG).d("updateTask() - Firestore sync successful for taskId=${task.id}")
         } catch(e: Exception) {
             Timber.tag(TAG).e(e, "updateTask() - Firestore sync failed for taskId=${task.id}")
+        } finally {
+            isSyncing = false
+            Timber.tag(TAG).d("updateTask() - isSyncing=false")
         }
         return true
     }

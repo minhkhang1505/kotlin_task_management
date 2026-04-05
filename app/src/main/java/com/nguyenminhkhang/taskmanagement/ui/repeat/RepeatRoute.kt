@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
+import timber.log.Timber
 
 @Composable
 fun RepeatRoute(onPopBackStack: () -> Unit) {
@@ -18,7 +19,9 @@ fun RepeatRoute(onPopBackStack: () -> Unit) {
         repeatViewModel.navigationEvent.collect { event ->
             when (event) {
                 is NavigationEvent.NavigateBackWithResult -> {
+                    Timber.tag("RepeatRoute").d("NavigateBackWithResult received, calling popBackStack")
                     onPopBackStack()
+                    Timber.tag("RepeatRoute").d("popBackStack called")
                 }
             }
         }
