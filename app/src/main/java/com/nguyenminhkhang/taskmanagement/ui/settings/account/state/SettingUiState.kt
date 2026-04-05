@@ -13,5 +13,6 @@ data class SettingUiState(
     val isLogoutDialogVisible: Boolean = false,
 
     val languageRadioOption: String = LanguageOption.ENGLISH.code,
-    val fontStyleOption: String = com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption.DEFAULT.key
+    val fontStyleOption: String = com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption.DEFAULT.key,
+    val colorThemeOption: String = com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption.PURPLE.key
 )

@@ -68,6 +68,12 @@
     <string name="font_sans_serif">Sans Serif</string>
     <string name="font_monospace">Monospace</string>
     <string name="font_cursive">Chữ nghệ thuật</string>
+    <string name="color_theme">Màu chủ đề</string>
+    <string name="color_theme_purple">Tím (Mặc định)</string>
+    <string name="color_theme_red">Đỏ</string>
+    <string name="color_theme_green">Xanh lá</string>
+    <string name="color_theme_blue">Xanh dương</string>
+    <string name="color_theme_orange">Cam</string>
     <string name="favorite_tab_name">⭐️</string>
     <string name="have_any_tasks_yet">Chưa có tác vụ nào được thêm vào</string>
     <string name="empty_task_description">Thêm các tác vụ vào không gian quản lý công việc để dễ dàng theo dõi</string>

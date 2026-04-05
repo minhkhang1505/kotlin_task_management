@@ -17,28 +17,22 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+private val PurpleDarkColorScheme = darkColorScheme(primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80)
+private val PurpleLightColorScheme = lightColorScheme(primary = Purple40, secondary = PurpleGrey40, tertiary = Pink40)
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+private val RedDarkColorScheme = darkColorScheme(primary = Red80, secondary = RedGrey80, tertiary = RedPink80)
+private val RedLightColorScheme = lightColorScheme(primary = Red40, secondary = RedGrey40, tertiary = RedPink40)
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+private val GreenDarkColorScheme = darkColorScheme(primary = Green80, secondary = GreenGrey80, tertiary = GreenLime80)
+private val GreenLightColorScheme = lightColorScheme(primary = Green40, secondary = GreenGrey40, tertiary = GreenLime40)
+
+private val BlueDarkColorScheme = darkColorScheme(primary = Blue80, secondary = BlueGrey80, tertiary = BlueLight80)
+private val BlueLightColorScheme = lightColorScheme(primary = Blue40, secondary = BlueGrey40, tertiary = BlueLight40)
+
+private val OrangeDarkColorScheme = darkColorScheme(primary = Orange80, secondary = OrangeGrey80, tertiary = OrangeYellow80)
+private val OrangeLightColorScheme = lightColorScheme(primary = Orange40, secondary = OrangeGrey40, tertiary = OrangeYellow40)
 
 @Composable
 fun TaskManagementTheme(
@@ -51,6 +45,7 @@ fun TaskManagementTheme(
     val settingUiState by viewModel.settingsUiState.collectAsState()
     val selectedThemeMode = uiState.selectedOptionRes
     val fontStyle = settingUiState.fontStyleOption
+    val colorThemeKey = settingUiState.colorThemeOption
 
     val isDarkTheme = when (selectedThemeMode) {
         R.string.dark_mode -> true
@@ -59,14 +54,27 @@ fun TaskManagementTheme(
         else -> isSystemInDarkTheme() // Mặc định
     }
 
+    val colorThemeOption = ColorThemeOption.fromStorage(colorThemeKey)
+
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && colorThemeOption == ColorThemeOption.PURPLE -> {
             val context = LocalContext.current
             if (isDarkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
-        isDarkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        isDarkTheme -> when (colorThemeOption) {
+            ColorThemeOption.PURPLE -> PurpleDarkColorScheme
+            ColorThemeOption.RED -> RedDarkColorScheme
+            ColorThemeOption.GREEN -> GreenDarkColorScheme
+            ColorThemeOption.BLUE -> BlueDarkColorScheme
+            ColorThemeOption.ORANGE -> OrangeDarkColorScheme
+        }
+        else -> when (colorThemeOption) {
+            ColorThemeOption.PURPLE -> PurpleLightColorScheme
+            ColorThemeOption.RED -> RedLightColorScheme
+            ColorThemeOption.GREEN -> GreenLightColorScheme
+            ColorThemeOption.BLUE -> BlueLightColorScheme
+            ColorThemeOption.ORANGE -> OrangeLightColorScheme
+        }
     }
 
     val systemUiController = rememberSystemUiController()

@@ -27,10 +27,16 @@ import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountEvent
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ThemeScreen(
     themeModeUiState: ThemeModeUiState,
+    settingUiState: SettingUiState,
     onEvent: (AccountEvent) -> Unit,
     onPopBackStack: () -> Unit
 ) {
@@ -78,6 +84,43 @@ fun ThemeScreen(
                     )
                 }
                 Spacer(modifier = Modifier.height(4.dp))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Column(
+            modifier = Modifier.selectableGroup().padding(start = 16.dp, end = 2.dp)
+        ) {
+            Text(text = stringResource(R.string.color_theme), style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ColorThemeOption.entries.forEach { option ->
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable {
+                        onEvent(AccountEvent.ColorThemeChanged(option))
+                    },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(option.primaryColorPreview)
+                        )
+                        Text(
+                            text = stringResource(option.labelRes),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(start = 12.dp)
+                        )
+                    }
+                    RadioButton(
+                        selected = (option.key == settingUiState.colorThemeOption),
+                        onClick = null // Handled by Row click
+                    )
+                }
+                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }

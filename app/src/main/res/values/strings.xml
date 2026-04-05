@@ -69,6 +69,12 @@
     <string name="font_sans_serif">Sans Serif</string>
     <string name="font_monospace">Monospace</string>
     <string name="font_cursive">Cursive</string>
+    <string name="color_theme">Color Theme</string>
+    <string name="color_theme_purple">Purple (Default)</string>
+    <string name="color_theme_red">Red</string>
+    <string name="color_theme_green">Green</string>
+    <string name="color_theme_blue">Blue</string>
+    <string name="color_theme_orange">Orange</string>
     <string name="favorite_tab_name">⭐️</string>
     <string name="have_any_tasks_yet">Not have any tasks yet</string>
     <string name="empty_task_description">Add some tasks and follow it on Task Management Workspace</string>

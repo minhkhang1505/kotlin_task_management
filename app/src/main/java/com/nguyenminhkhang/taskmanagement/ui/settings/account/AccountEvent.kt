@@ -13,5 +13,6 @@ sealed class AccountEvent {
     data class ThemeModeChanged(@StringRes val mode: Int) : AccountEvent()
     data class LanguageChanged( val language: LanguageOption) : AccountEvent()
     data class FontStyleChanged(val fontStyle: FontStyleOption) : AccountEvent()
+    data class ColorThemeChanged(val colorTheme: com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption) : AccountEvent()
     data class SaveThemeMode(@StringRes val mode: Int) : AccountEvent()
 }

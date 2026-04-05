@@ -11,9 +11,11 @@ fun ThemeRoute(
     onPopBackStack: () -> Unit
 ) {
     val themeModeUiState by settingViewModel.themeUiState.collectAsState()
+    val settingUiState by settingViewModel.settingsUiState.collectAsState()
 
     ThemeScreen(
         themeModeUiState = themeModeUiState,
+        settingUiState = settingUiState,
         onEvent = settingViewModel::onEvent,
         onPopBackStack = onPopBackStack
     )

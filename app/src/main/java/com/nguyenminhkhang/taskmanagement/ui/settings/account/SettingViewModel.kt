@@ -18,6 +18,7 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -72,22 +73,26 @@ class SettingViewModel @Inject constructor(
                 val themeMode = prefs.themeModeRes ?: getSystemThemeModeResId(context)
                 val language = prefs.languageCode ?: getSystemLanguageResId()
                 val fontStyle = prefs.fontStyleKey ?: FontStyleOption.DEFAULT.key
+                val colorTheme = prefs.colorThemeKey ?: ColorThemeOption.PURPLE.key
                 Timber.tag(TAG).d(
-                    "settingsFlow emit - languageCode=%s, resolvedLanguage=%s, themeMode=%s, fontStyle=%s",
+                    "settingsFlow emit - languageCode=%s, resolvedLanguage=%s, themeMode=%s, fontStyle=%s, colorTheme=%s",
                     prefs.languageCode,
                     language,
                     themeMode,
-                    fontStyle
+                    fontStyle,
+                    colorTheme
                 )
                 _themeModeUiState.update { it.copy(selectedOptionRes = themeMode) }
                 _settingsUiState.update { it.copy(
                     languageRadioOption = language,
-                    fontStyleOption = fontStyle
+                    fontStyleOption = fontStyle,
+                    colorThemeOption = colorTheme
                 ) }
                 Timber.tag(TAG).d(
-                    "uiState updated - languageRadioOption=%s, fontStyleOption=%s",
+                    "uiState updated - languageRadioOption=%s, fontStyleOption=%s, colorThemeOption=%s",
                     _settingsUiState.value.languageRadioOption,
-                    _settingsUiState.value.fontStyleOption
+                    _settingsUiState.value.fontStyleOption,
+                    _settingsUiState.value.colorThemeOption
                 )
             }
         }
@@ -166,6 +171,15 @@ class SettingViewModel @Inject constructor(
                 }
                 viewModelScope.launch {
                     settingsRepository.setFontStyle(event.fontStyle.key)
+                }
+            }
+            is AccountEvent.ColorThemeChanged -> {
+                Timber.tag(TAG).d("onEvent(ColorThemeChanged) - newColorTheme=%s", event.colorTheme.key)
+                _settingsUiState.update { 
+                    it.copy(colorThemeOption = event.colorTheme.key)
+                }
+                viewModelScope.launch {
+                    settingsRepository.setColorTheme(event.colorTheme.key)
                 }
             }
         }

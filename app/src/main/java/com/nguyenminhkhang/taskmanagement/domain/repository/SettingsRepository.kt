@@ -9,4 +9,5 @@ interface SettingsRepository {
     suspend fun setLanguage(language: LanguageOption)
     suspend fun setThemeMode(themeMode: Int)
     suspend fun setFontStyle(fontStyle: String)
+    suspend fun setColorTheme(colorTheme: String)
 }

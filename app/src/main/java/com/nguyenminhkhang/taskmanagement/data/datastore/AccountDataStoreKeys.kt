@@ -15,4 +15,5 @@ object AccountDataStoreKeys {
     val THEME_MODE_KEY = intPreferencesKey("theme_mode_key")
     val LANGUAGE_KEY = stringPreferencesKey("language_key")
     val FONT_STYLE_KEY = stringPreferencesKey("font_style_key")
+    val COLOR_THEME_KEY = stringPreferencesKey("color_theme_key")
 }
