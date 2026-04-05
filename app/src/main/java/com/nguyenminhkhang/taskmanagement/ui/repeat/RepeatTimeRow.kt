@@ -23,7 +23,7 @@ fun RepeatTimeRow(
 ) {
     Box(modifier = Modifier.padding(vertical = 6.dp).clickable { onShowTimePicker() }) {
         OutlinedTextField(
-            value = uiState.task?.startTime?.toHourMinuteString() ?: "Select Time",
+            value = uiState.draftTask?.startTime?.toHourMinuteString() ?: "Select Time",
             onValueChange = {},
             modifier = Modifier
                 .fillMaxWidth(),

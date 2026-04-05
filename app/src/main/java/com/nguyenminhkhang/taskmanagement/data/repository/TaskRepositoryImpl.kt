@@ -249,6 +249,7 @@ class TaskRepositoryImpl (
     }
 
     override fun getTaskById(taskId: Long): Flow<TaskEntity>{
+        Timber.tag(TAG).d("getTaskById() - Fetching task from Room with taskId=$taskId")
         return taskDAO.getTaskById(taskId)
     }
 
@@ -273,19 +274,23 @@ class TaskRepositoryImpl (
     override suspend fun updateTask(
         task: TaskEntity
     ): Boolean {
-        val userEmail = auth.currentUser?.email ?: return false
-        taskDAO.updateTask(task = task) > 0
+        val userEmail = auth.currentUser?.email ?: run {
+            Timber.tag(TAG).w("updateTask() - No user email available, aborting")
+            return false
+        }
+        Timber.tag(TAG).d("updateTask() - Saving to Room: id=${task.id}, interval=${task.repeatInterval}, every=${task.repeatEvery}, endType=${task.repeatEndType}")
+        val roomResult = taskDAO.updateTask(task = task) > 0
+        Timber.tag(TAG).d("updateTask() - Room update result: success=$roomResult")
         try {
+            Timber.tag(TAG).d("updateTask() - Syncing to Firestore: users/$userEmail/tasks/${task.id}")
             firestore.collection("users").document(userEmail)
                 .collection("tasks")
                 .document(task.id.toString())
                 .set(task)
                 .await()
-            Log.d("TaskRepoImpl", "Task updated in Firestore")
-            true
+            Timber.tag(TAG).d("updateTask() - Firestore sync successful")
         } catch(e: Exception) {
-            Log.e("TaskRepoImpl", "Error updating task in Firestore", e)
-            false
+            Timber.tag(TAG).e(e, "updateTask() - Firestore sync failed for taskId=${task.id}")
         }
         return true
     }
@@ -430,5 +435,9 @@ class TaskRepositoryImpl (
                 false
             }
         }.join().let { true }
+    }
+
+    companion object {
+        private const val TAG = "TaskRepositoryImpl"
     }
 }

@@ -17,12 +17,17 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
@@ -38,11 +43,13 @@ fun RepeatFrequencySelector(
     ) {
         val focusManager = LocalFocusManager.current
         val density = LocalDensity.current
+        var textFieldWidth by remember { mutableStateOf(0.dp) }
+        var isDropdownVisible by remember { mutableStateOf(false) }
 
         OutlinedTextField(
-            value = uiState.task?.repeatEvery.toString(),
+            value = uiState.draftTask?.repeatEvery.toString(),
             placeholder = { Text("1") },
-            onValueChange = { onEvent(RepeatEvent.OnRepeatEveryChanged (it.toLongOrNull() ?: 1L))  },
+            onValueChange = { onEvent(RepeatEvent.OnRepeatEveryChanged(it.toLongOrNull() ?: 1L))  },
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number, imeAction = ImeAction.Done),
             modifier = Modifier.weight(0.2f).padding(end = 8.dp),
             maxLines = 1,
@@ -53,12 +60,12 @@ fun RepeatFrequencySelector(
         Box (
             modifier = Modifier
                 .onSizeChanged { size ->
-                    uiState.textFieldWidth = with(density) { size.width.toDp() }
+                    textFieldWidth = with(density) { size.width.toDp() }
                 }
-                .clickable { onEvent(RepeatEvent.OnIntervalDropdownClicked) }
+                .clickable { isDropdownVisible = !isDropdownVisible }
         ) {
             OutlinedTextField(
-                value = uiState.task?.repeatInterval ?: "Week",
+                value = uiState.draftTask?.repeatInterval ?: "Week",
                 onValueChange = {},
                 trailingIcon = {
                     Icon(
@@ -72,16 +79,16 @@ fun RepeatFrequencySelector(
                 colors = OUTLINETEXTFIELD_COLOR,
             )
             DropdownMenu(
-                expanded = uiState.isIntervalDropdownVisible,
-                onDismissRequest = { onEvent(RepeatEvent.OnIntervalDropdownDismiss) },
-                modifier = Modifier.width(uiState.textFieldWidth)
+                expanded = isDropdownVisible,
+                onDismissRequest = { isDropdownVisible = false },
+                modifier = Modifier.width(textFieldWidth)
             ) {
                 RepeatConstants.AvailableIntervals.forEach { type ->
                     DropdownMenuItem(
                         text = { Text(type) },
                         onClick = {
                             onEvent(RepeatEvent.OnIntervalSelected(type))
-                            onEvent(RepeatEvent.OnIntervalDropdownDismiss)
+                            isDropdownVisible = false
                         },
                     )
                 }

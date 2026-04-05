@@ -28,6 +28,7 @@ import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 fun RepeatEndConditionSelector(
     uiState: RepeatUiState,
     onEvent: (RepeatEvent) -> Unit,
+    onShowEndDatePicker: () -> Unit,
 ) {
     Text(text = "End Condition", modifier = Modifier.padding(top = 8.dp, bottom = 4.dp))
     Column(
@@ -56,7 +57,7 @@ fun RepeatEndConditionSelector(
                                 selected = ( "At" == uiState.selectedEndCondition),
                                 onClick = {
                                     onEvent(RepeatEvent.EndConditionChanged("At"))
-                                    onEvent(RepeatEvent.ShowEndDatePicker)
+                                    onShowEndDatePicker()
                                 },
                                 role = Role.RadioButton
                             ),
@@ -68,7 +69,7 @@ fun RepeatEndConditionSelector(
                                 style = MaterialTheme.typography.bodyLarge
                             )
                             OutlinedTextField(
-                                value = uiState.task?.repeatEndDate?.let {
+                                value = uiState.draftTask?.repeatEndDate?.let {
                                     convertMillisToDate(it)
                                 } ?: "Select End Date",
                                 placeholder = { Text("Select End Date") },
@@ -96,9 +97,9 @@ fun RepeatEndConditionSelector(
                             )
                             val focusManager = LocalFocusManager.current
                             OutlinedTextField(
-                                value = uiState.task?.repeatEndCount.toString(),
+                                value = uiState.occurrenceCount,
                                 placeholder = { Text("1") },
-                                onValueChange = { onEvent(RepeatEvent.EndConditionChanged(it)) },
+                                onValueChange = { onEvent(RepeatEvent.OccurrenceCountChanged(it)) },
                                 modifier = Modifier.weight(0.2f),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
                                 enabled = ("After" == uiState.selectedEndCondition),

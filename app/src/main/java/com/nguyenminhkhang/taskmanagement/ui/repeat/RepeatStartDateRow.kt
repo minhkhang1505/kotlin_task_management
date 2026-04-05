@@ -20,21 +20,21 @@ import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 fun RepeatStartDateRow(
     uiState: RepeatUiState,
     onShowDatePicker: () -> Unit,
-    onClearDate: () -> Unit
+    onClearDate: () -> Unit,
 ) {
     Text(text = "Start Date", modifier = Modifier.padding(vertical = 8.dp))
     Box(modifier = Modifier.clickable { onShowDatePicker() }
     ) {
         OutlinedTextField(
-            value = uiState.task?.startDate?.let { convertMillisToDate(it) } ?: "Select Start Date",
+            value = uiState.draftTask?.startDate?.let { convertMillisToDate(it) } ?: "Select Start Date",
             placeholder = { Text("Select Start Date") },
-            onValueChange = {},
+            onValueChange = { },
             modifier = Modifier
                 .fillMaxWidth(),
             readOnly = true,
             enabled = false,
             trailingIcon = {
-                if (uiState.task?.startDate != null) {
+                if (uiState.draftTask?.startDate != null) {
                     Icon(
                         Icons.Default.Clear,
                         contentDescription = "Calendar Icon",
