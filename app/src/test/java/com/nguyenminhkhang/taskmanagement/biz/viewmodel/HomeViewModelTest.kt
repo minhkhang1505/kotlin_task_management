@@ -381,7 +381,6 @@ class HomeViewModelTest {
 
 		// Assert
 		assertEquals(null, viewModel.uiState.value.sortMenuButtonSheet)
-		confirmVerified()
 	}
 
 	private fun createViewModel(): HomeViewModel {

@@ -44,6 +44,8 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
@@ -83,8 +85,8 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    private var _snackBarEvent = MutableSharedFlow<SnackbarEvent>()
-    val snackBarEvent = _snackBarEvent.asSharedFlow()
+    private val _snackBarEvent = Channel<SnackbarEvent>(Channel.BUFFERED)
+    val snackBarEvent = _snackBarEvent.receiveAsFlow()
 
     private var pendingCompleteAction : Job? = null
     private var taskToConfirm : TaskUiState? = null
@@ -104,7 +106,7 @@ class HomeViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (collectionUseCases.getCollections.invoke().first().isEmpty()) {
                 collectionUseCases.addCollection.invoke(strings.getString(R.string.collection_one))
                 collectionUseCases.addCollection.invoke(strings.getString(R.string.collection_two))
@@ -133,7 +135,7 @@ class HomeViewModel @Inject constructor(
         val startTime = taskToSave.newTask.startTime
         val reminderTimeMillis = taskToSave.newTask.reminderTimeMillis
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
                 taskUseCases.addTask.invoke(
                     content = content,
@@ -164,7 +166,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun handleToggleFavorite(task: TaskUiState) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             taskUseCases.toggleFavorite.invoke(taskId = task.id!!, isFavorite = !task.isFavorite)
         }
     }
@@ -181,7 +183,7 @@ class HomeViewModel @Inject constructor(
         taskToConfirm = task
 
         viewModelScope.launch {
-            _snackBarEvent.emit(SnackbarEvent(
+            _snackBarEvent.send(SnackbarEvent(
                 message = "Task '${task.content}' marked as ${if (task.completed) "incomplete" else "complete"}",
                 actionLabel = "Undo",
                 actionType = SnackbarActionType.UNDO_TOGGLE_COMPLETE,
@@ -208,7 +210,7 @@ class HomeViewModel @Inject constructor(
     private fun confirmToggleComplete() {
         val task = taskToConfirm ?: return
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             taskUseCases.toggleComplete.invoke(task.id!!, !task.completed)
         }
         taskToConfirm = null
@@ -254,7 +256,7 @@ class HomeViewModel @Inject constructor(
         Timber.tag(TAG).d("Current collection: ${currentSelectedCollectionId}")
         Timber.tag(TAG).d("deleteCollectionById() - with ID: ${collectionId}")
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
                 collectionUseCases.deleteCollection.invoke(collectionId)
             }.onSuccess {
@@ -271,7 +273,7 @@ class HomeViewModel @Inject constructor(
         val newCollectionName = name
         if (newCollectionName.isBlank()) return
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
                 collectionUseCases.addCollection.invoke(newCollectionName)
             }.onSuccess {
@@ -285,7 +287,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun deleteSelectedTask(taskId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             runCatching {
                 taskUseCases.deleteTask.invoke(taskId)
             }.onSuccess {
