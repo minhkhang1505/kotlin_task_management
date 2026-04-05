@@ -9,14 +9,16 @@ import kotlinx.coroutines.flow.map
 
 data class SettingsPreferenceData(
     val languageCode: String?,
-    val themeModeRes: Int?
+    val themeModeRes: Int?,
+    val fontStyleKey: String?
 )
 
 val DataStore<Preferences>.settingsFlow: Flow<SettingsPreferenceData>
     get() = data.map { preferences ->
         SettingsPreferenceData(
             languageCode = preferences[AccountDataStoreKeys.LANGUAGE_KEY],
-            themeModeRes = preferences[AccountDataStoreKeys.THEME_MODE_KEY]
+            themeModeRes = preferences[AccountDataStoreKeys.THEME_MODE_KEY],
+            fontStyleKey = preferences[AccountDataStoreKeys.FONT_STYLE_KEY]
         )
     }
 
@@ -29,5 +31,11 @@ suspend fun DataStore<Preferences>.setLanguage(language: LanguageOption) {
 suspend fun DataStore<Preferences>.setThemeMode(themeMode: Int) {
     edit { preferences ->
         preferences[AccountDataStoreKeys.THEME_MODE_KEY] = themeMode
+    }
+}
+
+suspend fun DataStore<Preferences>.setFontStyle(fontStyle: String) {
+    edit { preferences ->
+        preferences[AccountDataStoreKeys.FONT_STYLE_KEY] = fontStyle
     }
 }

@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.nguyenminhkhang.taskmanagement.data.datastore.setLanguage
 import com.nguyenminhkhang.taskmanagement.data.datastore.setThemeMode
+import com.nguyenminhkhang.taskmanagement.data.datastore.setFontStyle
 import com.nguyenminhkhang.taskmanagement.data.datastore.settingsFlow
 import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
@@ -25,9 +26,10 @@ class SettingsRepositoryImpl @Inject constructor(
     override val settingsFlow: Flow<SettingsPreferenceData>
         get() = dataStore.settingsFlow.onEach { prefs ->
             Timber.tag(TAG).d(
-                "settingsFlow read - languageCode=%s, themeModeRes=%s",
+                "settingsFlow read - languageCode=%s, themeModeRes=%s, fontStyleKey=%s",
                 prefs.languageCode,
-                prefs.themeModeRes
+                prefs.themeModeRes,
+                prefs.fontStyleKey
             )
         }
 
@@ -39,5 +41,10 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setThemeMode(themeMode: Int) {
         Timber.tag(TAG).d("setThemeMode() - writing themeModeRes=%s", themeMode)
         dataStore.setThemeMode(themeMode)
+    }
+
+    override suspend fun setFontStyle(fontStyle: String) {
+        Timber.tag(TAG).d("setFontStyle() - writing fontStyleKey=%s", fontStyle)
+        dataStore.setFontStyle(fontStyle)
     }
 }

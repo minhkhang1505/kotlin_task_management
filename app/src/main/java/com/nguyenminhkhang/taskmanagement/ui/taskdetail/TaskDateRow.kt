@@ -65,13 +65,13 @@ fun TaskDateRow(
                     text = stringResource(R.string.detail_start_date_descrip),
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             } else {
                 CustomTextField(
                     content = convertMillisToDate(uiState.task.startDate!!),
                     onClick = { onClearDate() }, // <-- Thông báo sự kiện
-                    textColor = Color.Black,
+                    textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     textSize = MaterialTheme.typography.titleMedium.fontSize
                 )
             }

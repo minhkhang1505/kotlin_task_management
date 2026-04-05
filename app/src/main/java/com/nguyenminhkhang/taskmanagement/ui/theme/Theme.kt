@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -47,7 +48,9 @@ fun TaskManagementTheme(
 ) {
 
     val uiState by viewModel.themeUiState.collectAsState()
+    val settingUiState by viewModel.settingsUiState.collectAsState()
     val selectedThemeMode = uiState.selectedOptionRes
+    val fontStyle = settingUiState.fontStyleOption
 
     val isDarkTheme = when (selectedThemeMode) {
         R.string.dark_mode -> true
@@ -76,9 +79,11 @@ fun TaskManagementTheme(
         )
     }
 
+    val fontFamily = FontStyleOption.fromStorage(fontStyle).fontFamily
+
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = appTypography(fontFamily),
         content = content
     )
 }

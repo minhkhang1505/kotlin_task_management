@@ -7,6 +7,8 @@ data object AccountRoute
 @Serializable
 data object HomeRoute
 @Serializable
+data object FontStyleRoute
+@Serializable
 data object LanguageRoute
 @Serializable
 data object RegisterRoute

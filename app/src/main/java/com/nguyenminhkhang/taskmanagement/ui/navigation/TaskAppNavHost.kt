@@ -24,6 +24,7 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguageRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeRoute
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.FontStyleRoute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailRoute
 import timber.log.Timber
 import kotlin.let
@@ -82,6 +83,7 @@ fun TaskAppNavHost(
                     settingViewModel = settingViewModel,
                     onNavigateToLanguage = { navController.navigate(LanguageRoute)},
                     onNavigateToTheme = { navController.navigate(ThemeRoute)},
+                    onNavigateToFontStyle = { navController.navigate(FontStyleRoute) },
                     onNavigateToLogin = {
                         navController.navigate(SignInRoute) {
                             popUpTo(0)
@@ -107,6 +109,13 @@ fun TaskAppNavHost(
 
             composable<LanguageRoute> {
                 LanguageRoute(
+                    settingViewModel = settingViewModel,
+                    onPopBackStack = { navController.popBackStack() }
+                )
+            }
+
+            composable<FontStyleRoute> {
+                FontStyleRoute(
                     settingViewModel = settingViewModel,
                     onPopBackStack = { navController.popBackStack() }
                 )

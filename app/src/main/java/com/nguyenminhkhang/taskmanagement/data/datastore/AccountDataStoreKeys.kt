@@ -14,4 +14,5 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = SET
 object AccountDataStoreKeys {
     val THEME_MODE_KEY = intPreferencesKey("theme_mode_key")
     val LANGUAGE_KEY = stringPreferencesKey("language_key")
+    val FONT_STYLE_KEY = stringPreferencesKey("font_style_key")
 }

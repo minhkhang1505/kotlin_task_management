@@ -62,13 +62,13 @@ fun TaskTimeRow(
                 Text(
                     text = stringResource(R.string.detail_add_start_time_descrip), modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             } else {
                 CustomTextField(
                     content = uiState.task.startTime.toHourMinuteString(),
                     onClick = { onClearDate() },
-                    textColor = Color.Black, // Brown color for time text
+                    textColor = MaterialTheme.colorScheme.onPrimaryContainer, // Brown color for time text
                     textSize = MaterialTheme.typography.titleMedium.fontSize
                 )
             }

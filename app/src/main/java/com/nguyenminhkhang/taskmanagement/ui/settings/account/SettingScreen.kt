@@ -32,6 +32,7 @@ fun SettingScreen(
     onEvent: (AccountEvent) -> Unit,
     onNavigateToTheme: () -> Unit,
     onNavigateToLanguage: () -> Unit,
+    onNavigateToFontStyle: () -> Unit,
     onScreenShow: () -> Unit
 ) {
     LaunchedEffect(Unit) {
@@ -73,6 +74,13 @@ fun SettingScreen(
                 icon = R.drawable.ic_language,
                 text = R.string.account_language,
                 onClick = onNavigateToLanguage,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            SettingItem(
+                icon = R.drawable.ic_font_style,
+                text = R.string.account_font_style,
+                onClick = onNavigateToFontStyle,
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))

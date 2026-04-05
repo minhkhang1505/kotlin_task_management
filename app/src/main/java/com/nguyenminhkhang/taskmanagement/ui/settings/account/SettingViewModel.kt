@@ -17,6 +17,7 @@ import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemThemeModeResId
 import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -70,17 +71,23 @@ class SettingViewModel @Inject constructor(
             settingsRepository.settingsFlow.collect { prefs ->
                 val themeMode = prefs.themeModeRes ?: getSystemThemeModeResId(context)
                 val language = prefs.languageCode ?: getSystemLanguageResId()
+                val fontStyle = prefs.fontStyleKey ?: FontStyleOption.DEFAULT.key
                 Timber.tag(TAG).d(
-                    "settingsFlow emit - languageCode=%s, resolvedLanguage=%s, themeMode=%s",
+                    "settingsFlow emit - languageCode=%s, resolvedLanguage=%s, themeMode=%s, fontStyle=%s",
                     prefs.languageCode,
                     language,
-                    themeMode
+                    themeMode,
+                    fontStyle
                 )
                 _themeModeUiState.update { it.copy(selectedOptionRes = themeMode) }
-                _settingsUiState.update { it.copy(languageRadioOption = language) }
+                _settingsUiState.update { it.copy(
+                    languageRadioOption = language,
+                    fontStyleOption = fontStyle
+                ) }
                 Timber.tag(TAG).d(
-                    "uiState updated - languageRadioOption=%s",
-                    _settingsUiState.value.languageRadioOption
+                    "uiState updated - languageRadioOption=%s, fontStyleOption=%s",
+                    _settingsUiState.value.languageRadioOption,
+                    _settingsUiState.value.fontStyleOption
                 )
             }
         }
@@ -151,6 +158,15 @@ class SettingViewModel @Inject constructor(
                     it.copy(languageRadioOption = event.language.code)
                 }
                 changeLanguage(event.language)
+            }
+            is AccountEvent.FontStyleChanged -> {
+                Timber.tag(TAG).d("onEvent(FontStyleChanged) - newFontStyle=%s", event.fontStyle.key)
+                _settingsUiState.update { 
+                    it.copy(fontStyleOption = event.fontStyle.key)
+                }
+                viewModelScope.launch {
+                    settingsRepository.setFontStyle(event.fontStyle.key)
+                }
             }
         }
     }

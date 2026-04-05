@@ -21,6 +21,7 @@
     <string name="clear_button">Xoá</string>
     <string name="account_theme">Chủ đề</string>
     <string name="account_language">Ngôn ngữ</string>
+    <string name="account_font_style">Kiểu chữ</string>
     <string name="account_delete_account">Xoá tài khoản</string>
     <string name="account_about_app">Thông tin ứng dụng</string>
     <string name="search_result_empty">Không tìm thấy kết quả</string>
@@ -61,6 +62,12 @@
     <string name="logout_button">Đăng xuất</string>
     <string name="language_english">English</string>
     <string name="language_vietnamese">Tiếng Việt</string>
+    <string name="font_style_page_title">Kiểu chữ</string>
+    <string name="font_default">Mặc định</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_sans_serif">Sans Serif</string>
+    <string name="font_monospace">Monospace</string>
+    <string name="font_cursive">Chữ nghệ thuật</string>
     <string name="favorite_tab_name">⭐️</string>
     <string name="have_any_tasks_yet">Chưa có tác vụ nào được thêm vào</string>
     <string name="empty_task_description">Thêm các tác vụ vào không gian quản lý công việc để dễ dàng theo dõi</string>

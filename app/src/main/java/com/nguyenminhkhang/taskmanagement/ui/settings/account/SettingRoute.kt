@@ -10,6 +10,7 @@ fun SettingRoute(
     settingViewModel: SettingViewModel,
     onNavigateToLanguage: () -> Unit,
     onNavigateToTheme: () -> Unit,
+    onNavigateToFontStyle: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
     val accountUiState by settingViewModel.settingsUiState.collectAsState()
@@ -25,6 +26,7 @@ fun SettingRoute(
         onEvent = settingViewModel::onEvent,
         onNavigateToTheme = onNavigateToTheme,
         onNavigateToLanguage = onNavigateToLanguage,
+        onNavigateToFontStyle = onNavigateToFontStyle,
         onScreenShow = settingViewModel::onScreenShow
     )
 }

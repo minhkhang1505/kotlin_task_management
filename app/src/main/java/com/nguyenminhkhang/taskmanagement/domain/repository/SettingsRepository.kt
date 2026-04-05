@@ -8,4 +8,5 @@ interface SettingsRepository {
     val settingsFlow: Flow<SettingsPreferenceData>
     suspend fun setLanguage(language: LanguageOption)
     suspend fun setThemeMode(themeMode: Int)
+    suspend fun setFontStyle(fontStyle: String)
 }

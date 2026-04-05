@@ -20,6 +20,7 @@
     <string name="clear_button">Clear</string>
     <string name="account_theme">Theme</string>
     <string name="account_language">Language</string>
+    <string name="account_font_style">Font Style</string>
     <string name="account_delete_account">Delete account</string>
     <string name="account_about_app">About Task Management</string>
     <string name="account_logout">Logout</string>
@@ -62,6 +63,12 @@
     <string name="logout_button">Logout</string>
     <string name="language_english">English</string>
     <string name="language_vietnamese">Vietnamese</string>
+    <string name="font_style_page_title">Font Style</string>
+    <string name="font_default">Default</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_sans_serif">Sans Serif</string>
+    <string name="font_monospace">Monospace</string>
+    <string name="font_cursive">Cursive</string>
     <string name="favorite_tab_name">⭐️</string>
     <string name="have_any_tasks_yet">Not have any tasks yet</string>
     <string name="empty_task_description">Add some tasks and follow it on Task Management Workspace</string>
