@@ -46,7 +46,6 @@ fun RepeatTopAppBar(
                 .padding(8.dp)
                 .clickable {
                     onSave()
-                    onNavigationBack()
                 }
         )
     }
