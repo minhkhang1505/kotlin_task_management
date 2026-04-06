@@ -67,11 +67,7 @@ class TaskDetailViewModel @Inject constructor (
             val collectionsFlow = getTaskCollectionsUseCase()
 
             viewModelScope.launch {
-                combine(taskFlow, collectionsFlow) { task, collections ->
-                    if (task == null) {
-                        TaskDetailScreenUiState(isLoading = false, task = null, collection = collections)
-                    } else {
-                        val taskUiState = task
+                combine(taskFlow, collectionsFlow) { taskUiState, collections ->
                         val currentCollectionName = collections.find { it.id == taskUiState.collectionId }?.content ?: ""
 
                         TaskDetailScreenUiState(
@@ -81,7 +77,6 @@ class TaskDetailViewModel @Inject constructor (
                             repeatSummaryText = buildRepeatSummaryTextUseCase(taskUiState),
                             isLoading = false
                         )
-                    }
                 }.collect { combinedUiState ->
                     _taskUiState.value = combinedUiState
                 }

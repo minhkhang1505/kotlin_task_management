@@ -3,8 +3,8 @@ package com.nguyenminhkhang.taskmanagement.biz.viewmodel
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Collection
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
@@ -90,9 +90,9 @@ class HomeViewModelTest {
 		every { strings.getString(R.string.collection_two) } returns "Collection 2"
 
 		every { getTaskGroupsUseCase.invoke(any(), any()) } returns listGroupsFlow
-		every { getTaskCollectionsUseCase.invoke() } returns flowOf(listOf(TaskCollection(id = 1L, content = "Inbox")))
+		every { getTaskCollectionsUseCase.invoke() } returns flowOf(listOf(Collection(id = 1L, content = "Inbox")))
 
-		coEvery { addNewCollectionUseCase.invoke(any()) } returns TaskCollection(id = 10L, content = "New")
+		coEvery { addNewCollectionUseCase.invoke(any()) } returns Collection(id = 10L, content = "New")
 		coEvery { deleteTaskCollectionUseCase.invoke(any()) } returns true
 		coEvery { updateCollectionSortTypeUseCase.invoke(any(), any()) } returns true
 		coEvery { updateCollectionNameUseCase.invoke(any(), any()) } returns true
@@ -107,7 +107,7 @@ class HomeViewModelTest {
 				startTime = any(),
 				reminderTimeMillis = any()
 			)
-		} returns TaskEntity(id = 777L, content = "Saved")
+		} returns Task(id = 777L, content = "Saved")
 
 		coEvery { toggleTaskFavoriteUseCase.invoke(any(), any()) } returns true
 		coEvery { toggleCompleteUseCase.invoke(any(), any()) } returns true

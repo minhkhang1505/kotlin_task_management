@@ -4,6 +4,8 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.core.time.TimeProvider
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import io.mockk.Runs
 import io.mockk.clearAllMocks
@@ -58,7 +60,8 @@ class SearchViewModelTest {
     @Test
     fun `init should fetch today tasks`() = runTest {
         // Arrange
-        val expectedTasks = listOf(createTask(id = 1L))
+        val domainTask = createDomainTask(id = 1L)
+        val expectedTasks = listOf(domainTask)
         coEvery { taskRepository.getTodayTasks(any(), any()) } returns flowOf(expectedTasks)
 
         // Act
@@ -72,7 +75,7 @@ class SearchViewModelTest {
         val endOfDay = today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000 - 1
 
         coVerify { taskRepository.getTodayTasks(startOfDay, endOfDay) }
-        assertEquals(expectedTasks, viewModel.searchUiState.value.todayTaskResult)
+        assertEquals(expectedTasks.map { it.toEntity() }, viewModel.searchUiState.value.todayTaskResult)
     }
 
     @Test
@@ -219,7 +222,8 @@ class SearchViewModelTest {
     @Test
     fun `searchResults should emit from repository when query length is at least 2`() = runTest {
         // Arrange
-        val expectedResults = listOf(createTask(id = 10L, content = "Meeting"))
+        val domainTask = createDomainTask(id = 10L, content = "Meeting")
+        val expectedResults = listOf(domainTask)
         coEvery { taskRepository.getTodayTasks(any(), any()) } returns flowOf(emptyList())
         coEvery { taskRepository.SearchTasks("Meeting") } returns flowOf(expectedResults)
         
@@ -231,7 +235,7 @@ class SearchViewModelTest {
         advanceUntilIdle()
         
         // Assert
-        assertEquals(expectedResults, viewModel.searchResults.value)
+        assertEquals(expectedResults.map { it.toEntity() }, viewModel.searchResults.value)
         job.cancel()
     }
 
@@ -239,7 +243,7 @@ class SearchViewModelTest {
     fun `searchResults should emit empty list when query length is less than 2`() = runTest {
         // Arrange
         coEvery { taskRepository.getTodayTasks(any(), any()) } returns flowOf(emptyList())
-        coEvery { taskRepository.SearchTasks(any()) } returns flowOf(listOf(createTask(10L))) // Should not be called
+        coEvery { taskRepository.SearchTasks(any()) } returns flowOf(listOf(createDomainTask(10L))) // Should not be called
         
         val viewModel = createViewModel()
         val job = launch { viewModel.searchResults.collect {} }
@@ -259,6 +263,22 @@ class SearchViewModelTest {
         analyticsTracker = analyticsTracker,
         timeProvider = timeProvider
     )
+
+    private fun createDomainTask(
+        id: Long,
+        content: String = "Task $id",
+    ): Task {
+        return Task(
+            id = id,
+            userId = "user1",
+            content = content,
+            taskDetail = "",
+            favorite = false,
+            completed = false,
+            collectionId = 1L,
+            updatedAt = System.currentTimeMillis()
+        )
+    }
 
     private fun createTask(
         id: Long,
