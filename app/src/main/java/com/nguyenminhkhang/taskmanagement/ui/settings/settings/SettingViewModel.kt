@@ -1,24 +1,22 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
-import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemLanguageResId
-import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemThemeModeResId
+import com.nguyenminhkhang.taskmanagement.domain.model.SettingsPreferences
 import com.nguyenminhkhang.taskmanagement.domain.model.User
 import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +29,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     private val authRepository: AuthRepository,
     private val taskRepository: TaskRepository,
     private val settingsRepository: SettingsRepository,
@@ -39,6 +36,9 @@ class SettingViewModel @Inject constructor(
 ) : ViewModel() {
     companion object {
         private const val TAG = "SettingsViewModel"
+        private const val THEME_MODE_LIGHT = "light"
+        private const val THEME_MODE_DARK = "dark"
+        private const val THEME_MODE_SYSTEM = "system"
     }
 
     private val _settingsUiState = MutableStateFlow(SettingUiState())
@@ -49,6 +49,18 @@ class SettingViewModel @Inject constructor(
 
     private val _logoutEvent = MutableSharedFlow<Unit>()
     val logoutEvent = _logoutEvent.asSharedFlow()
+
+    private fun String.toThemeModeRes(): Int = when (this) {
+        THEME_MODE_DARK -> R.string.dark_mode
+        THEME_MODE_SYSTEM -> R.string.system_mode
+        else -> R.string.light_mode
+    }
+
+    private fun Int.toThemeModeKey(): String = when (this) {
+        R.string.dark_mode -> THEME_MODE_DARK
+        R.string.system_mode -> THEME_MODE_SYSTEM
+        else -> THEME_MODE_LIGHT
+    }
 
     private fun updateUserState(user: User?) {
         _settingsUiState.update { currentState ->
@@ -71,25 +83,26 @@ class SettingViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            settingsRepository.settingsFlow.collect { prefs ->
-                val themeMode = prefs.themeModeRes ?: getSystemThemeModeResId(context)
-                val language = prefs.languageCode ?: getSystemLanguageResId()
-                val fontStyle = prefs.fontStyleKey ?: FontStyleOption.DEFAULT.key
-                val colorTheme = prefs.colorThemeKey ?: ColorThemeOption.PURPLE.key
+            settingsRepository.settingsFlow.collect { prefs: SettingsPreferences ->
+                val themeMode = prefs.themeModeKey.toThemeModeRes()
+                val language = prefs.languageCode.ifBlank { LanguageOption.ENGLISH.code }
+                val fontStyle = prefs.fontStyleKey.ifBlank { FontStyleOption.DEFAULT.key }
+                val colorTheme = prefs.colorThemeKey.ifBlank { ColorThemeOption.PURPLE.key }
                 Timber.tag(TAG).d(
-                    "settingsFlow emit - languageCode=%s, resolvedLanguage=%s, themeMode=%s, fontStyle=%s, colorTheme=%s",
+                    "settingsFlow emit - languageCode=%s, themeModeKey=%s, fontStyleKey=%s, colorThemeKey=%s",
                     prefs.languageCode,
-                    language,
-                    themeMode,
-                    fontStyle,
-                    colorTheme
+                    prefs.themeModeKey,
+                    prefs.fontStyleKey,
+                    prefs.colorThemeKey
                 )
                 _themeModeUiState.update { it.copy(selectedOptionRes = themeMode) }
-                _settingsUiState.update { it.copy(
-                    languageRadioOption = language,
-                    fontStyleOption = fontStyle,
-                    colorThemeOption = colorTheme
-                ) }
+                _settingsUiState.update {
+                    it.copy(
+                        languageRadioOption = language,
+                        fontStyleOption = fontStyle,
+                        colorThemeOption = colorTheme
+                    )
+                }
                 Timber.tag(TAG).d(
                     "uiState updated - languageRadioOption=%s, fontStyleOption=%s, colorThemeOption=%s",
                     _settingsUiState.value.languageRadioOption,
@@ -111,13 +124,13 @@ class SettingViewModel @Inject constructor(
             "changeLanguage() - Current value: ${settingsUiState.value.languageRadioOption}, New value: $selectedLanguage"
         )
         viewModelScope.launch {
-            settingsRepository.setLanguage(selectedLanguage)
+            settingsRepository.setLanguage(selectedLanguage.code)
             Timber.tag(TAG).d("changeLanguage() - saved language=%s", selectedLanguage.code)
         }
     }
 
     private suspend fun saveThemeMode(@StringRes themeMode: Int) {
-        settingsRepository.setThemeMode(themeMode)
+        settingsRepository.setThemeMode(themeMode.toThemeModeKey())
     }
 
     fun onEvent(event: AccountEvent) {
@@ -163,7 +176,7 @@ class SettingViewModel @Inject constructor(
             }
             is AccountEvent.FontStyleChanged -> {
                 Timber.tag(TAG).d("onEvent(FontStyleChanged) - newFontStyle=%s", event.fontStyle.key)
-                _settingsUiState.update { 
+                _settingsUiState.update {
                     it.copy(fontStyleOption = event.fontStyle.key)
                 }
                 viewModelScope.launch {
@@ -172,7 +185,7 @@ class SettingViewModel @Inject constructor(
             }
             is AccountEvent.ColorThemeChanged -> {
                 Timber.tag(TAG).d("onEvent(ColorThemeChanged) - newColorTheme=%s", event.colorTheme.key)
-                _settingsUiState.update { 
+                _settingsUiState.update {
                     it.copy(colorThemeOption = event.colorTheme.key)
                 }
                 viewModelScope.launch {
