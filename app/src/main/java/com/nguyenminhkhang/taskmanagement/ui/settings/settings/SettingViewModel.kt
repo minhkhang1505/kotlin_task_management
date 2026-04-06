@@ -19,7 +19,6 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -125,7 +124,7 @@ class SettingViewModel @Inject constructor(
     fun onEvent(event: AccountEvent) {
         when (event) {
             is AccountEvent.SignOut -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     signOutUseCase()
                     _logoutEvent.emit(Unit)
                 }
