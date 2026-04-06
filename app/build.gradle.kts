@@ -98,6 +98,7 @@ dependencies {
     implementation(libs.androidx.room.testing)
     //Add data store dependencies
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.kotlinx.datetime)
 
     implementation(libs.dagger.hilt.android)
     ksp(libs.dagger.hilt.android.compiler)
