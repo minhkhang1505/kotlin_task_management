@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.taskdetail
+package com.nguyenminhkhang.taskmanagement.ui.taskdetail.events
 
 import android.content.Context
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity

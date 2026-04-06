@@ -8,7 +8,7 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.UpdateRepeatTask
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.TrackRepeatScreenViewUseCase
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
-import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

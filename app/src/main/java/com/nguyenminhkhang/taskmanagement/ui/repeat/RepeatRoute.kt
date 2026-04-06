@@ -6,7 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.nguyenminhkhang.taskmanagement.ui.taskdetail.NavigationEvent
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
 import timber.log.Timber
 
 @Composable

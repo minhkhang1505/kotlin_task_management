@@ -14,6 +14,8 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.TaskDetailEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +26,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
@@ -302,6 +305,3 @@ class TaskDetailViewModel @Inject constructor (
     }
 }
 
-sealed class NavigationEvent {
-    data class NavigateBackWithResult(val taskId: Long) : NavigationEvent()
-}

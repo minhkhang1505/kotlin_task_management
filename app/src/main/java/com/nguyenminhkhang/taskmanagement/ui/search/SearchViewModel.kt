@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
+import com.nguyenminhkhang.taskmanagement.core.time.TimeProvider
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,30 +23,19 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
+import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
-
-@RequiresApi(Build.VERSION_CODES.O)
-val zoneId = ZoneId.systemDefault()
-
-@RequiresApi(Build.VERSION_CODES.O)
-val today = LocalDate.now(zoneId)
-
-@RequiresApi(Build.VERSION_CODES.O)
-val startOfDay = today.atStartOfDay(zoneId).toEpochSecond() * 1000
-
-@RequiresApi(Build.VERSION_CODES.O)
-val endOfDay = today.plusDays(1).atStartOfDay(zoneId).toEpochSecond() * 1000 - 1
 
 @RequiresApi(Build.VERSION_CODES.O)
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val taskRepository: TaskRepository,
-    private val analyticsTracker: AnalyticsTracker
+    private val analyticsTracker: AnalyticsTracker,
+    private val timeProvider: TimeProvider
 ) : ViewModel() {
     private val _searchUiState = MutableStateFlow(SearchUiState())
-    val searchUiState : StateFlow<SearchUiState> = _searchUiState.asStateFlow()
+    val searchUiState: StateFlow<SearchUiState> = _searchUiState.asStateFlow()
 
     private val _searchQuery = MutableStateFlow("")
 
@@ -67,14 +56,17 @@ class SearchViewModel @Inject constructor(
         )
 
     init {
-        Log.d("SearchVM", "start=$startOfDay, end=$endOfDay")
-        getTodayTasks(startOfDay, endOfDay)
+        getTodayTasks()
     }
 
-    private fun getTodayTasks(startDate: Long, endDate: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            taskRepository.getTodayTasks(startDate, endDate).collect { todayTasks ->
-                Log.d("SearchVM", "todayTasks=${todayTasks.size}")
+    private fun getTodayTasks() {
+        val now = Instant.ofEpochMilli(timeProvider.getCurrentTimeMillis())
+        val today = now.atZone(ZoneId.systemDefault()).toLocalDate()
+        val startOfDay = today.atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000
+        val endOfDay = today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000 - 1
+
+        viewModelScope.launch {
+            taskRepository.getTodayTasks(startOfDay, endOfDay).collect { todayTasks ->
                 _searchUiState.update { it.copy(todayTaskResult = todayTasks) }
             }
         }
@@ -101,12 +93,15 @@ class SearchViewModel @Inject constructor(
             }
             is SearchEvent.OnSearchResultClick -> {}
             is SearchEvent.ToggleSearchBarVisibility -> { _searchUiState.update { it.copy(isSearchBarVisible = !it.isSearchBarVisible) } }
-            is SearchEvent.ClearSearchQuery -> { _searchUiState.update { it.copy(searchQuery = "") } }
+            is SearchEvent.ClearSearchQuery -> {
+                _searchUiState.update { it.copy(searchQuery = "") }
+                _searchQuery.value = ""
+            }
             is SearchEvent.HideSearchBar -> { _searchUiState.update { it.copy(isSearchBarVisible = false) } }
             is SearchEvent.ExpandSearchBarChanged -> { _searchUiState.update { it.copy(expanded = !it.expanded) } }
             is SearchEvent.CollapseSearchBar -> { _searchUiState.update { it.copy(expanded = false) } }
             is SearchEvent.OnToggleFavoriteClick -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     taskRepository.updateTaskFavoriteById(event.taskId, event.isFavorite)
                 }
             }
