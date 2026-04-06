@@ -1,9 +1,9 @@
-package com.nguyenminhkhang.taskmanagement.domain.mapper
+package com.nguyenminhkhang.taskmanagement.data.mapper
 
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.model.Task
 
-fun Task.toEntity(): TaskEntity = TaskEntity(
+fun TaskEntity.toDomain(): Task = Task(
     id = id,
     userId = userId,
     content = content,
@@ -27,7 +27,7 @@ fun Task.toEntity(): TaskEntity = TaskEntity(
     reminderTimeMillis = reminderTimeMillis
 )
 
-fun TaskEntity.toDomain(): Task = Task(
+fun Task.toEntity(): TaskEntity = TaskEntity(
     id = id,
     userId = userId,
     content = content,

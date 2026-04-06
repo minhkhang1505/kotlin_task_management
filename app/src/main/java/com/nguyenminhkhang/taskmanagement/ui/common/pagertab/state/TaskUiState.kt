@@ -2,6 +2,7 @@ package com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -29,29 +30,8 @@ data class TaskUiState(
     val reminderTimeMillis: Long?
 )
 
-fun TaskUiState.toTaskEntity(): TaskEntity {
-    return TaskEntity(
-        id = this.id,
-        content = this.content,
-        favorite = this.isFavorite,
-        completed = this.completed,
-        collectionId = this.collectionId,
-        createdAt = this.createdAt,
-        updatedAt = this.updatedAt,
-        repeatEvery = this.repeatEvery,
-        repeatDaysOfWeek = this.repeatDaysOfWeek,
-        startDate = this.startDate,
-        repeatInterval = this.repeatInterval,
-        repeatEndType = this.repeatEndType,
-        repeatEndDate = this.repeatEndDate,
-        repeatEndCount = this.repeatEndCount,
-        startTime = this.startTime,
-        taskDetail = this.taskDetail,
-        reminderTimeMillis = this.reminderTimeMillis
-    )
-}
 
-fun TaskEntity.toTaskUiState(): TaskUiState {
+fun Task.toTaskUiState(): TaskUiState {
     return TaskUiState(
         id = this.id,
         content = this.content,
@@ -65,12 +45,12 @@ fun TaskEntity.toTaskUiState(): TaskUiState {
         repeatDaysOfWeek = this.repeatDaysOfWeek,
         repeatInterval = this.repeatInterval,
         repeatEndType = this.repeatEndType,
-        startDate = this.startDate,
         repeatEndDate = this.repeatEndDate,
         repeatEndCount = this.repeatEndCount,
         startTime = this.startTime,
         taskDetail = this.taskDetail,
-        reminderTimeMillis = this.reminderTimeMillis
+        reminderTimeMillis = this.reminderTimeMillis,
+        startDate = this.startDate
     )
 }
 

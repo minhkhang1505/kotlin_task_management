@@ -5,7 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 import java.util.Calendar
@@ -20,7 +20,7 @@ class AlarmManagerTaskScheduler @Inject constructor(
     // PUBLIC API
     // =========================
 
-    override fun schedule(task: TaskEntity) {
+    override fun schedule(task: Task) {
         val reminderTime = task.reminderTimeMillis ?: return
         if (reminderTime <= System.currentTimeMillis()) return
 
@@ -59,7 +59,7 @@ class AlarmManagerTaskScheduler @Inject constructor(
         )
     }
 
-    override fun scheduleMissedTask(task: TaskEntity, triggerTime: Long) {
+    override fun scheduleMissedTask(task: Task, triggerTime: Long) {
         val intent = buildIntent(
             type = NotificationType.MISSED_TASK,
             task = task
@@ -75,7 +75,7 @@ class AlarmManagerTaskScheduler @Inject constructor(
         )
     }
 
-    override fun cancel(task: TaskEntity) {
+    override fun cancel(task: Task) {
         listOf(
             NotificationType.DEADLINE,
             NotificationType.MISSED_TASK
@@ -94,7 +94,7 @@ class AlarmManagerTaskScheduler @Inject constructor(
     // PRIVATE - CORE LOGIC
     // =========================
 
-    private fun scheduleDeadline(task: TaskEntity, reminderTime: Long) {
+    private fun scheduleDeadline(task: Task, reminderTime: Long) {
         val intent = buildIntent(
             type = NotificationType.DEADLINE,
             task = task
@@ -134,7 +134,7 @@ class AlarmManagerTaskScheduler @Inject constructor(
 
     private fun buildIntent(
         type: NotificationType,
-        task: TaskEntity? = null
+        task: Task? = null
     ): Intent {
         return Intent(context, NotificationReceiver::class.java).apply {
             putExtra("NOTIFICATION_TYPE", type.name)

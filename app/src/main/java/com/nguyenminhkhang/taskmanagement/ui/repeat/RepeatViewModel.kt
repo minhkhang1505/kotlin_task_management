@@ -3,6 +3,8 @@ package com.nguyenminhkhang.taskmanagement.ui.repeat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
+import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.GetTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.UpdateRepeatTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.TrackRepeatScreenViewUseCase
@@ -39,7 +41,7 @@ class RepeatViewModel @Inject constructor(
     init {
         Timber.tag(TAG).d("init() - Loading task with taskId=$taskId")
         viewModelScope.launch {
-            val taskEntity = getTaskUseCase(taskId).first()
+            val taskEntity = getTaskUseCase(taskId).first().toEntity()
             Timber.tag(TAG).d("init() - Task loaded: id=${taskEntity.id}, interval=${taskEntity.repeatInterval}, every=${taskEntity.repeatEvery}, endType=${taskEntity.repeatEndType}, endCount=${taskEntity.repeatEndCount}")
             _taskUiState.update { currentState ->
                 currentState.copy(
@@ -182,7 +184,7 @@ class RepeatViewModel @Inject constructor(
         Timber.tag(TAG).d("saveRepeatTask() - Saving task: id=${taskToSave.id}, interval=${taskToSave.repeatInterval}, every=${taskToSave.repeatEvery}, endType=${taskToSave.repeatEndType}, endCount=${taskToSave.repeatEndCount}, endDate=${taskToSave.repeatEndDate}, startDate=${taskToSave.startDate}, startTime=${taskToSave.startTime}, daysOfWeek=${taskToSave.repeatDaysOfWeek}")
 
         viewModelScope.launch {
-            val success = updateRepeatTaskUseCase(taskToSave)
+            val success = updateRepeatTaskUseCase(taskToSave.toDomain())
             Timber.tag(TAG).d("saveRepeatTask() - UpdateRepeatTaskUseCase returned: success=$success")
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
             Timber.tag(TAG).d("saveRepeatTask() - NavigateBackWithResult emitted for taskId=$taskId")

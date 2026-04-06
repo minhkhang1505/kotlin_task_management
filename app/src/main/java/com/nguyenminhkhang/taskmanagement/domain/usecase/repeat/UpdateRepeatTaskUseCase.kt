@@ -1,6 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.repeat
 
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import timber.log.Timber
@@ -10,7 +11,7 @@ class UpdateRepeatTaskUseCase @Inject constructor(
     private val taskRepository: TaskRepository,
     private val taskScheduler: TaskScheduler
 ) {
-    suspend operator fun invoke(task: TaskEntity): Boolean {
+    suspend operator fun invoke(task: Task): Boolean {
         Timber.tag(TAG).d("invoke() - Updating task: id=${task.id}, interval=${task.repeatInterval}, every=${task.repeatEvery}, endType=${task.repeatEndType}, endCount=${task.repeatEndCount}, endDate=${task.repeatEndDate}, startDate=${task.startDate}, startTime=${task.startTime}, daysOfWeek=${task.repeatDaysOfWeek}")
 
         val success = taskRepository.updateTask(task)

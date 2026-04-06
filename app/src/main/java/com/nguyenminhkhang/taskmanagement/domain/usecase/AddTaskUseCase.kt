@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase
 
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import jakarta.inject.Inject
 
@@ -10,7 +10,7 @@ class AddTaskUseCase @Inject constructor(
     /**
      * Returns the list of tasks for a given collection ID.
      * @param collectionId The ID of the collection to fetch tasks for.
-     * @return A TaskEntity objects belonging to the specified collection.
+    * @return A Task object belonging to the specified collection.
      * @throws Exception if there is an error fetching the tasks.
      */
     suspend operator fun invoke(
@@ -21,7 +21,7 @@ class AddTaskUseCase @Inject constructor(
         startDate: Long?,
         startTime: Long?,
         reminderTimeMillis: Long?
-    ) : TaskEntity? {
+    ) : Task? {
         if (content.isBlank()) {
             return null
         }

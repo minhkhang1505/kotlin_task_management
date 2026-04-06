@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase
 
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +22,7 @@ data class GetTasksParams(
 class GetTasksUseCase @Inject constructor(
     private val taskRepository: TaskRepository
 ) {
-    operator fun invoke(params: GetTasksParams) : Flow<List<TaskEntity>> {
+    operator fun invoke(params: GetTasksParams) : Flow<List<Task>> {
         return when(params.queryType) {
             TaskQueryType.BY_COLLECTION_ID -> {
                 requireNotNull(params.collectionId) {

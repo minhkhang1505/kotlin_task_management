@@ -1,10 +1,10 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail.events
 
 import android.content.Context
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 
 sealed class TaskDetailEvent {
-    data class AddToCalendar(val context: Context, val task: TaskEntity) : TaskDetailEvent()
+    data class AddToCalendar(val context: Context, val task: Task) : TaskDetailEvent()
     data class GetCurrentCollectionNameById(val collectionId: Long) : TaskDetailEvent()
     object ShowChangeCollectionSheet : TaskDetailEvent()
     object CloseChangeCollectionSheet : TaskDetailEvent()

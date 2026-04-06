@@ -6,15 +6,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.nguyenminhkhang.taskmanagement.data.local.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
+import com.nguyenminhkhang.taskmanagement.data.local.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
+import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Collection
 import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -36,13 +41,15 @@ class TaskRepositoryImpl (
     @Volatile
     private var isSyncing = false
 
-    override fun getTaskCollection(): Flow<List<TaskCollection>>  {
+    override fun getTaskCollection(): Flow<List<Collection>>  {
         Log.d("TaskRepoImpl", "getTaskCollection: ${auth.currentUser?.uid ?: "local_user"}")
         return taskDAO.getAllTaskCollection(auth.currentUser?.uid ?: "local_user")
+            .map { collections -> collections.map(TaskCollection::toDomain) }
     }
 
-    override fun getAllTaskByCollectionId(collectionId: Long): Flow<List<TaskEntity>> =
+    override fun getAllTaskByCollectionId(collectionId: Long): Flow<List<Task>> =
         taskDAO.getAllTaskByCollectionId(collectionId, auth.currentUser?.uid ?: "local_user")
+            .map { tasks -> tasks.map(TaskEntity::toDomain) }
 
     override fun syncTasksForCurrentUser() {
         val userId = auth.currentUser?.uid ?: return
@@ -85,7 +92,7 @@ class TaskRepositoryImpl (
         }
     }
 
-    override suspend fun addTask(content: String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long?): TaskEntity? =
+    override suspend fun addTask(content: String, collectionId: Long, taskDetail: String, isFavorite: Boolean, startDate: Long?, startTime: Long?, reminderTimeMillis: Long?): Task? =
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
         val task = TaskEntity(
@@ -111,22 +118,22 @@ class TaskRepositoryImpl (
                 .document(taskWithId.id.toString())
                 .set(taskWithId)
 
-            taskWithId
+            taskWithId.toDomain()
         } else null
     }
 
-    override suspend fun addNewCollection(content: String): TaskCollection? =
+    override suspend fun addNewCollection(content: String): Collection? =
         withContext(Dispatchers.IO) {
         val now = Calendar.getInstance().timeInMillis
-        val taskCollection = TaskCollection(
+        val collectionEntity = TaskCollection(
             userId = auth.currentUser?.uid ?: "local_user",
             content = content,
             updatedAt = now,
             sortedType = SortedType.SORTED_BY_DATE.value
         )
-        val id = taskDAO.insertTaskCollection(taskCollection)
+        val id = taskDAO.insertTaskCollection(collectionEntity)
         if(id > 0) {
-            val taskCollectionWithID = taskCollection.copy(id = id)
+            val taskCollectionWithID = collectionEntity.copy(id = id)
 
             firestore.collection("users")
                 .document("${auth.currentUser!!.email}")
@@ -134,13 +141,13 @@ class TaskRepositoryImpl (
                 .document(taskCollectionWithID.id.toString()) // Đặt ID cho document
                 .set(taskCollectionWithID)
 
-            taskCollectionWithID
+            taskCollectionWithID.toDomain()
         } else null
     }
 
-    override suspend fun updateTaskCollection(taskCollection: TaskCollection): Boolean =
+    override suspend fun updateTaskCollection(collectionEntity: Collection): Boolean =
         withContext(Dispatchers.IO) {
-        taskDAO.updateTaskCollection(taskCollection) > 0
+        taskDAO.updateTaskCollection(collectionEntity.toEntity()) > 0
     }
 
     override suspend fun updateTaskCompleted(taskId: Long, isCompleted: Boolean): Boolean {
@@ -260,9 +267,9 @@ class TaskRepositoryImpl (
         Timber.d("updateCollectionSortedType() - After call to DAO with sortType: ${sortedType}")
     }
 
-    override fun getTaskById(taskId: Long): Flow<TaskEntity>{
+    override fun getTaskById(taskId: Long): Flow<Task>{
         Timber.tag(TAG).d("getTaskById() - Fetching task from Room with taskId=$taskId")
-        return taskDAO.getTaskById(taskId)
+        return taskDAO.getTaskById(taskId).map(TaskEntity::toDomain)
     }
 
     override suspend fun updateTaskDueDateById(taskId: Long, dueDate: Long): Boolean {
@@ -284,36 +291,37 @@ class TaskRepositoryImpl (
     }
 
     override suspend fun updateTask(
-        task: TaskEntity
+        task: Task
     ): Boolean {
         val userEmail = auth.currentUser?.email ?: run {
             Timber.tag(TAG).w("updateTask() - No user email available, aborting")
             return false
         }
+        val taskEntity = task.toEntity()
 
         // Block the sync listener while saving to prevent it from
         // overwriting Room with stale Firestore snapshot data.
         isSyncing = true
-        Timber.tag(TAG).d("updateTask() - isSyncing=true, saving to Room: id=${task.id}, interval=${task.repeatInterval}, every=${task.repeatEvery}, endType=${task.repeatEndType}, startDate=${task.startDate}, startTime=${task.startTime}, updatedAt=${task.updatedAt}")
+        Timber.tag(TAG).d("updateTask() - isSyncing=true, saving to Room: id=${taskEntity.id}, interval=${taskEntity.repeatInterval}, every=${taskEntity.repeatEvery}, endType=${taskEntity.repeatEndType}, startDate=${taskEntity.startDate}, startTime=${taskEntity.startTime}, updatedAt=${taskEntity.updatedAt}")
 
-        val rowsAffected = taskDAO.updateTask(task = task)
+        val rowsAffected = taskDAO.updateTask(task = taskEntity)
         val roomSuccess = rowsAffected > 0
         Timber.tag(TAG).d("updateTask() - Room update result: rowsAffected=$rowsAffected, success=$roomSuccess")
         if (!roomSuccess) {
             isSyncing = false
-            Timber.tag(TAG).e("updateTask() - Room update FAILED for taskId=${task.id}, 0 rows affected")
+            Timber.tag(TAG).e("updateTask() - Room update FAILED for taskId=${taskEntity.id}, 0 rows affected")
             return false
         }
         try {
-            Timber.tag(TAG).d("updateTask() - Syncing to Firestore: users/$userEmail/tasks/${task.id}")
+            Timber.tag(TAG).d("updateTask() - Syncing to Firestore: users/$userEmail/tasks/${taskEntity.id}")
             firestore.collection("users").document(userEmail)
                 .collection("tasks")
-                .document(task.id.toString())
-                .set(task)
+                .document(taskEntity.id.toString())
+                .set(taskEntity)
                 .await()
-            Timber.tag(TAG).d("updateTask() - Firestore sync successful for taskId=${task.id}")
+            Timber.tag(TAG).d("updateTask() - Firestore sync successful for taskId=${taskEntity.id}")
         } catch(e: Exception) {
-            Timber.tag(TAG).e(e, "updateTask() - Firestore sync failed for taskId=${task.id}")
+            Timber.tag(TAG).e(e, "updateTask() - Firestore sync failed for taskId=${taskEntity.id}")
         } finally {
             isSyncing = false
             Timber.tag(TAG).d("updateTask() - isSyncing=false")
@@ -371,9 +379,9 @@ class TaskRepositoryImpl (
         }
     }
 
-    override suspend fun getCollectionById(): List<TaskCollection> {
+    override suspend fun getCollectionById(): List<Collection> {
         return withContext(Dispatchers.IO) {
-            taskDAO.getCollection()
+            taskDAO.getCollection().map(TaskCollection::toDomain)
         }
     }
 
@@ -430,8 +438,9 @@ class TaskRepositoryImpl (
         }
     }
 
-    override fun SearchTasks(query: String): Flow<List<TaskEntity>> {
+    override fun SearchTasks(query: String): Flow<List<Task>> {
         return taskDAO.SearchTasks(query, auth.currentUser?.uid ?: "local_user")
+            .map { tasks -> tasks.map(TaskEntity::toDomain) }
     }
 
     override suspend fun claimLocalTasks(): Boolean {
@@ -446,8 +455,9 @@ class TaskRepositoryImpl (
         }
     }
 
-    override fun getTodayTasks(startDate: Long, endDate: Long): Flow<List<TaskEntity>> {
+    override fun getTodayTasks(startDate: Long, endDate: Long): Flow<List<Task>> {
         return taskDAO.getTodayTasks(startDate, endDate, auth.currentUser?.uid ?: "local_user")
+            .map { tasks -> tasks.map(TaskEntity::toDomain) }
     }
 
     override suspend fun clearLocalData(): Boolean {

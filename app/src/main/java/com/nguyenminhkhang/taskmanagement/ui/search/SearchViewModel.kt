@@ -9,6 +9,7 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.core.time.TimeProvider
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -47,6 +49,7 @@ class SearchViewModel @Inject constructor(
                 flowOf(emptyList())
             } else {
                 taskRepository.SearchTasks(query)
+                    .map { tasks -> tasks.map { it.toEntity() } }
             }
         }
         .stateIn(
@@ -66,9 +69,11 @@ class SearchViewModel @Inject constructor(
         val endOfDay = today.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toEpochSecond() * 1000 - 1
 
         viewModelScope.launch {
-            taskRepository.getTodayTasks(startOfDay, endOfDay).collect { todayTasks ->
-                _searchUiState.update { it.copy(todayTaskResult = todayTasks) }
-            }
+            taskRepository.getTodayTasks(startOfDay, endOfDay)
+                .map { tasks -> tasks.map { it.toEntity() } }
+                .collect { todayTasks ->
+                    _searchUiState.update { it.copy(todayTaskResult = todayTasks) }
+                }
         }
     }
 

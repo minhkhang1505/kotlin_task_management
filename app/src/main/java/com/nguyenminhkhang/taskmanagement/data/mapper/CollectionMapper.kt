@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.domain.mapper
+package com.nguyenminhkhang.taskmanagement.data.mapper
 
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.domain.model.Collection

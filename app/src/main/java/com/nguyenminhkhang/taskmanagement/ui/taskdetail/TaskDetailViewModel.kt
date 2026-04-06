@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
@@ -203,7 +203,7 @@ class TaskDetailViewModel @Inject constructor (
         }
     }
 
-    fun addTaskToCalendar(context: Context, task: TaskEntity) {
+    fun addTaskToCalendar(context: Context, task: Task) {
         val startTimeMillis = uiState.value.task?.reminderTimeMillis
 
         if(startTimeMillis == null) {
@@ -231,7 +231,7 @@ class TaskDetailViewModel @Inject constructor (
     }
 
     // For repeat summary text
-    private fun buildRepeatSummaryText(task: TaskEntity?): String {
+    private fun buildRepeatSummaryText(task: Task?): String {
         if (task == null || (task.repeatInterval == null && task.repeatDaysOfWeek.isNullOrEmpty())) {
             return ""
         }
