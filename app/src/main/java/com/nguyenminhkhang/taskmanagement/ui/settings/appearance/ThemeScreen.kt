@@ -30,6 +30,7 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiSt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
 
 @Composable
 fun ThemeScreen(
@@ -75,9 +76,9 @@ fun ThemeScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = stringResource(option), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
+                    Text(text = stringResource(option.labelRes), style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 4.dp))
                     RadioButton(
-                        selected = (option == themeModeUiState.selectedOptionRes),
+                        selected = (option == themeModeUiState.selectedOption),
                         onClick = {}
                     )
                 }

@@ -16,10 +16,10 @@ import com.example.compose.OrangeLightColorScheme
 import com.example.compose.PurpleDarkColorScheme
 import com.example.compose.PurpleLightColorScheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
 
 @Composable
 fun TaskManagementTheme(
@@ -30,15 +30,14 @@ fun TaskManagementTheme(
 
     val uiState by viewModel.themeUiState.collectAsState()
     val settingUiState by viewModel.settingsUiState.collectAsState()
-    val selectedThemeMode = uiState.selectedOptionRes
+    val selectedThemeMode = uiState.selectedOption
     val fontStyle = settingUiState.fontStyleOption
     val colorThemeKey = settingUiState.colorThemeOption
 
     val isDarkTheme = when (selectedThemeMode) {
-        R.string.dark_mode -> true
-        R.string.light_mode -> false
-        R.string.system_mode -> isSystemInDarkTheme()
-        else -> isSystemInDarkTheme() // Mặc định
+        ThemeModeOption.DARK -> true
+        ThemeModeOption.LIGHT -> false
+        ThemeModeOption.SYSTEM -> isSystemInDarkTheme()
     }
 
     val colorThemeOption = ColorThemeOption.fromStorage(colorThemeKey)

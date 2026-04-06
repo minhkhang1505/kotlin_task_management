@@ -1,9 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.domain.model.SettingsPreferences
 import com.nguyenminhkhang.taskmanagement.domain.model.User
 import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.ObserveAuthStateUseCase
@@ -17,6 +15,7 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateThemeMod
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,9 +42,6 @@ class SettingViewModel @Inject constructor(
 ) : ViewModel() {
     companion object {
         private const val TAG = "SettingsViewModel"
-        private const val THEME_MODE_LIGHT = "light"
-        private const val THEME_MODE_DARK = "dark"
-        private const val THEME_MODE_SYSTEM = "system"
     }
 
     private val _settingsUiState = MutableStateFlow(SettingUiState())
@@ -56,18 +52,6 @@ class SettingViewModel @Inject constructor(
 
     private val _logoutEvent = MutableSharedFlow<Unit>()
     val logoutEvent = _logoutEvent.asSharedFlow()
-
-    private fun String.toThemeModeRes(): Int = when (this) {
-        THEME_MODE_DARK -> R.string.dark_mode
-        THEME_MODE_SYSTEM -> R.string.system_mode
-        else -> R.string.light_mode
-    }
-
-    private fun Int.toThemeModeKey(): String = when (this) {
-        R.string.dark_mode -> THEME_MODE_DARK
-        R.string.system_mode -> THEME_MODE_SYSTEM
-        else -> THEME_MODE_LIGHT
-    }
 
     private fun updateUserState(user: User?) {
         _settingsUiState.update { currentState ->
@@ -91,7 +75,7 @@ class SettingViewModel @Inject constructor(
 
         viewModelScope.launch {
             observeSettingsUseCase().collect { prefs: SettingsPreferences ->
-                val themeMode = prefs.themeModeKey.toThemeModeRes()
+                val themeMode = ThemeModeOption.fromStorage(prefs.themeModeKey)
                 val language = prefs.languageCode.ifBlank { LanguageOption.ENGLISH.code }
                 val fontStyle = prefs.fontStyleKey.ifBlank { FontStyleOption.DEFAULT.key }
                 val colorTheme = prefs.colorThemeKey.ifBlank { ColorThemeOption.PURPLE.key }
@@ -102,7 +86,7 @@ class SettingViewModel @Inject constructor(
                     prefs.fontStyleKey,
                     prefs.colorThemeKey
                 )
-                _themeModeUiState.update { it.copy(selectedOptionRes = themeMode) }
+                _themeModeUiState.update { it.copy(selectedOption = themeMode) }
                 _settingsUiState.update {
                     it.copy(
                         languageRadioOption = language,
@@ -134,8 +118,8 @@ class SettingViewModel @Inject constructor(
         }
     }
 
-    private suspend fun saveThemeMode(@StringRes themeMode: Int) {
-        updateThemeModeUseCase(themeMode.toThemeModeKey())
+    private suspend fun saveThemeMode(themeMode: ThemeModeOption) {
+        updateThemeModeUseCase(themeMode.key)
     }
 
     fun onEvent(event: AccountEvent) {
@@ -163,7 +147,7 @@ class SettingViewModel @Inject constructor(
             }
             is AccountEvent.ThemeModeChanged -> {
                 _themeModeUiState.update {
-                    it.copy(selectedOptionRes = event.mode)
+                    it.copy(selectedOption = event.mode)
                 }
             }
             is AccountEvent.SaveThemeMode -> {
