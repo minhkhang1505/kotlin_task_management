@@ -1,1 +1,74 @@
-/build
+# =========================
+# 🧱 Gradle & Build
+# =========================
+.gradle/
+build/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# =========================
+# 🛠 Local config (machine-specific)
+# =========================
+local.properties
+*.properties (optional nếu có config local riêng)
+
+# =========================
+# 🔐 Secrets / Firebase
+# =========================
+google-services.json
+**/google-services.json
+
+# Keystore (cực kỳ quan trọng)
+*.jks
+*.keystore
+
+# =========================
+# 📱 Android Studio / IDE
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# =========================
+# 🧪 Testing / Reports
+# =========================
+test-output/
+coverage/
+*.ec
+
+# =========================
+# 🧾 Logs
+# =========================
+*.log
+
+# =========================
+# 🧹 OS generated files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# 📦 Kotlin / Compose
+# =========================
+.kotlin/
+kotlin-tooling-metadata.json
+
+# =========================
+# 🚀 NDK / CMake (nếu có)
+# =========================
+.externalNativeBuild/
+.cxx/
+
+# =========================
+# 🔄 Backup files
+# =========================
+*.bak
+*.swp
+*~
+
+# =========================
+# 🧰 Misc
+# =========================
+captures/
+outputs/
