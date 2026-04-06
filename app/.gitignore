@@ -72,3 +72,6 @@ kotlin-tooling-metadata.json
 # =========================
 captures/
 outputs/
+
+*.txt
+google-services-base64.txt
