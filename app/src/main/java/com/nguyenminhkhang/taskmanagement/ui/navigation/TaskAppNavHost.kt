@@ -20,8 +20,8 @@ import com.nguyenminhkhang.taskmanagement.ui.common.navigationbar.NavigationBott
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeRoute
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatRoute
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchRoute
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingRoute
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingRoute
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguageRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.FontStyleRoute

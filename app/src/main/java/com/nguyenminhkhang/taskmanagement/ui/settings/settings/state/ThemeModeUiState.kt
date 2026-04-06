@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings.account.state
+package com.nguyenminhkhang.taskmanagement.ui.settings.settings.state
 
 import androidx.annotation.StringRes
 import com.nguyenminhkhang.taskmanagement.R

@@ -16,7 +16,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.ui.navigation.TaskAppNavHost
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber

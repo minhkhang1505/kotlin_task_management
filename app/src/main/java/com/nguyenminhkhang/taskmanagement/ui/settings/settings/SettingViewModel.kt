@@ -1,26 +1,22 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings.account
+package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemLanguageResId
 import com.nguyenminhkhang.taskmanagement.data.datastore.getSystemThemeModeResId
+import com.nguyenminhkhang.taskmanagement.domain.model.User
+import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -30,13 +26,13 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val authRepository: AuthRepository,
     private val taskRepository: TaskRepository,
     private val settingsRepository: SettingsRepository,
     private val analyticsTracker: AnalyticsTracker
@@ -51,22 +47,28 @@ class SettingViewModel @Inject constructor(
     private val _themeModeUiState = MutableStateFlow(ThemeModeUiState())
     val themeUiState = _themeModeUiState.asStateFlow()
 
-    private val auth: FirebaseAuth = Firebase.auth
-
     private val _logoutEvent = MutableSharedFlow<Unit>()
     val logoutEvent = _logoutEvent.asSharedFlow()
 
-    private fun getUserInfo (): String {
-        return auth.currentUser?.email ?: "UnidentifiedUser"
+    private fun updateUserState(user: User?) {
+        _settingsUiState.update { currentState ->
+            currentState.copy(
+                isLoggedIn = user != null,
+                userName = user?.displayName ?: "UnidentifiedUser",
+                userEmail = user?.email,
+                userAvatarUrl = user?.photoUrl,
+            )
+        }
     }
 
     init {
         Timber.tag(TAG).d("SettingViewModel created")
 
-        _settingsUiState.value = SettingUiState(
-            userEmail = getUserInfo(),
-            userAvatarUrl = auth.currentUser?.photoUrl?.toString()
-        )
+        viewModelScope.launch {
+            authRepository.getAuthState().collect { user ->
+                updateUserState(user)
+            }
+        }
 
         viewModelScope.launch {
             settingsRepository.settingsFlow.collect { prefs ->
@@ -122,24 +124,19 @@ class SettingViewModel @Inject constructor(
         when (event) {
             is AccountEvent.SignOut -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    auth.signOut()
-                    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(context.getString(R.string.default_web_client_id))
-                        .requestEmail()
-                        .build()
-                    GoogleSignIn.getClient(context, gso).signOut().await()
+                    authRepository.signOut()
                     taskRepository.clearLocalData()
                     _logoutEvent.emit(Unit)
-                }
-            }
-            is AccountEvent.ShowLogoutDialog -> {
-                _settingsUiState.update { currentState ->
-                    currentState.copy(isLogoutDialogVisible = true)
                 }
             }
             is AccountEvent.HideLogoutDialog -> {
                 _settingsUiState.update { currentState ->
                     currentState.copy(isLogoutDialogVisible = false)
+                }
+            }
+            is AccountEvent.ShowLogoutDialog -> {
+                _settingsUiState.update { currentState ->
+                    currentState.copy(isLogoutDialogVisible = true)
                 }
             }
             is AccountEvent.DismissLogoutDialog -> {

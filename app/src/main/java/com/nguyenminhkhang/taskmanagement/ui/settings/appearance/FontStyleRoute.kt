@@ -2,7 +2,7 @@ package com.nguyenminhkhang.taskmanagement.ui.settings.appearance
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 
 @Composable
 fun FontStyleRoute(

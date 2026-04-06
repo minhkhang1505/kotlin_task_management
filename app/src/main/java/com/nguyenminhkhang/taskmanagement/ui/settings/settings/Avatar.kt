@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings.account
+package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

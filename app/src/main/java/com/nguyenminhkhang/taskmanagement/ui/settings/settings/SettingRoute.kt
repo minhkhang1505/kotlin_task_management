@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings.account
+package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

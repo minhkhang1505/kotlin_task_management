@@ -24,8 +24,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountEvent
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.AccountEvent
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import timber.log.Timber
 
 @Composable

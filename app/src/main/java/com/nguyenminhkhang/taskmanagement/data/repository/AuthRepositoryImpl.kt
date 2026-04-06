@@ -6,17 +6,21 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.nguyenminhkhang.taskmanagement.domain.model.User
 import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
@@ -42,7 +46,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAuthState(): Flow<FirebaseUser?> = callbackFlow {
+    override fun getAuthState(): Flow<User?> = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             trySend(firebaseAuth.currentUser).isSuccess
         }
@@ -50,5 +54,14 @@ class AuthRepositoryImpl @Inject constructor(
         awaitClose {
             auth.removeAuthStateListener(authStateListener)
         }
+    }.map { firebaseUser -> firebaseUser.toDomain() }
+
+    override suspend fun signOut() {
+        auth.signOut()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(context.getString(com.nguyenminhkhang.taskmanagement.R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        GoogleSignIn.getClient(context, gso).signOut().await()
     }
 }

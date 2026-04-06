@@ -3,8 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.repeat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
-import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.GetTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.UpdateRepeatTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.TrackRepeatScreenViewUseCase
@@ -41,7 +40,7 @@ class RepeatViewModel @Inject constructor(
     init {
         Timber.tag(TAG).d("init() - Loading task with taskId=$taskId")
         viewModelScope.launch {
-            val taskEntity = getTaskUseCase(taskId).first().toEntity()
+            val taskEntity = getTaskUseCase(taskId).first()
             Timber.tag(TAG).d("init() - Task loaded: id=${taskEntity.id}, interval=${taskEntity.repeatInterval}, every=${taskEntity.repeatEvery}, endType=${taskEntity.repeatEndType}, endCount=${taskEntity.repeatEndCount}")
             _taskUiState.update { currentState ->
                 currentState.copy(
@@ -184,14 +183,14 @@ class RepeatViewModel @Inject constructor(
         Timber.tag(TAG).d("saveRepeatTask() - Saving task: id=${taskToSave.id}, interval=${taskToSave.repeatInterval}, every=${taskToSave.repeatEvery}, endType=${taskToSave.repeatEndType}, endCount=${taskToSave.repeatEndCount}, endDate=${taskToSave.repeatEndDate}, startDate=${taskToSave.startDate}, startTime=${taskToSave.startTime}, daysOfWeek=${taskToSave.repeatDaysOfWeek}")
 
         viewModelScope.launch {
-            val success = updateRepeatTaskUseCase(taskToSave.toDomain())
+            val success = updateRepeatTaskUseCase(taskToSave)
             Timber.tag(TAG).d("saveRepeatTask() - UpdateRepeatTaskUseCase returned: success=$success")
             _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
             Timber.tag(TAG).d("saveRepeatTask() - NavigateBackWithResult emitted for taskId=$taskId")
         }
     }
 
-    private inline fun updateDraftTask(crossinline transform: (com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity) -> com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity) {
+    private inline fun updateDraftTask(crossinline transform: (Task) -> Task) {
         _taskUiState.update { currentState ->
             val updated = currentState.draftTask?.let { transform(it) }
             Timber.tag(TAG).d("updateDraftTask() - Draft updated: id=${updated?.id}, interval=${updated?.repeatInterval}, every=${updated?.repeatEvery}")

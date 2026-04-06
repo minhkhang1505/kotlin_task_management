@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings.account
+package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
 enum class AppLanguage(val displayName: String, val localeTag: String) {
     EN("English", "en"),

@@ -23,15 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.AccountEvent
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.ThemeModeUiState
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.AccountEvent
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 
 @Composable
 fun ThemeScreen(

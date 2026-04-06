@@ -1,10 +1,11 @@
 package com.nguyenminhkhang.taskmanagement.ui.repeat.state
 
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
+
 
 data class RepeatUiState(
-    val originalTask: TaskEntity? = null,
-    val draftTask: TaskEntity? = null,
+    val originalTask: Task? = null,
+    val draftTask: Task? = null,
     val isLoading: Boolean = true,
 
     val selectedMonthRepeatOption: String = RepeatConstants.MonthRepeatOptions.OnDate,

@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings.account
+package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.settings.account.state.SettingUiState
+import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 
 @Composable
 fun SettingScreen(
