@@ -4,13 +4,16 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.domain.model.SettingsPreferences
 import com.nguyenminhkhang.taskmanagement.domain.model.User
-import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
-import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
+import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.ObserveAuthStateUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.SignOutUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.ObserveSettingsUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.TrackSettingScreenViewUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateColorThemeUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateFontStyleUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateLanguageUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateThemeModeUseCase
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
@@ -29,10 +32,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val taskRepository: TaskRepository,
-    private val settingsRepository: SettingsRepository,
-    private val analyticsTracker: AnalyticsTracker
+    private val observeAuthStateUseCase: ObserveAuthStateUseCase,
+    private val signOutUseCase: SignOutUseCase,
+    private val observeSettingsUseCase: ObserveSettingsUseCase,
+    private val updateLanguageUseCase: UpdateLanguageUseCase,
+    private val updateThemeModeUseCase: UpdateThemeModeUseCase,
+    private val updateFontStyleUseCase: UpdateFontStyleUseCase,
+    private val updateColorThemeUseCase: UpdateColorThemeUseCase,
+    private val trackSettingScreenViewUseCase: TrackSettingScreenViewUseCase
 ) : ViewModel() {
     companion object {
         private const val TAG = "SettingsViewModel"
@@ -77,13 +84,13 @@ class SettingViewModel @Inject constructor(
         Timber.tag(TAG).d("SettingViewModel created")
 
         viewModelScope.launch {
-            authRepository.getAuthState().collect { user ->
+            observeAuthStateUseCase().collect { user ->
                 updateUserState(user)
             }
         }
 
         viewModelScope.launch {
-            settingsRepository.settingsFlow.collect { prefs: SettingsPreferences ->
+            observeSettingsUseCase().collect { prefs: SettingsPreferences ->
                 val themeMode = prefs.themeModeKey.toThemeModeRes()
                 val language = prefs.languageCode.ifBlank { LanguageOption.ENGLISH.code }
                 val fontStyle = prefs.fontStyleKey.ifBlank { FontStyleOption.DEFAULT.key }
@@ -114,9 +121,7 @@ class SettingViewModel @Inject constructor(
     }
 
     fun onScreenShow() {
-        analyticsTracker.trackEvent(
-            AnalyticsEvent.ScreenView("SettingScreen")
-        )
+        trackSettingScreenViewUseCase()
     }
 
     private fun changeLanguage(selectedLanguage: LanguageOption) {
@@ -124,21 +129,20 @@ class SettingViewModel @Inject constructor(
             "changeLanguage() - Current value: ${settingsUiState.value.languageRadioOption}, New value: $selectedLanguage"
         )
         viewModelScope.launch {
-            settingsRepository.setLanguage(selectedLanguage.code)
+            updateLanguageUseCase(selectedLanguage.code)
             Timber.tag(TAG).d("changeLanguage() - saved language=%s", selectedLanguage.code)
         }
     }
 
     private suspend fun saveThemeMode(@StringRes themeMode: Int) {
-        settingsRepository.setThemeMode(themeMode.toThemeModeKey())
+        updateThemeModeUseCase(themeMode.toThemeModeKey())
     }
 
     fun onEvent(event: AccountEvent) {
         when (event) {
             is AccountEvent.SignOut -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    authRepository.signOut()
-                    taskRepository.clearLocalData()
+                    signOutUseCase()
                     _logoutEvent.emit(Unit)
                 }
             }
@@ -180,7 +184,7 @@ class SettingViewModel @Inject constructor(
                     it.copy(fontStyleOption = event.fontStyle.key)
                 }
                 viewModelScope.launch {
-                    settingsRepository.setFontStyle(event.fontStyle.key)
+                    updateFontStyleUseCase(event.fontStyle.key)
                 }
             }
             is AccountEvent.ColorThemeChanged -> {
@@ -189,7 +193,7 @@ class SettingViewModel @Inject constructor(
                     it.copy(colorThemeOption = event.colorTheme.key)
                 }
                 viewModelScope.launch {
-                    settingsRepository.setColorTheme(event.colorTheme.key)
+                    updateColorThemeUseCase(event.colorTheme.key)
                 }
             }
         }

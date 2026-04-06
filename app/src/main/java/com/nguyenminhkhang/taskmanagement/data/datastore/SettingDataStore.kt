@@ -3,7 +3,6 @@ package com.nguyenminhkhang.taskmanagement.data.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
