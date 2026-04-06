@@ -13,26 +13,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.compose.OrangeDarkColorScheme
+import com.example.compose.OrangeLightColorScheme
+import com.example.compose.PurpleDarkColorScheme
+import com.example.compose.PurpleLightColorScheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.ui.settings.account.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
-
-private val PurpleDarkColorScheme = darkColorScheme(primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80)
-private val PurpleLightColorScheme = lightColorScheme(primary = Purple40, secondary = PurpleGrey40, tertiary = Pink40)
-
-private val RedDarkColorScheme = darkColorScheme(primary = Red80, secondary = RedGrey80, tertiary = RedPink80)
-private val RedLightColorScheme = lightColorScheme(primary = Red40, secondary = RedGrey40, tertiary = RedPink40)
-
-private val GreenDarkColorScheme = darkColorScheme(primary = Green80, secondary = GreenGrey80, tertiary = GreenLime80)
-private val GreenLightColorScheme = lightColorScheme(primary = Green40, secondary = GreenGrey40, tertiary = GreenLime40)
-
-private val BlueDarkColorScheme = darkColorScheme(primary = Blue80, secondary = BlueGrey80, tertiary = BlueLight80)
-private val BlueLightColorScheme = lightColorScheme(primary = Blue40, secondary = BlueGrey40, tertiary = BlueLight40)
-
-private val OrangeDarkColorScheme = darkColorScheme(primary = Orange80, secondary = OrangeGrey80, tertiary = OrangeYellow80)
-private val OrangeLightColorScheme = lightColorScheme(primary = Orange40, secondary = OrangeGrey40, tertiary = OrangeYellow40)
 
 @Composable
 fun TaskManagementTheme(
