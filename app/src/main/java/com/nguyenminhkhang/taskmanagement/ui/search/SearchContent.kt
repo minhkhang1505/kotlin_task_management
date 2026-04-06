@@ -20,10 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 
 @Composable
 fun SearchContent(
-    searchResults: List<TaskEntity>,
+    searchResults: List<Task>,
     searchQuery: String,
     onNavigateToTaskDetail: (Long) -> Unit,
     onEvent: (SearchEvent) -> Unit) {

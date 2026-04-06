@@ -1,15 +1,13 @@
 package com.nguyenminhkhang.taskmanagement.ui.search
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.core.time.TimeProvider
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,14 +40,14 @@ class SearchViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val searchResults: StateFlow<List<TaskEntity>> = _searchQuery
+    val searchResults: StateFlow<List<Task>> = _searchQuery
         .debounce(300L)
         .flatMapLatest { query ->
             if (query.length < 2) {
                 flowOf(emptyList())
             } else {
                 taskRepository.SearchTasks(query)
-                    .map { tasks -> tasks.map { it.toEntity() } }
+                    .map { tasks -> tasks.map { it } }
             }
         }
         .stateIn(
@@ -70,7 +68,7 @@ class SearchViewModel @Inject constructor(
 
         viewModelScope.launch {
             taskRepository.getTodayTasks(startOfDay, endOfDay)
-                .map { tasks -> tasks.map { it.toEntity() } }
+                .map { tasks -> tasks.map { it } }
                 .collect { todayTasks ->
                     _searchUiState.update { it.copy(todayTaskResult = todayTasks) }
                 }

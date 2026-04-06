@@ -20,12 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.millisToDateString
 
 @Composable
 fun SearchTaskItemLayout(
-    taskResult: TaskEntity,
+    taskResult: Task,
     onTaskClick: (Long) -> Unit,
     onEvent:(SearchEvent) -> Unit
 ) {

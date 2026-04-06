@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,9 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 /**
  * Composable for displaying the default screen content when search is INACTIVE.
@@ -40,7 +38,7 @@ import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
 @Composable
 fun SearchScreen(
     searchUiState: SearchUiState,
-    searchResults: List<TaskEntity>,
+    searchResults: List<Task>,
     onEvent: (SearchEvent) -> Unit,
     onNavigateToTaskDetail: (Long) -> Unit,
     onScreenShow: () -> Unit
