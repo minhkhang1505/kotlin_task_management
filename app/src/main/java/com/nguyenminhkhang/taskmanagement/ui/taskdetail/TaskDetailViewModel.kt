@@ -1,18 +1,18 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
-import android.content.Context
-import android.content.Intent
-import android.provider.CalendarContract
-import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyenminhkhang.taskmanagement.ui.common.picker.convertMillisToDate
+import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskByIdUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleCompleteUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.UpdateTaskUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.MoveTaskToCollectionUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail.BuildRepeatSummaryTextUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail.TrackTaskDetailScreenViewUseCase
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
+import com.nguyenminhkhang.taskmanagement.ui.taskdetail.effects.TaskDetailEffect
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.TaskDetailEvent
@@ -30,9 +30,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskDetailViewModel @Inject constructor (
-    private val taskRepository : TaskRepository,
+    private val getTaskByIdUseCase: GetTaskByIdUseCase,
+    private val getTaskCollectionsUseCase: GetTaskCollectionsUseCase,
+    private val toggleCompleteUseCase: ToggleCompleteUseCase,
+    private val toggleTaskFavoriteUseCase: ToggleTaskFavoriteUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val moveTaskToCollectionUseCase: MoveTaskToCollectionUseCase,
+    private val buildRepeatSummaryTextUseCase: BuildRepeatSummaryTextUseCase,
+    private val trackTaskDetailScreenViewUseCase: TrackTaskDetailScreenViewUseCase,
     savedStateHandle: SavedStateHandle,
-    private val analyticsTracker : AnalyticsTracker
 ): ViewModel() {
 
     private val _taskUiState = MutableStateFlow(TaskDetailScreenUiState())
@@ -44,52 +50,63 @@ class TaskDetailViewModel @Inject constructor (
     private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
     val navigationEvent = _navigationEvent.asSharedFlow()
 
-    private val taskId: Long = savedStateHandle.get<Long>("taskId")!!
+    private val _effect = MutableSharedFlow<TaskDetailEffect>()
+    val effect = _effect.asSharedFlow()
+
+    private val taskId: Long? = savedStateHandle.get<Long>("taskId")
 
     init {
-        val taskFlow = taskRepository.getTaskById(taskId)
-        val collectionsFlow = taskRepository.getTaskCollection()
+        val safeTaskId = taskId
+        if (safeTaskId == null) {
+            _taskUiState.update { it.copy(isLoading = false) }
+            viewModelScope.launch {
+                _snackbarEvent.emit(SnackbarEvent("Unable to load task details"))
+            }
+        } else {
+            val taskFlow = getTaskByIdUseCase(safeTaskId)
+            val collectionsFlow = getTaskCollectionsUseCase()
 
-        viewModelScope.launch {
-            combine(taskFlow, collectionsFlow) { taskEntity, collections ->
-                if (taskEntity == null) {
-                    TaskDetailScreenUiState(isLoading = false, task = null, collection = collections)
-                } else {
-                    val taskUiState = taskEntity
-                    val currentCollectionName = collections.find { it.id == taskUiState.collectionId }?.content ?: ""
+            viewModelScope.launch {
+                combine(taskFlow, collectionsFlow) { task, collections ->
+                    if (task == null) {
+                        TaskDetailScreenUiState(isLoading = false, task = null, collection = collections)
+                    } else {
+                        val taskUiState = task
+                        val currentCollectionName = collections.find { it.id == taskUiState.collectionId }?.content ?: ""
 
-                    TaskDetailScreenUiState(
-                        task = taskUiState,
-                        collection = collections,
-                        currentCollection = currentCollectionName,
-                        repeatSummaryText = buildRepeatSummaryText(taskUiState),
-                        isLoading = false
-                    )
+                        TaskDetailScreenUiState(
+                            task = taskUiState,
+                            collection = collections,
+                            currentCollection = currentCollectionName,
+                            repeatSummaryText = buildRepeatSummaryTextUseCase(taskUiState),
+                            isLoading = false
+                        )
+                    }
+                }.collect { combinedUiState ->
+                    _taskUiState.value = combinedUiState
                 }
-            }.collect { combinedUiState ->
-                _taskUiState.value = combinedUiState
             }
         }
     }
 
     fun onScreenShow() {
-        analyticsTracker.trackEvent(
-            AnalyticsEvent.ScreenView("TaskDetailScreen")
-        )
+        trackTaskDetailScreenViewUseCase()
     }
 
     fun onMarkAsDoneClicked() {
+        val safeTaskId = taskId ?: return
         viewModelScope.launch {
-            taskRepository.updateTaskCompleted(taskId, true)
-            _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(taskId))
+            toggleCompleteUseCase(safeTaskId, true)
+            _navigationEvent.emit(NavigationEvent.NavigateBackWithResult(safeTaskId))
         }
     }
 
     fun toggleFavorite() {
+        val safeTaskId = taskId ?: return
         viewModelScope.launch {
             val currentTask = _taskUiState.value.task ?: return@launch
             val isFavorite = !currentTask.favorite
-            taskRepository.updateTaskFavorite(taskId, isFavorite)
+            toggleTaskFavoriteUseCase(safeTaskId, isFavorite)
             _snackbarEvent.emit(SnackbarEvent("Task ${if (isFavorite) "added to" else "removed from"} favorites"))
         }
     }
@@ -104,7 +121,7 @@ class TaskDetailViewModel @Inject constructor (
     fun saveTitle() {
         viewModelScope.launch {
             val currentTask = _taskUiState.value.task ?: return@launch
-            taskRepository.updateTask(currentTask)
+            updateTaskUseCase(currentTask)
             _snackbarEvent.emit(SnackbarEvent("Task updated"))
         }
     }
@@ -132,7 +149,7 @@ class TaskDetailViewModel @Inject constructor (
     fun saveDetail() {
         viewModelScope.launch {
             val currentDetail = _taskUiState.value.task ?: return@launch
-            taskRepository.updateTask(currentDetail)
+            updateTaskUseCase(currentDetail)
             _snackbarEvent.emit(SnackbarEvent("Task detail updated"))
         }
     }
@@ -146,7 +163,7 @@ class TaskDetailViewModel @Inject constructor (
         val currentTask = _taskUiState.value.task ?: return
 
         viewModelScope.launch {
-            taskRepository.updateTask(currentTask)
+            updateTaskUseCase(currentTask)
         }
     }
 
@@ -158,7 +175,7 @@ class TaskDetailViewModel @Inject constructor (
         val currentTask = _taskUiState.value.task ?: return
 
         viewModelScope.launch {
-            taskRepository.updateTask(currentTask)
+            updateTaskUseCase(currentTask)
         }
     }
 
@@ -177,7 +194,7 @@ class TaskDetailViewModel @Inject constructor (
         }
         val currentTask = _taskUiState.value.task ?: return
         viewModelScope.launch {
-            taskRepository.updateTask(currentTask)
+            updateTaskUseCase(currentTask)
         }
     }
 
@@ -189,7 +206,7 @@ class TaskDetailViewModel @Inject constructor (
         val currentTask = _taskUiState.value.task ?: return
 
         viewModelScope.launch {
-            taskRepository.updateTask(currentTask)
+            updateTaskUseCase(currentTask)
         }
     }
 
@@ -203,60 +220,24 @@ class TaskDetailViewModel @Inject constructor (
         }
     }
 
-    fun addTaskToCalendar(context: Context, task: Task) {
-        val startTimeMillis = uiState.value.task?.reminderTimeMillis
+    private fun addTaskToCalendar() {
+        viewModelScope.launch {
+            val task = uiState.value.task ?: return@launch
+            val startTimeMillis = task.reminderTimeMillis
 
-        if(startTimeMillis == null) {
-            Toast.makeText(context, "Please set a reminder time for the task", Toast.LENGTH_SHORT).show()
-            return
+            if (startTimeMillis == null) {
+                _snackbarEvent.emit(SnackbarEvent("Please set a reminder time for the task"))
+                return@launch
+            }
+
+            val endTimeMillis = startTimeMillis + 3600 * 1000
+            _effect.emit(TaskDetailEffect.OpenCalendar(task, startTimeMillis, endTimeMillis))
         }
-
-        val endTimeMillis = (uiState.value.task?.reminderTimeMillis ?: 0L) + 3600 * 1000
-
-        val intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-
-            putExtra(CalendarContract.Events.TITLE, task.content)
-            putExtra(CalendarContract.Events.DESCRIPTION, task.taskDetail)
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTimeMillis)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTimeMillis)
-        }
-
-        if (intent.resolveActivity(context.packageManager) != null) {
-            context.startActivity(intent)
-            Toast.makeText(context, "Task added to calendar", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "No calendar app found", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    // For repeat summary text
-    private fun buildRepeatSummaryText(task: Task?): String {
-        if (task == null || (task.repeatInterval == null && task.repeatDaysOfWeek.isNullOrEmpty())) {
-            return ""
-        }
-
-        val repeatContent = StringBuilder()
-
-        if (task.repeatInterval != null) {
-            repeatContent.append("Once every ${task.repeatEvery} ${task.repeatInterval.lowercase()}")
-        }
-        if (!task.repeatDaysOfWeek.isNullOrEmpty()) {
-            repeatContent.append(" on ${task.repeatDaysOfWeek.joinToString(", ")}")
-        }
-        if (task.repeatEndDate != null && task.repeatEndType == "At") {
-            repeatContent.append(", until ${convertMillisToDate(task.repeatEndDate)}")
-        }
-        if (task.repeatEndType == "After") {
-            repeatContent.append(", ${task.repeatEndCount} occurrences")
-        }
-
-        return repeatContent.toString()
     }
 
     fun onEvent(event: TaskDetailEvent) {
         when(event) {
-            is TaskDetailEvent.AddToCalendar -> addTaskToCalendar(event.context, event.task)
+            is TaskDetailEvent.AddToCalendar -> addTaskToCalendar()
             is TaskDetailEvent.GetCurrentCollectionNameById -> {
                 _taskUiState.update { currentState ->
                     currentState.copy(
@@ -275,8 +256,9 @@ class TaskDetailViewModel @Inject constructor (
                 }
             }
             is TaskDetailEvent.CurrentCollectionChanged -> {
+                val safeTaskId = taskId ?: return
                 viewModelScope.launch {
-                    taskRepository.moveTaskToCollectionById(taskId, event.collectionId)
+                    moveTaskToCollectionUseCase(safeTaskId, event.collectionId)
                     _taskUiState.update { currentState ->
                         currentState.copy(
                             currentCollection = currentState.collection.find { it.id == event.collectionId }?.content ?: ""

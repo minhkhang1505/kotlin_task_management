@@ -1,6 +1,5 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
-import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +24,6 @@ import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.TaskDetailEvent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDetailScreen(
-    context: Context,
     uiState: TaskDetailScreenUiState,
     onPopBackStack: () -> Unit,
     onNavigateToRepeat: (Long) -> Unit,
@@ -35,6 +33,20 @@ fun TaskDetailScreen(
     LaunchedEffect(Unit) {
         onScreenShow()
     }
+
+    val task = uiState.task
+    if (task == null) {
+        Box(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = stringResource(R.string.have_any_tasks_yet))
+        }
+        return
+    }
+
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -53,7 +65,7 @@ fun TaskDetailScreen(
             )
             // task title and edit icon
             TaskTitleField(
-                title = uiState.task!!.content,
+                title = task.content,
                 isInEditMode = uiState.isInEditMode,
                 onTitleChange = { onEvent(TaskDetailEvent.OnTitleChanged(it)) },
                 onEnterEditMode = { onEvent(TaskDetailEvent.OnEnterEditMode) },
@@ -62,7 +74,7 @@ fun TaskDetailScreen(
             )
             // menu icon sub task detail
             TaskDetailInputRow(
-                detailValue = uiState.task.taskDetail,
+                detailValue = task.taskDetail,
                 onDetailChange = { onEvent(TaskDetailEvent.OnDetailChange(it)) },
                 onSave = { onEvent(TaskDetailEvent.SaveDetail) }
             )
@@ -82,14 +94,14 @@ fun TaskDetailScreen(
             RepeatInfoRow(
                 summaryText = uiState.repeatSummaryText,
                 onClick = {
-                    uiState.task.id?.let { onNavigateToRepeat(it) }
+                    task.id?.let { onNavigateToRepeat(it) }
                 }
             )
             AddToCalendarButton(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .padding(top = 8.dp),
-                onClick = { onEvent(TaskDetailEvent.AddToCalendar(context, uiState.task)) }
+                onClick = { onEvent(TaskDetailEvent.AddToCalendar) }
             )
         }
 

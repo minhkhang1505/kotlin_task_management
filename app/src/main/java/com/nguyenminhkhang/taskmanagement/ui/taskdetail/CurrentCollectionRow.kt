@@ -80,9 +80,9 @@ fun ModelButtonChangeCollection(
                     scope.launch {
                         sheetState.hide()
                     }.invokeOnCompletion {
-                        if (!sheetState.isVisible) {
+                        if (!sheetState.isVisible && collection.id != null) {
                             onEvent(
-                                TaskDetailEvent.CurrentCollectionChanged(collection.id!!)
+                                TaskDetailEvent.CurrentCollectionChanged(collection.id)
                             )
                         }
                     }

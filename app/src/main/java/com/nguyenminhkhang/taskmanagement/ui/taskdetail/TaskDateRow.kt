@@ -68,8 +68,9 @@ fun TaskDateRow(
                     color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             } else {
+                val startDate = uiState.task.startDate ?: return@Column
                 CustomTextField(
-                    content = convertMillisToDate(uiState.task.startDate!!),
+                    content = convertMillisToDate(startDate),
                     onClick = { onClearDate() }, // <-- Thông báo sự kiện
                     textColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     textSize = MaterialTheme.typography.titleMedium.fontSize
