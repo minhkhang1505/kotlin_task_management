@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -44,6 +45,15 @@ class AuthRepositoryImpl @Inject constructor(
         context.dataStore.edit { preferences ->
             preferences[PreferencesKeys.HAS_CLAIMED_LOCAL_TASKS] = hasClaimed
         }
+    }
+
+    override suspend fun signInWithGoogleIdToken(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential).await()
+    }
+
+    override suspend fun signInWithEmailAndPassword(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password).await()
     }
 
     override fun getAuthState(): Flow<User?> = callbackFlow {

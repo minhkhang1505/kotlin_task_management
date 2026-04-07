@@ -4,7 +4,7 @@ import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class FirebaseAnalyticsTracker @Inject constructor(
     private val firebaseAnalytics: FirebaseAnalytics

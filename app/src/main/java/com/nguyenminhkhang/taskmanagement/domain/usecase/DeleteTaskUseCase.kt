@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase
 
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import jakarta.inject.Inject
+import javax.inject.Inject
 
 class DeleteTaskUseCase @Inject constructor(
     private val taskRepository: TaskRepository

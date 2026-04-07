@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.Build
 import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import dagger.hilt.android.qualifiers.ApplicationContext
-import jakarta.inject.Inject
+import javax.inject.Inject
 import java.util.Calendar
 
 class AlarmManagerTaskScheduler @Inject constructor(

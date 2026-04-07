@@ -1,49 +1,30 @@
 package com.nguyenminhkhang.taskmanagement.ui.auth.signin
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
+import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.ProcessUserSignInUseCase
 import com.nguyenminhkhang.taskmanagement.ui.auth.signin.state.SignInState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import jakarta.inject.Inject
-import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 
 @HiltViewModel
-class SignInViewModel @Inject constructor(private val taskRepository: TaskRepository, private val authRepository: AuthRepository ) : ViewModel() {
-    private val auth: FirebaseAuth = Firebase.auth
+class SignInViewModel @Inject constructor(
+    private val processUserSignInUseCase: ProcessUserSignInUseCase
+) : ViewModel() {
 
     private val _signInState = MutableStateFlow(SignInState())
     val signInState = _signInState.asStateFlow()
 
     fun signInWithGoogle(idToken: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _signInState.update { it.copy(isLoading = true) }
 
             try {
-                val credential = GoogleAuthProvider.getCredential(idToken, null)
-
-                val result = auth.signInWithCredential(credential).await()
-                val user = result.user
-                val hasAlreadyClaimed = authRepository.hasClaimedLocalTasksFlow.first()
-                if(!hasAlreadyClaimed) {
-                    taskRepository.claimLocalTasks()
-                    taskRepository.claimLocalTaskCollection()
-                    authRepository.updateHasClaimedLocalTasks(true)
-                }
-
-                Log.d("SignInViewModel", "signInWithGoogle: ${user?.email}")
+                processUserSignInUseCase.signInWithGoogle(idToken)
                 _signInState.update { it.copy(isSuccess = true, isLoading = false) }
 
             } catch (e: Exception) {
@@ -60,19 +41,12 @@ class SignInViewModel @Inject constructor(private val taskRepository: TaskReposi
             return
         }
 
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _signInState.update { it.copy(isLoading = true) }
 
             try {
-                auth.signInWithEmailAndPassword(email, password).await()
-                val hasAlreadyClaimed = authRepository.hasClaimedLocalTasksFlow.first()
-                if(!hasAlreadyClaimed) {
-                    taskRepository.claimLocalTasks()
-                    taskRepository.claimLocalTaskCollection()
-                    authRepository.updateHasClaimedLocalTasks(true)
-                }
+                processUserSignInUseCase.signInWithEmailAndPassword(email, password)
                 _signInState.update { it.copy(isSuccess = true, isLoading = false) }
-                Log.d("SignInViewModel", "User signed in successfully by ${auth.currentUser?.email} and ${auth.currentUser?.uid}")
             } catch (e: Exception) {
                 _signInState.update { it.copy(error = e.message, isLoading = false) }
             }
