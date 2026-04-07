@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProcessUserSignInUseCase @Inject constructor(
+class ProcessUserSignInUseCase (
     private val authRepository: AuthRepository,
     private val taskRepository: TaskRepository
 ) {

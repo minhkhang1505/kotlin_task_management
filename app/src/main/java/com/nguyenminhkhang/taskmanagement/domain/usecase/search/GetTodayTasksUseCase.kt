@@ -13,7 +13,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class GetTodayTasksUseCase @Inject constructor(
+class GetTodayTasksUseCase (
     private val taskRepository: TaskRepository
 ) {
     operator fun invoke(): Flow<List<Task>> {

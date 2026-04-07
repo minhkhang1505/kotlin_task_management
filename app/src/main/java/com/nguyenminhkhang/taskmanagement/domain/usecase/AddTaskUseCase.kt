@@ -4,7 +4,7 @@ import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import javax.inject.Inject
 
-class AddTaskUseCase @Inject constructor(
+class AddTaskUseCase (
     private val taskRepository: TaskRepository
 ) {
     /**

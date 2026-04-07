@@ -26,7 +26,7 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 @Singleton
-class AuthRepositoryImpl @Inject constructor(
+class AuthRepositoryImpl (
     private val context: Context
 ) : AuthRepository {
     private val auth: FirebaseAuth = Firebase.auth

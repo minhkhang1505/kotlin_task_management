@@ -19,7 +19,7 @@ data class GetTasksParams(
     val todayEndDay: Long? = null
 )
 
-class GetTasksUseCase @Inject constructor(
+class GetTasksUseCase (
     private val taskRepository: TaskRepository
 ) {
     operator fun invoke(params: GetTasksParams) : Flow<List<Task>> {

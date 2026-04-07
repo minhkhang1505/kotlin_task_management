@@ -5,7 +5,7 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetTaskCollectionsUseCase @Inject constructor(
+class GetTaskCollectionsUseCase (
     private val taskRepository: TaskRepository
 ) {
 

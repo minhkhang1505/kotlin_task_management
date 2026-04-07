@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SignOutUseCase @Inject constructor(
+class SignOutUseCase (
     private val authRepository: AuthRepository,
     private val taskRepository: TaskRepository
 ) {

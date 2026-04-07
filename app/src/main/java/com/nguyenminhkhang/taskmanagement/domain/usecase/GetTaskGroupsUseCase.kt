@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.collections.plus
 
-class GetTaskGroupsUseCase @Inject constructor(
+class GetTaskGroupsUseCase (
     private val getTaskCollectionsUseCase: GetTaskCollectionsUseCase,
     private val taskRepository: TaskRepository
 ) {

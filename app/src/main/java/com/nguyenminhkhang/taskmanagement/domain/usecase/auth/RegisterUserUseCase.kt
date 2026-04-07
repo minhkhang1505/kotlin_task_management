@@ -10,7 +10,7 @@ sealed class RegisterUserResult {
     data class ValidationError(val message: String) : RegisterUserResult()
 }
 
-class RegisterUserUseCase @Inject constructor(
+class RegisterUserUseCase (
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(

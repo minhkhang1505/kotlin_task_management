@@ -18,7 +18,7 @@ data class UpdateTaskPropertiesParams(
     val value: Any
 )
 
-class UpdateTaskPropertiesUseCase @Inject constructor(
+class UpdateTaskPropertiesUseCase (
     private val taskRepository: TaskRepository
 ) {
 }

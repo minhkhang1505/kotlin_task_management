@@ -4,7 +4,7 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import timber.log.Timber
 import javax.inject.Inject
 
-class DeleteTaskCollectionUseCase @Inject constructor(
+class DeleteTaskCollectionUseCase (
     private val taskRepository: TaskRepository
 ) {
     suspend operator fun invoke(collectionId: Long): Boolean {

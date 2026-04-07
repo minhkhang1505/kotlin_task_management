@@ -5,7 +5,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AndroidStringProvider @Inject constructor(
+class AndroidStringProvider (
     private val context: Context
 ): StringProvider {
     override fun getString(id: Int): String {

@@ -4,7 +4,7 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import javax.inject.Inject
 
-class TrackTaskDetailScreenViewUseCase @Inject constructor(
+class TrackTaskDetailScreenViewUseCase (
     private val analyticsTracker: AnalyticsTracker
 ) {
     operator fun invoke() {

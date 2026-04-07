@@ -5,7 +5,7 @@ import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class ObserveSettingsUseCase @Inject constructor(
+class ObserveSettingsUseCase (
     private val settingsRepository: SettingsRepository
 ) {
     operator fun invoke(): Flow<SettingsPreferences> = settingsRepository.settingsFlow

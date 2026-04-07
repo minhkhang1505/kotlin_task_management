@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 @Singleton
-class SettingsRepositoryImpl @Inject constructor(
+class SettingsRepositoryImpl (
     private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {
     companion object {

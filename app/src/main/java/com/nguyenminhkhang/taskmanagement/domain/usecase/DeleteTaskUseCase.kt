@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.domain.usecase
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import javax.inject.Inject
 
-class DeleteTaskUseCase @Inject constructor(
+class DeleteTaskUseCase (
     private val taskRepository: TaskRepository
 ) {
     suspend operator fun invoke(taskId: Long): Boolean {

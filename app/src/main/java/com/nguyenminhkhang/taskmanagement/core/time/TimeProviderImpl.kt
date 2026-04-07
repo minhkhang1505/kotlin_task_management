@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.core.time
 import javax.inject.Inject
 import java.util.Calendar
 
-class TimeProviderImpl @Inject constructor() : TimeProvider {
+class TimeProviderImpl () : TimeProvider {
     override fun getCurrentTimeMillis(): Long = System.currentTimeMillis()
 
     override fun combineDateAndTime(dateMillis: Long?, hour: Int?, minute: Int?): Long? {

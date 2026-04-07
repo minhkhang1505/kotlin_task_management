@@ -5,7 +5,7 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import timber.log.Timber
 import javax.inject.Inject
 
-class TrackRepeatScreenViewUseCase @Inject constructor(
+class TrackRepeatScreenViewUseCase (
     private val analyticsTracker: AnalyticsTracker
 ) {
     operator fun invoke() {

@@ -7,7 +7,7 @@ import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import timber.log.Timber
 import javax.inject.Inject
 
-class UpdateRepeatTaskUseCase @Inject constructor(
+class UpdateRepeatTaskUseCase (
     private val taskRepository: TaskRepository,
     private val taskScheduler: TaskScheduler
 ) {

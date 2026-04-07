@@ -4,7 +4,7 @@ import com.nguyenminhkhang.taskmanagement.domain.model.Collection
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import javax.inject.Inject
 
-class AddNewCollectionUseCase @Inject constructor(
+class AddNewCollectionUseCase (
     private val taskRepository: TaskRepository
 ) {
     suspend operator fun invoke(collectionName: String): Collection? {

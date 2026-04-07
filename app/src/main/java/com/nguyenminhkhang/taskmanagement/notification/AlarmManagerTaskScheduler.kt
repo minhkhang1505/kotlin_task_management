@@ -9,7 +9,7 @@ import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import javax.inject.Inject
 import java.util.Calendar
 
-class AlarmManagerTaskScheduler @Inject constructor(
+class AlarmManagerTaskScheduler (
     private val context: Context,
 ) : TaskScheduler {
 

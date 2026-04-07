@@ -6,7 +6,7 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import javax.inject.Inject
 
-class FirebaseAnalyticsTracker @Inject constructor(
+class FirebaseAnalyticsTracker (
     private val firebaseAnalytics: FirebaseAnalytics
 ) : AnalyticsTracker {
     override fun trackEvent(event: AnalyticsEvent) {

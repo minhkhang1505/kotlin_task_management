@@ -8,7 +8,7 @@ import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class BuildRepeatSummaryTextUseCase @Inject constructor() {
+class BuildRepeatSummaryTextUseCase () {
     private fun formatDate(millis: Long): String {
         val localDate = Instant.fromEpochMilliseconds(millis)
             .toLocalDateTime(TimeZone.currentSystemDefault())

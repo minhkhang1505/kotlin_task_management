@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import javax.inject.Inject
 
-class GetTaskUseCase @Inject constructor(
+class GetTaskUseCase (
     private val taskRepository: TaskRepository
 ) {
     operator fun invoke(taskId: Long): Flow<Task> {
