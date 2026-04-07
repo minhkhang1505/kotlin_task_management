@@ -1,54 +1,56 @@
 package com.nguyenminhkhang.taskmanagement.ui.auth.register
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
+import androidx.lifecycle.viewModelScope
+import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.RegisterUserResult
+import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.RegisterUserUseCase
 import com.nguyenminhkhang.taskmanagement.ui.auth.register.state.RegisterUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor() : ViewModel() {
-    private val auth: FirebaseAuth = Firebase.auth
+class RegisterViewModel @Inject constructor(
+    private val registerUserUseCase: RegisterUserUseCase
+) : ViewModel() {
 
     private val _registerUiState = MutableStateFlow(RegisterUiState())
     val registerState = _registerUiState.asStateFlow()
 
     private val _navigationEvent = MutableSharedFlow<NavigationEvent>()
-    val navigationEvent = _navigationEvent.asSharedFlow()
 
-    fun registerUser(email: String, password: String) {
-        if (email.isBlank() || password.isBlank()) {
-            _registerUiState.value = RegisterUiState(
-                errorMessage = "Email and password must not be empty"
-            )
-            return
-        }
-
+    fun registerUser(email: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
             _registerUiState.update { it.copy(isLoading = true) }
 
             try {
-                auth.createUserWithEmailAndPassword(email, password).await()
-                _registerUiState.update {
-                    it.copy(
-                        isSuccess = true,
-                        isLoading = false
-                    )
-                }
+                when (val result = registerUserUseCase(email, password, confirmPassword)) {
+                    is RegisterUserResult.Success -> {
+                        _registerUiState.update {
+                            it.copy(
+                                isSuccess = true,
+                                isLoading = false,
+                                errorMessage = null
+                            )
+                        }
 
-                _navigationEvent.emit(NavigationEvent.NavigateToLogin)
-                Log.d("RegisterViewModel", "User registered successfully by ${auth.currentUser?.email} and ${auth.currentUser?.uid}")
+                        _navigationEvent.emit(NavigationEvent.NavigateToLogin)
+                    }
+
+                    is RegisterUserResult.ValidationError -> {
+                        _registerUiState.update {
+                            it.copy(
+                                errorMessage = result.message,
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 _registerUiState.update {
                     it.copy(
@@ -89,13 +91,11 @@ class RegisterViewModel @Inject constructor() : ViewModel() {
             }
             is RegisterEvent.Submit -> {
                 val currentState = _registerUiState.value
-                if (currentState.password != currentState.confirmPassword) {
-                    _registerUiState.update {
-                        it.copy(errorMessage = "Passwords do not match")
-                    }
-                    return
-                }
-                registerUser(currentState.email, currentState.password)
+                registerUser(
+                    currentState.email,
+                    currentState.password,
+                    currentState.confirmPassword
+                )
             }
         }
     }

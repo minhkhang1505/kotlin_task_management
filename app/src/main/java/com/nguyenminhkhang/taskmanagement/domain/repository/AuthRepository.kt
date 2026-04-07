@@ -8,6 +8,7 @@ interface AuthRepository {
     suspend fun updateHasClaimedLocalTasks(hasClaimed: Boolean)
     suspend fun signInWithGoogleIdToken(idToken: String)
     suspend fun signInWithEmailAndPassword(email: String, password: String)
+    suspend fun createUserWithEmailAndPassword(email: String, password: String)
     fun getAuthState(): Flow<User?>
     suspend fun signOut()
 }
