@@ -1,7 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.auth.signin
 
 import android.app.Activity
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -18,11 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.nguyenminhkhang.taskmanagement.R
+import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 @Composable
@@ -30,8 +29,8 @@ fun SignInRoute(
     onNavigateToRegister: () -> Unit,
     onNavigateToHome:() -> Unit
 ) {
-    val viewModel: SignInViewModel = hiltViewModel()
-    val loginState by viewModel.signInState.collectAsState()
+    val viewModel: SignInViewModel = koinViewModel()
+    val loginState by viewModel.signInState.collectAsStateWithLifecycle()
     val webClientId = stringResource(id = R.string.default_web_client_id)
     val context = LocalContext.current
 

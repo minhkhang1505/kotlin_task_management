@@ -9,7 +9,6 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.search.GetTodayTasksUse
 import com.nguyenminhkhang.taskmanagement.domain.usecase.search.SearchTasksUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase
 import com.nguyenminhkhang.taskmanagement.ui.search.state.SearchUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,10 +20,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class SearchViewModel @Inject constructor(
+class SearchViewModel (
     private val searchTasksUseCase: SearchTasksUseCase,
     private val getTodayTasksUseCase: GetTodayTasksUseCase,
     private val toggleTaskFavoriteUseCase: ToggleTaskFavoriteUseCase,

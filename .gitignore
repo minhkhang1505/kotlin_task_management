@@ -13,3 +13,9 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Kotlin Multiplatform / Gradle build artifacts
+.kotlin/
+build/
+*.klib
+*.log

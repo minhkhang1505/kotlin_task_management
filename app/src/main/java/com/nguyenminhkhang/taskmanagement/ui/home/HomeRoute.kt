@@ -4,24 +4,24 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavBackStackEntry
 import com.nguyenminhkhang.taskmanagement.ui.home.action.buildActionMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.home.event.TaskEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.sort.buildSortMenuItems
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarActionType
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeRoute(
-    homeViewModel: HomeViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = koinViewModel(),
     onNavigateToTaskDetail: (Long) -> Unit,
     backStackEntry: NavBackStackEntry,
 ) {
-    val uiState by homeViewModel.uiState.collectAsState()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
     val strings = homeViewModel.stringProvider
 

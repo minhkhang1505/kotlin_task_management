@@ -16,7 +16,6 @@ import com.nguyenminhkhang.taskmanagement.ui.taskdetail.effects.TaskDetailEffect
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.state.TaskDetailScreenUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.TaskDetailEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,11 +24,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-
-@HiltViewModel
-class TaskDetailViewModel @Inject constructor (
+class TaskDetailViewModel  (
     private val getTaskByIdUseCase: GetTaskByIdUseCase,
     private val getTaskCollectionsUseCase: GetTaskCollectionsUseCase,
     private val toggleCompleteUseCase: ToggleCompleteUseCase,

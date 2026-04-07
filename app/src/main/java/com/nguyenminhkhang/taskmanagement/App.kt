@@ -5,14 +5,23 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.nguyenminhkhang.taskmanagement.di.module.appKoinModules
 import com.nguyenminhkhang.taskmanagement.notification.NotificationConstants
-import dagger.hilt.android.HiltAndroidApp
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.GlobalContext.startKoin
 import timber.log.Timber
 
-@HiltAndroidApp
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(appKoinModules)
+        }
+
         Timber.plant(Timber.DebugTree())
         Timber.d("APP STARTED")
         createNotificationChannel()

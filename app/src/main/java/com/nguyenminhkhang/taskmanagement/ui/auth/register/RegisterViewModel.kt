@@ -5,17 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.RegisterUserResult
 import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.RegisterUserUseCase
 import com.nguyenminhkhang.taskmanagement.ui.auth.register.state.RegisterUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class RegisterViewModel @Inject constructor(
+class RegisterViewModel(
     private val registerUserUseCase: RegisterUserUseCase
 ) : ViewModel() {
 

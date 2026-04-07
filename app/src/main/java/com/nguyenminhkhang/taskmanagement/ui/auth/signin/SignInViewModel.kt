@@ -4,15 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.ProcessUserSignInUseCase
 import com.nguyenminhkhang.taskmanagement.ui.auth.signin.state.SignInState
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class SignInViewModel @Inject constructor(
+class SignInViewModel (
     private val processUserSignInUseCase: ProcessUserSignInUseCase
 ) : ViewModel() {
 

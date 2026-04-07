@@ -5,7 +5,6 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.dagger.hilt.android")
     // Add the Crashlytics Gradle plugin
     id("com.google.firebase.crashlytics")
 }
@@ -72,6 +71,9 @@ dependencies {
     //System Ui controller
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
 
+    // Import koin DI
+    implementation("io.insert-koin:koin-androidx-compose:4.1.1")
+
     // Import the BoM for the Firebase platform
     implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
 
@@ -99,14 +101,14 @@ dependencies {
     //Add data store dependencies
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.datetime)
-
-    implementation(libs.dagger.hilt.android)
-    ksp(libs.dagger.hilt.android.compiler)
+    implementation(project(":shared"))
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose.viewmodel)
+    implementation("javax.inject:javax.inject:1")
 
     implementation(libs.airbnb.android.lottie.compose)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit)
     testImplementation("io.mockk:mockk:1.13.8")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")

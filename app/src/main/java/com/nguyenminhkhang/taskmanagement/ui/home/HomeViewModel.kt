@@ -31,7 +31,6 @@ import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiSt
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,8 +67,7 @@ data class CollectionUseCases @Inject constructor(
     val updateName: UpdateCollectionNameUseCase
 )
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     private val taskUseCases: TaskUseCases,
     private val collectionUseCases: CollectionUseCases,
     private val scheduler: TaskScheduler,

@@ -18,7 +18,6 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOptio
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -26,10 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class SettingViewModel @Inject constructor(
+class SettingViewModel (
     private val observeAuthStateUseCase: ObserveAuthStateUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val observeSettingsUseCase: ObserveSettingsUseCase,

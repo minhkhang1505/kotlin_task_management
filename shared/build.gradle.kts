@@ -61,12 +61,16 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
+                implementation(libs.koin.compose.viewmodel)
             }
         }
 
         commonTest {
             dependencies {
                 implementation(libs.kotlin.test)
+//                implementation(libs.koin.android)
             }
         }
 

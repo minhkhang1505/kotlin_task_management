@@ -1,17 +1,16 @@
 package com.nguyenminhkhang.taskmanagement.ui.search
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun SearchRoute(
     onNavigateToTaskDetail: (Long) -> Unit,
 ) {
-    val viewModel: SearchViewModel = hiltViewModel()
-    val searchState by viewModel.searchUiState.collectAsState()
+    val viewModel: SearchViewModel = koinViewModel()
+    val searchState by viewModel.searchUiState.collectAsStateWithLifecycle()
     val results by viewModel.searchResults.collectAsStateWithLifecycle()
 
     SearchScreen(

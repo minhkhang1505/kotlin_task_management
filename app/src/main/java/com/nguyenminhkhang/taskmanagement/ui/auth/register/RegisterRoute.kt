@@ -4,13 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun RegisterRoute(
     onNavigateToSignIn: () -> Unit,
 ) {
-    val viewModel: RegisterViewModel = hiltViewModel()
+    val viewModel: RegisterViewModel = koinViewModel()
     val registerState by viewModel.registerState.collectAsState()
 
 //    LaunchedEffect(Unit) {

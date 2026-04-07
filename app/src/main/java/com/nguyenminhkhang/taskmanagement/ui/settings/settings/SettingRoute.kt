@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun SettingRoute(
@@ -13,7 +14,7 @@ fun SettingRoute(
     onNavigateToFontStyle: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    val accountUiState by settingViewModel.settingsUiState.collectAsState()
+    val accountUiState by settingViewModel.settingsUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         settingViewModel.logoutEvent.collect {

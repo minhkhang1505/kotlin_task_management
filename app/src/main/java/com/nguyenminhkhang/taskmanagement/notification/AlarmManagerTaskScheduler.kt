@@ -6,12 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.nguyenminhkhang.taskmanagement.domain.model.Task
-import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import java.util.Calendar
 
 class AlarmManagerTaskScheduler @Inject constructor(
-    @ApplicationContext private val context: Context,
+    private val context: Context,
 ) : TaskScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)

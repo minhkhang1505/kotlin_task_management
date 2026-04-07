@@ -10,23 +10,23 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.effects.TaskDetailEffect
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TaskDetailRoute(
     onNavigateToRepeat: (Long) -> Unit,
     onPopBackStack: () -> Unit,
 ) {
-    val taskDetailViewModel: TaskDetailViewModel = hiltViewModel()
-    val uiState by taskDetailViewModel.uiState.collectAsState()
+    val taskDetailViewModel: TaskDetailViewModel = koinViewModel()
+    val uiState by taskDetailViewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {

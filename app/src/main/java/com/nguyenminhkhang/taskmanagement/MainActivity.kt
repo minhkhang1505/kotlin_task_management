@@ -9,19 +9,17 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.LocaleListCompat
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.nguyenminhkhang.taskmanagement.ui.navigation.TaskAppNavHost
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.theme.TaskManagementTheme
-import dagger.hilt.android.AndroidEntryPoint
+import org.koin.compose.viewmodel.koinViewModel
 import timber.log.Timber
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivity"
@@ -34,8 +32,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
-            val settingViewModel = hiltViewModel<SettingViewModel>()
-            val settingUiState = settingViewModel.settingsUiState.collectAsState()
+            val settingViewModel = koinViewModel<SettingViewModel>()
+            val settingUiState = settingViewModel.settingsUiState.collectAsStateWithLifecycle()
 
             LaunchedEffect(settingUiState.value.languageRadioOption) {
                 Timber.tag(TAG).d(

@@ -10,7 +10,6 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.TrackRepeatScree
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,10 +19,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
-@HiltViewModel
-class RepeatViewModel @Inject constructor(
+class RepeatViewModel(
     private val getTaskUseCase: GetTaskUseCase,
     private val updateRepeatTaskUseCase: UpdateRepeatTaskUseCase,
     private val trackRepeatScreenViewUseCase: TrackRepeatScreenViewUseCase,

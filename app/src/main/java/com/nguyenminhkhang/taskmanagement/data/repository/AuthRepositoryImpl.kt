@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
 import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -28,7 +27,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 @Singleton
 class AuthRepositoryImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val context: Context
 ) : AuthRepository {
     private val auth: FirebaseAuth = Firebase.auth
 
