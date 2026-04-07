@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
@@ -432,7 +432,7 @@ class HomeViewModel @Inject constructor(
             is TaskEvent.SaveNewTask -> addNewTask()
             is TaskEvent.NewTaskCleared -> _uiState.update {
                 it.copy(
-                    newTask = TaskEntity(content = "")
+                    newTask = Task(content = "")
                 )
             }
             is TaskEvent.ToggleFavorite -> handleToggleFavorite(event.task)

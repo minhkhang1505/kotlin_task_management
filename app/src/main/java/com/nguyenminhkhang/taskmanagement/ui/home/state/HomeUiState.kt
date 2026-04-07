@@ -1,13 +1,13 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.state
 
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
 import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
+import com.nguyenminhkhang.taskmanagement.domain.model.Task
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
 
 data class HomeUiState(
     val isShowAddNewCollectionSheetVisible : Boolean = false,
-    val newTask: TaskEntity? = TaskEntity(content = ""),
+    val newTask: Task? = Task(content = ""),
     val sortMenuButtonSheet: List<SortMenuItem>? = null,
     val actionMenuButtonSheet: List<ActionMenuItem>? = null,
     val newCollectionName: String = "",
