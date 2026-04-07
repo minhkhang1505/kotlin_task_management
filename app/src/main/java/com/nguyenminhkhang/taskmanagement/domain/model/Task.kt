@@ -19,8 +19,8 @@ data class Task(
     val repeatEndDate: Long? = null,
     val repeatEndCount: Int = 1,
     val startTime: Long? = null,
-    val updatedAt: Long = System.currentTimeMillis(),
-    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = 0L,
+    val createdAt: Long = 0L,
     val reminderTimeMillis: Long? = null
 )
 

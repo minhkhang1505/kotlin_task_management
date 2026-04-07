@@ -1,15 +1,18 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail
 
 import com.nguyenminhkhang.taskmanagement.domain.model.Task
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 
 class BuildRepeatSummaryTextUseCase @Inject constructor() {
-    private val dateFormatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
-
-    private fun formatDate(millis: Long): String = dateFormatter.format(Date(millis))
+    private fun formatDate(millis: Long): String {
+        val localDate = Instant.fromEpochMilliseconds(millis)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+            .date
+        return "${localDate.monthNumber.toString().padStart(2, '0')}/${localDate.dayOfMonth.toString().padStart(2, '0')}/${localDate.year}"
+    }
 
     operator fun invoke(task: Task?): String {
         if (task == null || (task.repeatInterval == null && task.repeatDaysOfWeek.isNullOrEmpty())) {
