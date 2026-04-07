@@ -18,6 +18,7 @@ import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.Delet
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionNameUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
+import com.nguyenminhkhang.taskmanagement.domain.usecase.home.CombineDateAndTimeUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.syncusecase.SyncTasksUseCase
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
@@ -44,7 +45,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
-import java.util.Calendar
 import javax.inject.Inject
 
 const val ID_ADD_NEW_LIST = -999L
@@ -55,7 +55,8 @@ data class TaskUseCases @Inject constructor(
     val toggleFavorite: ToggleTaskFavoriteUseCase,
     val toggleComplete: ToggleCompleteUseCase,
     val deleteTask: DeleteTaskUseCase,
-    val syncTasks: SyncTasksUseCase
+    val syncTasks: SyncTasksUseCase,
+    val combineDateAndTime: CombineDateAndTimeUseCase
 )
 
 data class CollectionUseCases @Inject constructor(
@@ -328,27 +329,6 @@ class HomeViewModel @Inject constructor(
         _uiState.update { it.copy(selectedReminderHour = hour, selectedReminderMinute = minute) }
     }
 
-    private fun combineDateAndTime(
-        dateMillis: Long?,
-        hour: Int?,
-        minute: Int?
-    ): Long? {
-        if (dateMillis == null) return null
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = dateMillis
-
-        if (hour != null && minute != null) {
-            calendar.set(Calendar.HOUR_OF_DAY, hour)
-            calendar.set(Calendar.MINUTE, minute)
-        }
-
-        calendar.set(Calendar.SECOND, 0)
-        calendar.set(Calendar.MILLISECOND, 0)
-
-        return calendar.timeInMillis
-    }
-
     private fun closeRenameCollectionDialog() {
         _uiState.update { it.copy(isNewCollectionNameDialogVisible = false) }
     }
@@ -444,7 +424,7 @@ class HomeViewModel @Inject constructor(
             is TaskEvent.UndoToggleComplete -> undoToggleComplete()
             is TaskEvent.UpdateReminderTimeMillis -> _uiState.update{ it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = event.reminder)) }
             is TaskEvent.OnReminderTimeSelected -> onReminderTimeSelected(event.hour, event.minute)
-            is TaskEvent.CombineDateAndTime -> combineDateAndTime(dateMillis = event.date, hour = event.hour, minute = event.minute)?.let { reminderTimeMillis ->
+            is TaskEvent.CombineDateAndTime -> taskUseCases.combineDateAndTime(dateMillis = event.date, hour = event.hour, minute = event.minute)?.let { reminderTimeMillis ->
                 _uiState.update { it.copy(newTask = it.newTask!!.copy(reminderTimeMillis = reminderTimeMillis)) }
             }
             is TaskEvent.DeleteTask -> deleteSelectedTask(event.taskId)
