@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Task Management"
 include(":app")
+include(":shared")

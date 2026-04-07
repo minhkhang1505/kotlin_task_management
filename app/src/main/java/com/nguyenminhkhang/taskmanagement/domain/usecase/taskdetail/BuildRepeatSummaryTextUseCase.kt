@@ -5,7 +5,9 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class BuildRepeatSummaryTextUseCase @Inject constructor() {
     private fun formatDate(millis: Long): String {
         val localDate = Instant.fromEpochMilliseconds(millis)

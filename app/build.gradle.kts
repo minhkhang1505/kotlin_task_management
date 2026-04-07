@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id("com.google.gms.google-services")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.kotlin.serialization)
     id("com.google.dagger.hilt.android")
     // Add the Crashlytics Gradle plugin
     id("com.google.firebase.crashlytics")
