@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.data.mapper
 
 import com.google.firebase.auth.FirebaseUser
-import com.nguyeminhkhang.shared.model.User
+import com.nguyenminhkhang.shared.model.User
 
 fun FirebaseUser?.toDomain(): User? = this?.let { firebaseUser ->
     User(

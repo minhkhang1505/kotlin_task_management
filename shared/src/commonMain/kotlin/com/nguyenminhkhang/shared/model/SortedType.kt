@@ -1,4 +1,4 @@
-package com.nguyeminhkhang.shared.model
+package com.nguyenminhkhang.shared.model
 
 enum class SortedType(val value: Int) {
     SORTED_BY_FAVORITE(1),

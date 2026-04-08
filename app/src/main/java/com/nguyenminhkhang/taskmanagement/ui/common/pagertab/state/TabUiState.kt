@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state
 
-import com.nguyeminhkhang.shared.model.SortedType
-import com.nguyeminhkhang.shared.model.Collection
+import com.nguyenminhkhang.shared.model.SortedType
+import com.nguyenminhkhang.shared.model.Collection
 
 data class TabUiState(
     val id: Long,

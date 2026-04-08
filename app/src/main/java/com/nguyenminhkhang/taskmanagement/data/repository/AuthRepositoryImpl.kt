@@ -19,7 +19,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.nguyeminhkhang.shared.model.User
+import com.nguyenminhkhang.shared.model.User
 import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")

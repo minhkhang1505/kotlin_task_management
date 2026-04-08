@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.auth
 
-import com.nguyeminhkhang.shared.model.User
+import com.nguyenminhkhang.shared.model.User
 import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 

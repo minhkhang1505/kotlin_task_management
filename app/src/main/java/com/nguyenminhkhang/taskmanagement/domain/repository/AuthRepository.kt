@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.repository
 
-import com.nguyeminhkhang.shared.model.User
+import com.nguyenminhkhang.shared.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {

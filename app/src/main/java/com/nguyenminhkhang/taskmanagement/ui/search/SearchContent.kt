@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 
 @Composable
 fun SearchContent(

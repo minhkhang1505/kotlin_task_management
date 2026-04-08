@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase
 
-import com.nguyeminhkhang.shared.model.SortedType
+import com.nguyenminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_FAVORITE_LIST

@@ -1,4 +1,4 @@
-package com.nguyeminhkhang.shared
+package com.nguyenminhkhang.shared
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase
 
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 

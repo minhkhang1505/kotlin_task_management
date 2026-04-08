@@ -1,4 +1,4 @@
-package com.nguyeminhkhang.shared
+package com.nguyenminhkhang.shared
 
 import kotlin.test.Test
 import kotlin.test.assertEquals

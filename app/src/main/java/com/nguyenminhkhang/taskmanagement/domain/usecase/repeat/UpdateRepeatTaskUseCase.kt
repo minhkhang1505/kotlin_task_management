@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.repeat
 
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import timber.log.Timber

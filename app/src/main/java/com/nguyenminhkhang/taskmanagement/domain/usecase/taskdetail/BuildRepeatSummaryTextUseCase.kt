@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail
 
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -27,6 +27,7 @@ class BuildRepeatSummaryTextUseCase () {
         }
 
         val repeatContent = StringBuilder()
+
 
         if (repeatInterval.isNotBlank()) {
             repeatContent.append("Once every ${task.repeatEvery} ${repeatInterval.lowercase()}")

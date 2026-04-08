@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.data.mapper
 
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 
 fun TaskEntity.toDomain(): Task = Task(
     id = id,

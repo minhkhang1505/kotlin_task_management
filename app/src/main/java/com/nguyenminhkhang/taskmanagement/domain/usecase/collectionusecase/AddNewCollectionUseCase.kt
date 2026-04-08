@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase
 
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import com.nguyeminhkhang.shared.model.Collection
+import com.nguyenminhkhang.shared.model.Collection
 
 class AddNewCollectionUseCase (
     private val taskRepository: TaskRepository

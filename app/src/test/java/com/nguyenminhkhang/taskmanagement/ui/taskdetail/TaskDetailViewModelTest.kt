@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
 import androidx.lifecycle.SavedStateHandle
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskByIdUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleCompleteUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase

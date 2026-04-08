@@ -1,4 +1,4 @@
-package com.nguyeminhkhang.shared.model
+package com.nguyenminhkhang.shared.model
 
 data class Collection(
     val id: Long? = null,

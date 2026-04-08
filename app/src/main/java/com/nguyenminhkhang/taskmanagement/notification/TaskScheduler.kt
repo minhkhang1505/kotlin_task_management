@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.notification
 
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 
 
 interface TaskScheduler {

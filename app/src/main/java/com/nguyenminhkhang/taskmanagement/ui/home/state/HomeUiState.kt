@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.state
 
-import com.nguyeminhkhang.shared.model.ActionMenuItem
-import com.nguyeminhkhang.shared.model.SortMenuItem
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.ActionMenuItem
+import com.nguyenminhkhang.shared.model.SortMenuItem
+import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
 
 data class HomeUiState(

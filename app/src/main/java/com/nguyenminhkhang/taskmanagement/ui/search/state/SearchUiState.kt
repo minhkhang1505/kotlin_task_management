@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.search.state
 
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 
 data class SearchUiState(
     val todayTaskResult: List<Task> = emptyList(),

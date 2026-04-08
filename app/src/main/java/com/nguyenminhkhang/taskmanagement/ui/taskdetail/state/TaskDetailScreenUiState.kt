@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail.state
 
-import com.nguyeminhkhang.shared.model.Task
-import com.nguyeminhkhang.shared.model.Collection
+import com.nguyenminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Collection
 
 data class TaskDetailScreenUiState(
     val task: Task? = null,

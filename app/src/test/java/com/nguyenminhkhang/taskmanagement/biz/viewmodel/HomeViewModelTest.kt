@@ -3,8 +3,8 @@ package com.nguyenminhkhang.taskmanagement.biz.viewmodel
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyeminhkhang.shared.model.Task
-import com.nguyeminhkhang.shared.model.SortedType
+import com.nguyenminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskGroupsUseCase

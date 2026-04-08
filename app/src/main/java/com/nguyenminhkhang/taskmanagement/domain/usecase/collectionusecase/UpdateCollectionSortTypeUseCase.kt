@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase
 
-import com.nguyeminhkhang.shared.model.SortedType
+import com.nguyenminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import timber.log.Timber
 

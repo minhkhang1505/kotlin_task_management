@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyeminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.usecase.search.GetTodayTasksUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.search.SearchTasksUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase

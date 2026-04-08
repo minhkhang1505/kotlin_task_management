@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.domain.repository
 
-import com.nguyeminhkhang.shared.model.SortedType
-import com.nguyeminhkhang.shared.model.Task
-import com.nguyeminhkhang.shared.model.Collection
+import com.nguyenminhkhang.shared.model.SortedType
+import com.nguyenminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.Collection
 import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
