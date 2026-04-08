@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.data.local.database.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyeminhkhang.shared.model.SortedType
 
 @Entity(tableName = "task_collection")
 data class TaskCollection(

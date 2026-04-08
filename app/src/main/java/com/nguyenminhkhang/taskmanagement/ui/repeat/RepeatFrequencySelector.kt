@@ -47,7 +47,7 @@ fun RepeatFrequencySelector(
         var isDropdownVisible by remember { mutableStateOf(false) }
 
         OutlinedTextField(
-            value = uiState.draftTask?.repeatEvery.toString(),
+            value = uiState.draftTask?.repeatEvery?.toString().orEmpty(),
             placeholder = { Text("1") },
             onValueChange = { onEvent(RepeatEvent.OnRepeatEveryChanged(it.toLongOrNull() ?: 1L))  },
             keyboardOptions = KeyboardOptions(keyboardType =  KeyboardType.Number, imeAction = ImeAction.Done),
@@ -65,7 +65,7 @@ fun RepeatFrequencySelector(
                 .clickable { isDropdownVisible = !isDropdownVisible }
         ) {
             OutlinedTextField(
-                value = uiState.draftTask?.repeatInterval ?: "Week",
+                value = uiState.draftTask?.repeatInterval?.ifBlank { "Week" } ?: "Week",
                 onValueChange = {},
                 trailingIcon = {
                     Icon(

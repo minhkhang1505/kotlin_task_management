@@ -1,11 +1,9 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.repeat
 
-import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import timber.log.Timber
-import javax.inject.Inject
 
 class UpdateRepeatTaskUseCase (
     private val taskRepository: TaskRepository,

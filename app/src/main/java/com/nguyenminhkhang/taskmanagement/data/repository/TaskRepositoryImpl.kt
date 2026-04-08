@@ -6,14 +6,14 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.nguyeminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
 import com.nguyenminhkhang.taskmanagement.data.local.database.dao.TaskDAO
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
-import com.nguyenminhkhang.taskmanagement.domain.model.Collection
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
+import com.nguyeminhkhang.shared.model.Collection
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

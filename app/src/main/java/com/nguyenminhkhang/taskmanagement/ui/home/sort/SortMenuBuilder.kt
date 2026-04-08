@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.sort
 
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.domain.model.SortMenuItem
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyeminhkhang.shared.model.SortMenuItem
+import com.nguyeminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.MenuEvent

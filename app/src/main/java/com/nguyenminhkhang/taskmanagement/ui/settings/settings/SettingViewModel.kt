@@ -2,8 +2,8 @@ package com.nguyenminhkhang.taskmanagement.ui.settings.settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.domain.model.SettingsPreferences
-import com.nguyenminhkhang.taskmanagement.domain.model.User
+import com.nguyeminhkhang.shared.model.SettingsPreferences
+import com.nguyeminhkhang.shared.model.User
 import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.ObserveAuthStateUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.SignOutUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.ObserveSettingsUseCase

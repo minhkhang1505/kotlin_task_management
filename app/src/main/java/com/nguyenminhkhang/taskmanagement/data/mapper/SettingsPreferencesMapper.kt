@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.data.mapper
 
 import com.nguyenminhkhang.taskmanagement.data.datastore.SettingsPreferenceData
-import com.nguyenminhkhang.taskmanagement.domain.model.SettingsPreferences
+import com.nguyeminhkhang.shared.model.SettingsPreferences
 
 fun SettingsPreferenceData.toDomain(): SettingsPreferences = SettingsPreferences(
     languageCode = languageCode ?: SettingsPreferences().languageCode,

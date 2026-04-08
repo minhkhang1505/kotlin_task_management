@@ -1,10 +1,9 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail
 
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import javax.inject.Inject
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -17,20 +16,28 @@ class BuildRepeatSummaryTextUseCase () {
     }
 
     operator fun invoke(task: Task?): String {
-        if (task == null || (task.repeatInterval == null && task.repeatDaysOfWeek.isNullOrEmpty())) {
+        if (task == null) {
+            return ""
+        }
+
+        val repeatInterval = task.repeatInterval
+        val repeatDays = task.repeatDaysOfWeek
+        if (repeatInterval.isBlank() && repeatDays.isEmpty()) {
             return ""
         }
 
         val repeatContent = StringBuilder()
 
-        if (task.repeatInterval != null) {
-            repeatContent.append("Once every ${task.repeatEvery} ${task.repeatInterval.lowercase()}")
+        if (repeatInterval.isNotBlank()) {
+            repeatContent.append("Once every ${task.repeatEvery} ${repeatInterval.lowercase()}")
         }
-        if (!task.repeatDaysOfWeek.isNullOrEmpty()) {
-            repeatContent.append(" on ${task.repeatDaysOfWeek.joinToString(", ")}")
+        if (repeatDays.isNotEmpty()) {
+            repeatContent.append(" on ${repeatDays.joinToString(", ")}")
         }
-        if (task.repeatEndDate != null && task.repeatEndType == "At") {
-            repeatContent.append(", until ${formatDate(task.repeatEndDate)}")
+        if (task.repeatEndType == "At") {
+            task.repeatEndDate?.let { repeatEndDate ->
+                repeatContent.append(", until ${formatDate(repeatEndDate)}")
+            }
         }
         if (task.repeatEndType == "After") {
             repeatContent.append(", ${task.repeatEndCount} occurrences")

@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.repeat
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.GetTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.UpdateRepeatTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.TrackRepeatScreenViewUseCase
@@ -45,7 +45,7 @@ class RepeatViewModel(
                     draftTask = taskEntity,
                     isLoading = false,
                     selectedEndCondition = taskEntity.repeatEndType
-                        ?: RepeatConstants.EndCondition.Never,
+                        .ifBlank { RepeatConstants.EndCondition.Never },
                     occurrenceCount = taskEntity.repeatEndCount.toString(),
                 )
             }

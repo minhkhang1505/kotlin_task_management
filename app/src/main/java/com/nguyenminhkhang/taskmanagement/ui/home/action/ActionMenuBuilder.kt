@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.home.action
 
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
+import com.nguyeminhkhang.shared.model.ActionMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent

@@ -1,9 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase
 
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyeminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import timber.log.Timber
-import javax.inject.Inject
 
 class UpdateCollectionSortTypeUseCase (
     private val taskRepository: TaskRepository

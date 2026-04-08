@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.domain.model
+package com.nguyeminhkhang.shared.model
 
 enum class SortedType(val value: Int) {
     SORTED_BY_FAVORITE(1),

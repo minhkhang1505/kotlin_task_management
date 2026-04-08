@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.domain.model
+package com.nguyeminhkhang.shared.model
 
 data class Task(
     val id: Long? = null,
@@ -13,9 +13,9 @@ data class Task(
     val reminderTime: Int = 30,
     val priority: Int = 0,
     val repeatEvery: Long = 1L,
-    val repeatDaysOfWeek: List<String>? = null,
-    val repeatInterval: String? = null,
-    val repeatEndType: String? = null,
+    val repeatDaysOfWeek: List<String> = emptyList(),
+    val repeatInterval: String = "",
+    val repeatEndType: String = "",
     val repeatEndDate: Long? = null,
     val repeatEndCount: Int = 1,
     val startTime: Long? = null,

@@ -49,6 +49,7 @@ fun TaskTimeRow(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         ) {
+            val startTime = uiState.task?.startTime
             Icon(
                 painter = painterResource(R.drawable.ic_clock),
                 contentDescription = "Time Icon",
@@ -58,7 +59,7 @@ fun TaskTimeRow(
                     .clip(RoundedCornerShape(12.dp)),
             )
             Spacer(modifier = Modifier.height(8.dp))
-            if (uiState.task?.startTime == null) {
+            if (startTime == null) {
                 Text(
                     text = stringResource(R.string.detail_add_start_time_descrip), modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyMedium,
@@ -66,7 +67,7 @@ fun TaskTimeRow(
                 )
             } else {
                 CustomTextField(
-                    content = uiState.task.startTime.toHourMinuteString(),
+                    content = startTime.toHourMinuteString(),
                     onClick = { onClearDate() },
                     textColor = MaterialTheme.colorScheme.onPrimaryContainer, // Brown color for time text
                     textSize = MaterialTheme.typography.titleMedium.fontSize

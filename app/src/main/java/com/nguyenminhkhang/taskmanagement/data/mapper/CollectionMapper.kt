@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.data.mapper
 
+import com.nguyeminhkhang.shared.model.toSortType
+import com.nguyeminhkhang.shared.model.Collection
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
-import com.nguyenminhkhang.taskmanagement.domain.model.Collection
-import com.nguyenminhkhang.taskmanagement.domain.model.toSortType
 
 fun TaskCollection.toDomain(): Collection = Collection(
     id = id,

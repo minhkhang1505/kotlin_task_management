@@ -5,9 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
-import javax.inject.Inject
-import java.util.Calendar
+import com.nguyeminhkhang.shared.model.Task
 
 class AlarmManagerTaskScheduler (
     private val context: Context,

@@ -1,10 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -80,10 +78,12 @@ fun ModelButtonChangeCollection(
                     scope.launch {
                         sheetState.hide()
                     }.invokeOnCompletion {
-                        if (!sheetState.isVisible && collection.id != null) {
-                            onEvent(
-                                TaskDetailEvent.CurrentCollectionChanged(collection.id)
-                            )
+                        if (!sheetState.isVisible) {
+                            collection.id?.let { collectionId ->
+                                onEvent(
+                                    TaskDetailEvent.CurrentCollectionChanged(collectionId)
+                                )
+                            }
                         }
                     }
                 }

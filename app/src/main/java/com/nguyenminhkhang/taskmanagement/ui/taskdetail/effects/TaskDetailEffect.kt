@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.ui.taskdetail.effects
 
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
 
 sealed class TaskDetailEffect {
     data class OpenCalendar(

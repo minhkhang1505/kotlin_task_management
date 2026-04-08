@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.repository
 
-import com.nguyenminhkhang.taskmanagement.domain.model.SettingsPreferences
+import com.nguyeminhkhang.shared.model.SettingsPreferences
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {

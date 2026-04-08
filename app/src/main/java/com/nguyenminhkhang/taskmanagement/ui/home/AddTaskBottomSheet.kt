@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -85,11 +82,13 @@ fun AddTaskBottomSheet(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .fillMaxWidth(),
             ) {
+                val startDate = uiState.newTask?.startDate
+                val startTime = uiState.newTask?.startTime
                 val contentDateTime = StringBuilder()
-                if (uiState.newTask.startDate != null) { contentDateTime.append(convertMillisToDate(uiState.newTask.startDate)) }
-                if (uiState.newTask.startTime != null) {
+                if (startDate != null) { contentDateTime.append(convertMillisToDate(startDate)) }
+                if (startTime != null) {
                     contentDateTime.append(" on ")
-                    contentDateTime.append(uiState.newTask.startTime.toHourMinuteString())
+                    contentDateTime.append(startTime.toHourMinuteString())
                 }
                 RoundedOutlinedTextField(
                     contentDateTime.toString(),

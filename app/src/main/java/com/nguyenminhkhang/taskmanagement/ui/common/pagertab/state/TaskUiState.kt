@@ -2,7 +2,7 @@ package com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TimePickerState
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -18,10 +18,10 @@ data class TaskUiState(
     val updatedAt: Long =  System.currentTimeMillis(),
     val stringUpdateAt: String,
     val repeatEvery: Long,
-    val repeatDaysOfWeek: List<String>?,
+    val repeatDaysOfWeek: List<String>,
     var startDate: Long?,
-    val repeatInterval: String?,
-    val repeatEndType: String?,
+    val repeatInterval: String,
+    val repeatEndType: String,
     val repeatEndDate: Long?,
     val repeatEndCount: Int,
     val startTime: Long?,

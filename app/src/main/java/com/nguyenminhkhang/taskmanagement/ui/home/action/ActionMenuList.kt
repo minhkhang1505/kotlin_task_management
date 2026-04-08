@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
+import com.nguyeminhkhang.shared.model.ActionMenuItem
 import com.nguyenminhkhang.taskmanagement.ui.common.bottomsheet.BottomSheetItem
 
 @Composable

@@ -3,9 +3,8 @@ package com.nguyenminhkhang.taskmanagement.biz.viewmodel
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.domain.model.Collection
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyeminhkhang.shared.model.Task
+import com.nguyeminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskGroupsUseCase
@@ -443,10 +442,10 @@ class HomeViewModelTest {
 			updatedAt = 1_700_000_000_001L,
 			stringUpdateAt = "date",
 			repeatEvery = 1L,
-			repeatDaysOfWeek = null,
+			repeatDaysOfWeek = emptyList(),
 			startDate = null,
-			repeatInterval = null,
-			repeatEndType = null,
+			repeatInterval = "",
+			repeatEndType = "",
 			repeatEndDate = null,
 			repeatEndCount = 0,
 			startTime = null,

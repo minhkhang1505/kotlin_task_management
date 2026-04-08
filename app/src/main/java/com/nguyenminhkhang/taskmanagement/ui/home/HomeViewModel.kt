@@ -5,8 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.SortedType
+import com.nguyeminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
@@ -44,7 +44,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
-import javax.inject.Inject
 
 const val ID_ADD_NEW_LIST = -999L
 const val ID_ADD_FAVORITE_LIST = -1000L

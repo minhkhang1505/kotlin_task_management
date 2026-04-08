@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.home.action
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
-import com.nguyenminhkhang.taskmanagement.domain.model.ActionMenuItem
+import com.nguyeminhkhang.shared.model.ActionMenuItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

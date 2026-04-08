@@ -47,17 +47,19 @@ fun TaskRepeatScreen(
             modifier = Modifier.padding(it).padding(horizontal = 24.dp),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
+            val draftTask = currentTask.draftTask
+
             // Repeat frequency input
             RepeatFrequencySelector(
                 uiState = currentTask,
                 onEvent = onEvent,
             )
-            if (currentTask.draftTask!!.repeatInterval == "Week") {
+            if (draftTask?.repeatInterval == "Week") {
                 WeekDaySelector(
-                    selectedDays = currentTask.draftTask.repeatDaysOfWeek ?: emptyList(),
+                    selectedDays = draftTask.repeatDaysOfWeek,
                     onDayClick = { day -> onEvent(RepeatEvent.WeekDayClicked(day)) }
                 )
-            } else if (currentTask.draftTask.repeatInterval == "Month") {
+            } else if (draftTask?.repeatInterval == "Month") {
                 MonthlyRepeatOptions(
                     uiState = currentTask,
                     onEvent = onEvent

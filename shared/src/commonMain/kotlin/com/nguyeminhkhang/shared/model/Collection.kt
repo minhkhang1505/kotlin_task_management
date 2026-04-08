@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.domain.model
+package com.nguyeminhkhang.shared.model
 
 data class Collection(
     val id: Long? = null,

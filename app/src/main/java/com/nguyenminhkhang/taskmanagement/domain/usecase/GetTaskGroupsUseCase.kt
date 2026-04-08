@@ -1,6 +1,6 @@
 package com.nguyenminhkhang.taskmanagement.domain.usecase
 
-import com.nguyenminhkhang.taskmanagement.domain.model.SortedType
+import com.nguyeminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
 import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_FAVORITE_LIST
@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 import kotlin.collections.plus
 
 class GetTaskGroupsUseCase (

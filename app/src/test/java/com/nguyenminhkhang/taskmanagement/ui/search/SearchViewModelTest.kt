@@ -4,7 +4,7 @@ import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
 import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
 import com.nguyenminhkhang.taskmanagement.core.time.TimeProvider
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
-import com.nguyenminhkhang.taskmanagement.domain.model.Task
+import com.nguyeminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
 import io.mockk.Runs
@@ -17,7 +17,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
