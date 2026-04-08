@@ -11,10 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.example.compose.OrangeDarkColorScheme
-import com.example.compose.OrangeLightColorScheme
-import com.example.compose.PurpleDarkColorScheme
-import com.example.compose.PurpleLightColorScheme
+import com.nguyeminhkhang.compose.OrangeDarkColorScheme
+import com.nguyeminhkhang.compose.OrangeLightColorScheme
+import com.nguyeminhkhang.compose.PurpleDarkColorScheme
+import com.nguyeminhkhang.compose.PurpleLightColorScheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption

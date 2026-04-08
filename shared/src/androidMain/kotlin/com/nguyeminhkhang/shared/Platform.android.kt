@@ -1,3 +1,3 @@
-package com.example.shared
+package com.nguyeminhkhang.shared
 
 actual fun platform() = "Android"

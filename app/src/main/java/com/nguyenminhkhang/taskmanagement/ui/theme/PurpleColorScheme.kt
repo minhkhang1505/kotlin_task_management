@@ -1,4 +1,4 @@
-package com.example.compose
+package com.nguyeminhkhang.compose
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
