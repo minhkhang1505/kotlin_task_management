@@ -1,12 +1,12 @@
 package com.nguyenminhkhang.taskmanagement.ui.search
 
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import com.nguyenminhkhang.taskmanagement.core.time.TimeProvider
+import com.nguyenminhkhang.shared.analytics.AnalyticsEvent
+import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
+import com.nguyenminhkhang.shared.time.TimeProvider
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
+import com.nguyenminhkhang.shared.repository.TaskRepository
 import io.mockk.Runs
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -224,7 +224,7 @@ class SearchViewModelTest {
         val domainTask = createDomainTask(id = 10L, content = "Meeting")
         val expectedResults = listOf(domainTask)
         coEvery { taskRepository.getTodayTasks(any(), any()) } returns flowOf(emptyList())
-        coEvery { taskRepository.SearchTasks("Meeting") } returns flowOf(expectedResults)
+        coEvery { taskRepository.searchTasks("Meeting") } returns flowOf(expectedResults)
         
         val viewModel = createViewModel()
         val job = launch { viewModel.searchResults.collect {} }
@@ -242,7 +242,7 @@ class SearchViewModelTest {
     fun `searchResults should emit empty list when query length is less than 2`() = runTest {
         // Arrange
         coEvery { taskRepository.getTodayTasks(any(), any()) } returns flowOf(emptyList())
-        coEvery { taskRepository.SearchTasks(any()) } returns flowOf(listOf(createDomainTask(10L))) // Should not be called
+        coEvery { taskRepository.searchTasks(any()) } returns flowOf(listOf(createDomainTask(10L))) // Should not be called
         
         val viewModel = createViewModel()
         val job = launch { viewModel.searchResults.collect {} }
@@ -253,7 +253,7 @@ class SearchViewModelTest {
         
         // Assert
         assertEquals(emptyList<TaskEntity>(), viewModel.searchResults.value)
-        coVerify(exactly = 0) { taskRepository.SearchTasks(any()) }
+        coVerify(exactly = 0) { taskRepository.searchTasks(any()) }
         job.cancel()
     }
 

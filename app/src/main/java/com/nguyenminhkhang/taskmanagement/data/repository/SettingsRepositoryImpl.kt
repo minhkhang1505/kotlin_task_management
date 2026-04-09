@@ -9,7 +9,7 @@ import com.nguyenminhkhang.taskmanagement.data.datastore.setThemeMode
 import com.nguyenminhkhang.taskmanagement.data.datastore.settingsFlow
 import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import com.nguyenminhkhang.shared.model.SettingsPreferences
-import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
+import com.nguyenminhkhang.shared.repository.SettingsRepository
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

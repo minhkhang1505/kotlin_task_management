@@ -2,8 +2,8 @@ package com.nguyenminhkhang.taskmanagement.ui.auth.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.RegisterUserResult
-import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.RegisterUserUseCase
+import com.nguyenminhkhang.shared.usecase.auth.RegisterUserResult
+import com.nguyenminhkhang.shared.usecase.auth.RegisterUserUseCase
 import com.nguyenminhkhang.taskmanagement.ui.auth.register.state.RegisterUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -20,13 +20,16 @@ import androidx.datastore.preferences.core.edit
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.nguyenminhkhang.shared.model.User
-import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
+import com.nguyenminhkhang.shared.repository.AuthRepository
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
 @Singleton
 class AuthRepositoryImpl (
-    private val context: Context
+    private val context: Context,
+    private val ioDispatcher: CoroutineDispatcher
 ) : AuthRepository {
     private val auth: FirebaseAuth = Firebase.auth
 
@@ -46,16 +49,22 @@ class AuthRepositoryImpl (
     }
 
     override suspend fun signInWithGoogleIdToken(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential).await()
+        withContext(ioDispatcher) {
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            auth.signInWithCredential(credential).await()
+        }
     }
 
     override suspend fun signInWithEmailAndPassword(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).await()
+        withContext(ioDispatcher) {
+            auth.signInWithEmailAndPassword(email, password).await()
+        }
     }
 
     override suspend fun createUserWithEmailAndPassword(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password).await()
+        withContext(ioDispatcher) {
+            auth.createUserWithEmailAndPassword(email, password).await()
+        }
     }
 
     override fun getAuthState(): Flow<User?> = callbackFlow {
@@ -69,11 +78,13 @@ class AuthRepositoryImpl (
     }.map { firebaseUser -> firebaseUser.toDomain() }
 
     override suspend fun signOut() {
-        auth.signOut()
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(com.nguyenminhkhang.taskmanagement.R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        GoogleSignIn.getClient(context, gso).signOut().await()
+        withContext(ioDispatcher) {
+            auth.signOut()
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(context.getString(com.nguyenminhkhang.taskmanagement.R.string.default_web_client_id))
+                .requestEmail()
+                .build()
+            GoogleSignIn.getClient(context, gso).signOut().await()
+        }
     }
 }

@@ -3,11 +3,9 @@ package com.nguyenminhkhang.taskmanagement.worker
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
-import javax.inject.Inject
+import com.nguyenminhkhang.shared.repository.TaskRepository
 
 class UpdateTaskWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
-    @Inject
     lateinit var taskRepository: TaskRepository
 
     override suspend fun doWork(): Result {

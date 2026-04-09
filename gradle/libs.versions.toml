@@ -14,7 +14,7 @@ lottieVersion = "6.6.2"
 composeNavVersion = "2.9.0"
 firebaseAuthKtx = "24.0.1"
 foundation = "1.10.5"
-kotlinxDatetime = "0.7.1"
+kotlinx-datetime = "0.7.1"
 kotlinStdlib = "2.1.21"
 kotlinTest = "2.1.21"
 runner = "1.5.2"
@@ -51,7 +51,7 @@ airbnb-android-lottie-compose = { group = "com.airbnb.android", name = "lottie-c
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavVersion" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
-kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlinTest" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }

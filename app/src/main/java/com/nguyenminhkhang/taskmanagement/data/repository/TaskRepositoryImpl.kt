@@ -14,7 +14,7 @@ import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.shared.model.Collection
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
+import com.nguyenminhkhang.shared.repository.TaskRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -379,9 +379,11 @@ class TaskRepositoryImpl (
         }
     }
 
-    override suspend fun getCollectionById(): List<Collection> {
+    override suspend fun getCollectionById(collectionId: Long): Collection? {
         return withContext(Dispatchers.IO) {
-            taskDAO.getCollection().map(TaskCollection::toDomain)
+            taskDAO.getCollection()
+                .map(TaskCollection::toDomain)
+                .firstOrNull { it.id == collectionId }
         }
     }
 
@@ -438,7 +440,7 @@ class TaskRepositoryImpl (
         }
     }
 
-    override fun SearchTasks(query: String): Flow<List<Task>> {
+    override fun searchTasks(query: String): Flow<List<Task>> {
         return taskDAO.SearchTasks(query, auth.currentUser?.uid ?: "local_user")
             .map { tasks -> tasks.map(TaskEntity::toDomain) }
     }

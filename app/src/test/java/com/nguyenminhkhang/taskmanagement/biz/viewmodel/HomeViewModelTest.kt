@@ -1,26 +1,33 @@
 package com.nguyenminhkhang.taskmanagement.biz.viewmodel
 
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
+import com.nguyenminhkhang.shared.analytics.AnalyticsEvent
+import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
+import com.nguyenminhkhang.shared.model.Collection
 import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.shared.model.SortedType
-import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskGroupsUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleCompleteUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.AddNewCollectionUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.DeleteTaskCollectionUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
+import com.nguyenminhkhang.shared.model.TaskGroup
+import com.nguyenminhkhang.shared.model.TaskPage
+import com.nguyenminhkhang.shared.usecase.AddTaskUseCase
+import com.nguyenminhkhang.shared.usecase.DeleteTaskUseCase
+import com.nguyenminhkhang.shared.usecase.GetTaskGroupsUseCase
+import com.nguyenminhkhang.shared.usecase.ToggleCompleteUseCase
+import com.nguyenminhkhang.shared.usecase.ToggleTaskFavoriteUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.AddNewCollectionUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.DeleteTaskCollectionUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.GetTaskCollectionsUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionNameUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.syncusecase.SyncTasksUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
+import com.nguyenminhkhang.shared.usecase.syncusecase.SyncTasksUseCase
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TabUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskPageUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toTabUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toTaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_FAVORITE_LIST
+import com.nguyenminhkhang.taskmanagement.ui.home.ID_ADD_NEW_LIST
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.CollectionUseCases
@@ -75,7 +82,7 @@ class HomeViewModelTest {
 	private val strings = mockk<StringProvider>()
 	private val analyticsTracker = mockk<AnalyticsTracker>()
 
-	private lateinit var listGroupsFlow: MutableStateFlow<List<TaskGroupUiState>>
+	private lateinit var listGroupsFlow: MutableStateFlow<List<TaskGroup>>
 
 	@Before
 	fun setUp() {
@@ -88,7 +95,7 @@ class HomeViewModelTest {
 		every { strings.getString(R.string.collection_one) } returns "Collection 1"
 		every { strings.getString(R.string.collection_two) } returns "Collection 2"
 
-		every { getTaskGroupsUseCase.invoke(any(), any()) } returns listGroupsFlow
+		every { getTaskGroupsUseCase.invoke() } returns listGroupsFlow
 		every { getTaskCollectionsUseCase.invoke() } returns flowOf(listOf(Collection(id = 1L, content = "Inbox")))
 
 		coEvery { addNewCollectionUseCase.invoke(any()) } returns Collection(id = 10L, content = "New")
@@ -131,14 +138,14 @@ class HomeViewModelTest {
 	fun `homeViewModel should expose tab groups when groups flow emits`() = runTest {
 		// Arrange
 		val viewModel = createViewModel()
-		val expectedGroups = listOf(createGroup(groupId = 5L))
+		val domainGroups = listOf(createDomainGroup(groupId = 5L))
 
 		// Act
-		listGroupsFlow.value = expectedGroups
+		listGroupsFlow.value = domainGroups
 		advanceUntilIdle()
 
 		// Assert
-		assertEquals(expectedGroups, viewModel.uiState.value.listTabGroup)
+		assertEquals(createExpectedHomeGroups(domainGroups), viewModel.uiState.value.listTabGroup)
 	}
 
 	@Test
@@ -408,20 +415,59 @@ class HomeViewModelTest {
 		)
 	}
 
-	private fun createGroup(
+	private fun createDomainGroup(
 		groupId: Long,
-		active: List<TaskUiState> = emptyList(),
-		completed: List<TaskUiState> = emptyList()
-	): TaskGroupUiState {
-		return TaskGroupUiState(
-			tab = TabUiState(
+		active: List<Task> = emptyList(),
+		completed: List<Task> = emptyList(),
+		sortedType: SortedType = SortedType.SORTED_BY_DATE
+	): TaskGroup {
+		return TaskGroup(
+			collection = Collection(
 				id = groupId,
-				title = "Group $groupId",
+				content = "Group $groupId",
+				sortedType = sortedType
+			),
+			page = TaskPage(
+				activeTaskList = active,
+				completedTaskList = completed
+			)
+		)
+	}
+
+	private fun createExpectedHomeGroups(domainGroups: List<TaskGroup>): List<TaskGroupUiState> {
+		val mappedGroups = domainGroups.map { group ->
+			TaskGroupUiState(
+				tab = group.collection.toTabUiState(),
+				page = TaskPageUiState(
+					activeTaskList = group.page.activeTaskList.map { it.toTaskUiState() },
+					completedTaskList = group.page.completedTaskList.map { it.toTaskUiState() }
+				)
+			)
+		}
+
+		return listOf(
+			TaskGroupUiState(
+				tab = TabUiState(
+					id = ID_ADD_FAVORITE_LIST,
+					title = "Favorite",
+					sortedType = SortedType.SORTED_BY_DATE
+				),
+				page = TaskPageUiState(
+					activeTaskList = mappedGroups.flatMap { it.page.activeTaskList }
+						.filter { it.isFavorite }
+						.sortedByDescending { it.updatedAt },
+					completedTaskList = emptyList()
+				)
+			)
+		) + mappedGroups + TaskGroupUiState(
+			tab = TabUiState(
+				id = ID_ADD_NEW_LIST,
+				title = "+ New",
 				sortedType = SortedType.SORTED_BY_DATE
 			),
 			page = TaskPageUiState(
-				activeTaskList = active,
-				completedTaskList = completed
+				activeTaskList = emptyList(),
+				completedTaskList = emptyList()
 			)
 		)
 	}

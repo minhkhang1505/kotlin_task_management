@@ -3,23 +3,24 @@ package com.nguyenminhkhang.taskmanagement.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
+import com.nguyenminhkhang.shared.analytics.AnalyticsEvent
+import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
 import com.nguyenminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.shared.model.Task
+import com.nguyenminhkhang.shared.model.TaskGroup
 import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
-import com.nguyenminhkhang.taskmanagement.domain.usecase.AddTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.DeleteTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskGroupsUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleCompleteUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.AddNewCollectionUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.DeleteTaskCollectionUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionNameUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.home.CombineDateAndTimeUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.syncusecase.SyncTasksUseCase
+import com.nguyenminhkhang.shared.usecase.AddTaskUseCase
+import com.nguyenminhkhang.shared.usecase.DeleteTaskUseCase
+import com.nguyenminhkhang.shared.usecase.GetTaskGroupsUseCase
+import com.nguyenminhkhang.shared.usecase.ToggleCompleteUseCase
+import com.nguyenminhkhang.shared.usecase.ToggleTaskFavoriteUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.AddNewCollectionUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.DeleteTaskCollectionUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.GetTaskCollectionsUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.UpdateCollectionNameUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.UpdateCollectionSortTypeUseCase
+import com.nguyenminhkhang.shared.usecase.home.CombineDateAndTimeUseCase
+import com.nguyenminhkhang.shared.usecase.syncusecase.SyncTasksUseCase
 import com.nguyenminhkhang.taskmanagement.ui.common.stringprovider.StringProvider
 import com.nguyenminhkhang.taskmanagement.ui.home.event.CollectionEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.event.HomeEvent
@@ -29,6 +30,8 @@ import com.nguyenminhkhang.taskmanagement.ui.home.event.UiEvent
 import com.nguyenminhkhang.taskmanagement.ui.home.state.HomeUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskGroupUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toTabUiState
+import com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.toTaskUiState
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarActionType
 import com.nguyenminhkhang.taskmanagement.ui.common.snackbar.SnackbarEvent
 import kotlinx.coroutines.Job
@@ -43,6 +46,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 
 const val ID_ADD_NEW_LIST = -999L
@@ -92,10 +96,11 @@ class HomeViewModel(
     val stringProvider: StringProvider get() = strings
 
     init {
-        collectionUseCases.getGroups.invoke(
-            favoriteTabName = strings.getString(R.string.favorite_tab_name),
-            newTabName = strings.getString(R.string.add_new_collecion)
-        )
+        val favoriteTabName = strings.getString(R.string.favorite_tab_name)
+        val newTabName = strings.getString(R.string.add_new_collecion)
+
+        collectionUseCases.getGroups.invoke()
+            .map { taskGroups -> taskGroups.toHomeTabGroups(favoriteTabName, newTabName) }
             .onEach { finalTabs ->
                 _uiState.update { it.copy(listTabGroup = finalTabs, isLoading = false) }
             }
@@ -457,6 +462,49 @@ class HomeViewModel(
             is MenuEvent.ShowActionBottomSheet -> _uiState.update { it.copy(isActionBottomSheetVisible = true) }
             is MenuEvent.DismissActionBottomSheet -> _uiState.update { it.copy(isActionBottomSheetVisible = false) }
         }
+    }
+
+    private fun List<TaskGroup>.toHomeTabGroups(
+        favoriteTabName: String,
+        newTabName: String
+    ): List<TaskGroupUiState> {
+        val mappedGroups = map { group ->
+            TaskGroupUiState(
+                tab = group.collection.toTabUiState(),
+                page = com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskPageUiState(
+                    activeTaskList = group.page.activeTaskList.map { it.toTaskUiState() },
+                    completedTaskList = group.page.completedTaskList.map { it.toTaskUiState() }
+                )
+            )
+        }
+
+        val favoriteGroup = TaskGroupUiState(
+            tab = com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TabUiState(
+                ID_ADD_FAVORITE_LIST,
+                favoriteTabName,
+                sortedType = SortedType.SORTED_BY_DATE
+            ),
+            page = com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskPageUiState(
+                activeTaskList = mappedGroups.flatMap { it.page.activeTaskList }
+                    .filter { it.isFavorite }
+                    .sortedByDescending { it.updatedAt },
+                completedTaskList = emptyList()
+            )
+        )
+
+        val newGroup = TaskGroupUiState(
+            tab = com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TabUiState(
+                ID_ADD_NEW_LIST,
+                newTabName,
+                sortedType = SortedType.SORTED_BY_DATE
+            ),
+            page = com.nguyenminhkhang.taskmanagement.ui.common.pagertab.state.TaskPageUiState(
+                activeTaskList = emptyList(),
+                completedTaskList = emptyList()
+            )
+        )
+
+        return listOf(favoriteGroup) + mappedGroups + newGroup
     }
 
     fun onEvent(event: HomeEvent) {

@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nguyenminhkhang.shared.model.Task
-import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.GetTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.UpdateRepeatTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.repeat.TrackRepeatScreenViewUseCase
+import com.nguyenminhkhang.shared.usecase.repeat.GetTaskUseCase
+import com.nguyenminhkhang.shared.usecase.repeat.TrackRepeatScreenViewUseCase
+import com.nguyenminhkhang.shared.usecase.repeat.UpdateRepeatTaskUseCase
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatConstants
 import com.nguyenminhkhang.taskmanagement.ui.repeat.state.RepeatUiState
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.events.NavigationEvent

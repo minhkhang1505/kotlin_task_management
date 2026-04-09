@@ -1,0 +1,14 @@
+package com.nguyenminhkhang.shared.repository
+
+import com.nguyenminhkhang.shared.model.User
+import kotlinx.coroutines.flow.Flow
+
+interface AuthRepository {
+    val hasClaimedLocalTasksFlow: Flow<Boolean>
+    suspend fun updateHasClaimedLocalTasks(hasClaimed: Boolean)
+    suspend fun signInWithGoogleIdToken(idToken: String)
+    suspend fun signInWithEmailAndPassword(email: String, password: String)
+    suspend fun createUserWithEmailAndPassword(email: String, password: String)
+    fun getAuthState(): Flow<User?>
+    suspend fun signOut()
+}

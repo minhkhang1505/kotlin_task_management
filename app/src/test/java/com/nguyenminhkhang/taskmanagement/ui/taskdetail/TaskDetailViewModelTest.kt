@@ -2,11 +2,11 @@ package com.nguyenminhkhang.taskmanagement.ui.taskdetail
 
 import androidx.lifecycle.SavedStateHandle
 import com.nguyenminhkhang.shared.model.Task
-import com.nguyenminhkhang.taskmanagement.domain.usecase.GetTaskByIdUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleCompleteUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.ToggleTaskFavoriteUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.UpdateTaskUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.GetTaskCollectionsUseCase
+import com.nguyenminhkhang.shared.usecase.GetTaskByIdUseCase
+import com.nguyenminhkhang.shared.usecase.ToggleCompleteUseCase
+import com.nguyenminhkhang.shared.usecase.ToggleTaskFavoriteUseCase
+import com.nguyenminhkhang.shared.usecase.UpdateTaskUseCase
+import com.nguyenminhkhang.shared.usecase.collectionusecase.GetTaskCollectionsUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.collectionusecase.MoveTaskToCollectionUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail.BuildRepeatSummaryTextUseCase
 import com.nguyenminhkhang.taskmanagement.domain.usecase.taskdetail.TrackTaskDetailScreenViewUseCase

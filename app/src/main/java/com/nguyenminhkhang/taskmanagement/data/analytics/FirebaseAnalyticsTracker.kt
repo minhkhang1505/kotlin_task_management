@@ -2,9 +2,9 @@ package com.nguyenminhkhang.taskmanagement.data.analytics
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsEvent
-import com.nguyenminhkhang.taskmanagement.core.analytics.AnalyticsTracker
-import javax.inject.Inject
+import com.nguyenminhkhang.shared.analytics.AnalyticsEvent
+import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
+
 
 class FirebaseAnalyticsTracker (
     private val firebaseAnalytics: FirebaseAnalytics

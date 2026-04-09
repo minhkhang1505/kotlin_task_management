@@ -1,13 +1,5 @@
 package com.nguyenminhkhang.taskmanagement.di.module
 
-import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.ObserveAuthStateUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.auth.SignOutUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.ObserveSettingsUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.TrackSettingScreenViewUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateColorThemeUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateFontStyleUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateLanguageUseCase
-import com.nguyenminhkhang.taskmanagement.domain.usecase.settings.UpdateThemeModeUseCase
 import com.nguyenminhkhang.taskmanagement.ui.auth.register.RegisterViewModel
 import com.nguyenminhkhang.taskmanagement.ui.auth.signin.SignInViewModel
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeViewModel

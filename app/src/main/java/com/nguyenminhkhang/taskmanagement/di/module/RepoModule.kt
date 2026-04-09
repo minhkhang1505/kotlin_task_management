@@ -11,9 +11,9 @@ import com.google.firebase.firestore.firestoreSettings
 import com.nguyenminhkhang.taskmanagement.data.repository.AuthRepositoryImpl
 import com.nguyenminhkhang.taskmanagement.data.repository.SettingsRepositoryImpl
 import com.nguyenminhkhang.taskmanagement.data.repository.TaskRepositoryImpl
-import com.nguyenminhkhang.taskmanagement.domain.repository.AuthRepository
-import com.nguyenminhkhang.taskmanagement.domain.repository.SettingsRepository
-import com.nguyenminhkhang.taskmanagement.domain.repository.TaskRepository
+import com.nguyenminhkhang.shared.repository.AuthRepository
+import com.nguyenminhkhang.shared.repository.SettingsRepository
+import com.nguyenminhkhang.shared.repository.TaskRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -26,7 +26,7 @@ val repoModule = module {
 
     single<TaskRepository> { TaskRepositoryImpl(get()) }
 
-    single<AuthRepository> { AuthRepositoryImpl(androidContext()) }
+    single<AuthRepository> { AuthRepositoryImpl(androidContext(), get()) }
 
     single<SettingsRepository> { SettingsRepositoryImpl(get()) }
 

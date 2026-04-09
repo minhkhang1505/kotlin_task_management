@@ -1,7 +1,7 @@
 package com.nguyenminhkhang.taskmanagement.ui.common.stringprovider
 
 import android.content.Context
-import javax.inject.Inject
+
 import javax.inject.Singleton
 
 @Singleton

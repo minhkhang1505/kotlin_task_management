@@ -1,0 +1,12 @@
+package com.nguyenminhkhang.shared.repository
+
+import com.nguyenminhkhang.shared.model.SettingsPreferences
+import kotlinx.coroutines.flow.Flow
+
+interface SettingsRepository {
+    val settingsFlow: Flow<SettingsPreferences>
+    suspend fun setLanguage(languageCode: String)
+    suspend fun setThemeMode(themeModeKey: String)
+    suspend fun setFontStyle(fontStyle: String)
+    suspend fun setColorTheme(colorTheme: String)
+}
