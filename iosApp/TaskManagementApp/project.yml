@@ -1,0 +1,12 @@
+name: TaskManagement
+targets:
+  TaskManagement:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.nguyenminhkhang.taskmanagement
+        IPHONEOS_DEPLOYMENT_TARGET: 15.0
+    dependencies:
+      - framework: ../../shared/build/XCFrameworks/release/sharedKit.xcframework
