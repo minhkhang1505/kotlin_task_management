@@ -23,7 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
+import com.nguyenminhkhang.shared.model.settings.FontStyleOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.fontFamily
+import com.nguyenminhkhang.taskmanagement.ui.settings.labelRes
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.AccountEvent
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import timber.log.Timber

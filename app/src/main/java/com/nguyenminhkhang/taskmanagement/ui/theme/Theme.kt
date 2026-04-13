@@ -16,10 +16,11 @@ import com.nguyenminhkhang.compose.OrangeLightColorScheme
 import com.nguyenminhkhang.compose.PurpleDarkColorScheme
 import com.nguyenminhkhang.compose.PurpleLightColorScheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.nguyenminhkhang.shared.model.settings.ColorThemeOption
+import com.nguyenminhkhang.shared.model.settings.FontStyleOption
+import com.nguyenminhkhang.shared.model.settings.ThemeModeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
-import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.fontFamily
 
 @Composable
 fun TaskManagementTheme(

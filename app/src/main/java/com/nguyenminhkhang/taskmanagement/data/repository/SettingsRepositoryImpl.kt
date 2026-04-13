@@ -10,13 +10,11 @@ import com.nguyenminhkhang.taskmanagement.data.datastore.settingsFlow
 import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import com.nguyenminhkhang.shared.model.SettingsPreferences
 import com.nguyenminhkhang.shared.repository.SettingsRepository
-import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
-@Singleton
 class SettingsRepositoryImpl (
     private val dataStore: DataStore<Preferences>
 ) : SettingsRepository {

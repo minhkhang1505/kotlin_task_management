@@ -1,20 +1,19 @@
 package com.nguyenminhkhang.taskmanagement.data.repository
 
-import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.nguyenminhkhang.shared.model.SortedType
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
-import com.nguyenminhkhang.taskmanagement.data.local.database.dao.TaskDAO
+import com.nguyenminhkhang.shared.model.Collection
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
-import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.shared.model.Task
-import com.nguyenminhkhang.shared.model.Collection
 import com.nguyenminhkhang.shared.repository.TaskRepository
+import com.nguyenminhkhang.taskmanagement.data.local.database.dao.TaskDAO
+import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
+import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -23,11 +22,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import kotlin.collections.firstOrNull
+import kotlin.collections.map
 import timber.log.Timber
 import java.util.Calendar
-import javax.inject.Singleton
+import android.util.Log
 
-@Singleton
 class TaskRepositoryImpl (
     private val taskDAO: TaskDAO,
 ) : TaskRepository {

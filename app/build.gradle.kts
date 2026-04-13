@@ -52,18 +52,21 @@ android {
 
 dependencies {
     implementation("androidx.work:work-runtime-ktx:2.10.2")
+
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
+    implementation(libs.androidx.datastore.preferences)
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
-
-    implementation("io.coil-kt:coil-compose:2.6.0")
-
-    implementation("com.google.code.gson:gson:2.11.0")
-    implementation("com.jakewharton.timber:timber:5.0.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
     // Timber for logging
     implementation("com.jakewharton.timber:timber:5.0.1")
@@ -74,8 +77,13 @@ dependencies {
     // Import koin DI
     implementation("io.insert-koin:koin-androidx-compose:4.1.1")
 
-    // Import the BoM for the Firebase platform
-    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
+    //Add the Room dependencies
+    implementation(libs.androidx.room)
+    implementation(libs.androidx.compose.foundation)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.room.testing)
 
     // Add the dependencies for the Crashlytics and Analytics libraries
     // When using the BoM, you don't specify versions in Firebase library dependencies
@@ -91,15 +99,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
-    //Add the Room dependencies
-    implementation(libs.androidx.room)
-    implementation(libs.androidx.compose.foundation)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
-    implementation(libs.androidx.room.testing)
-    //Add data store dependencies
-    implementation(libs.androidx.datastore.preferences)
+
     implementation(libs.kotlinx.datetime)
     implementation(project(":shared"))
     implementation(libs.koin.android)

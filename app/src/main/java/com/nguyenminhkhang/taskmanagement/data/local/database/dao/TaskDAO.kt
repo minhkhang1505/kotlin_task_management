@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskCollection
+import com.nguyenminhkhang.shared.model.Collection
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import kotlinx.coroutines.flow.Flow
 

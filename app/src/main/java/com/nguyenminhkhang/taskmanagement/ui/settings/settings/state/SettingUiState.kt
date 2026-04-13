@@ -1,8 +1,8 @@
 package com.nguyenminhkhang.taskmanagement.ui.settings.settings.state
 
-import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
+import com.nguyenminhkhang.shared.model.settings.ColorThemeOption
+import com.nguyenminhkhang.shared.model.settings.FontStyleOption
+import com.nguyenminhkhang.shared.model.settings.LanguageOption
 
 data class SettingUiState(
     val isLoading: Boolean = false,

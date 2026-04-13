@@ -3,7 +3,7 @@ package com.nguyenminhkhang.taskmanagement.ui.search
 import com.nguyenminhkhang.shared.analytics.AnalyticsEvent
 import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
 import com.nguyenminhkhang.shared.time.TimeProvider
-import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
+import com.nguyenminhkhang.shared.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.taskmanagement.data.mapper.toEntity
 import com.nguyenminhkhang.shared.repository.TaskRepository

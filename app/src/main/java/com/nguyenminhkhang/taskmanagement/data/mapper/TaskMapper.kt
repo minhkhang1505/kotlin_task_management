@@ -2,6 +2,8 @@ package com.nguyenminhkhang.taskmanagement.data.mapper
 
 import com.nguyenminhkhang.taskmanagement.data.local.database.entity.TaskEntity
 import com.nguyenminhkhang.shared.model.Task
+import kotlin.collections.orEmpty
+import kotlin.text.orEmpty
 
 fun TaskEntity.toDomain(): Task = Task(
     id = id,

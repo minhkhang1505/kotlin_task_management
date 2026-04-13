@@ -1,4 +1,4 @@
-package com.nguyenminhkhang.taskmanagement.ui.settings
+package com.nguyenminhkhang.shared.model.settings
 
 enum class LanguageOption(val code: String) {
     ENGLISH("en"),

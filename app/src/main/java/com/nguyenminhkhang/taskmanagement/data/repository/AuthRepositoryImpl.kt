@@ -4,29 +4,27 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.auth
-import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
-import kotlinx.coroutines.channels.awaitClose
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
-import javax.inject.Singleton
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.withContext
+import com.nguyenminhkhang.taskmanagement.data.mapper.toDomain
 import com.nguyenminhkhang.shared.model.User
 import com.nguyenminhkhang.shared.repository.AuthRepository
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_preferences")
 
-@Singleton
 class AuthRepositoryImpl (
     private val context: Context,
     private val ioDispatcher: CoroutineDispatcher
@@ -81,7 +79,7 @@ class AuthRepositoryImpl (
         withContext(ioDispatcher) {
             auth.signOut()
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(context.getString(com.nguyenminhkhang.taskmanagement.R.string.default_web_client_id))
+                .requestIdToken(context.getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build()
             GoogleSignIn.getClient(context, gso).signOut().await()

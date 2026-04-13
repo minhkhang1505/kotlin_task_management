@@ -12,10 +12,10 @@ import com.nguyenminhkhang.shared.usecase.settings.UpdateColorThemeUseCase
 import com.nguyenminhkhang.shared.usecase.settings.UpdateFontStyleUseCase
 import com.nguyenminhkhang.shared.usecase.settings.UpdateLanguageUseCase
 import com.nguyenminhkhang.shared.usecase.settings.UpdateThemeModeUseCase
-import com.nguyenminhkhang.taskmanagement.ui.settings.FontStyleOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ColorThemeOption
-import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
+import com.nguyenminhkhang.shared.model.settings.ColorThemeOption
+import com.nguyenminhkhang.shared.model.settings.FontStyleOption
+import com.nguyenminhkhang.shared.model.settings.LanguageOption
+import com.nguyenminhkhang.shared.model.settings.ThemeModeOption
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
 import kotlinx.coroutines.flow.MutableSharedFlow

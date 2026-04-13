@@ -23,7 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
-import com.nguyenminhkhang.taskmanagement.ui.settings.LanguageOption
+import com.nguyenminhkhang.shared.model.settings.LanguageOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.labelRes
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.AccountEvent
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import timber.log.Timber
@@ -57,10 +58,7 @@ fun LanguageScreen(
             Text(stringResource(R.string.account_language), style = MaterialTheme.typography.titleLarge)
         }
         languageOptions.forEach { languageItem ->
-            val languageLabel = when (languageItem) {
-                LanguageOption.ENGLISH -> stringResource(R.string.language_english)
-                LanguageOption.VIETNAMESE -> stringResource(R.string.language_vietnamese)
-            }
+            val languageLabel = stringResource(languageItem.labelRes)
 
             Row(
                 modifier = Modifier

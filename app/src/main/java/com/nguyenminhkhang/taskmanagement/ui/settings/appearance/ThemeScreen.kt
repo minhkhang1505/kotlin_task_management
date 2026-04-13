@@ -24,13 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.nguyenminhkhang.taskmanagement.R
+import com.nguyenminhkhang.shared.model.settings.ColorThemeOption
+import com.nguyenminhkhang.taskmanagement.ui.settings.labelRes
+import com.nguyenminhkhang.taskmanagement.ui.settings.primaryColorPreview
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.AccountEvent
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.ThemeModeUiState
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.state.SettingUiState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
-import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeModeOption
 
 @Composable
 fun ThemeScreen(
