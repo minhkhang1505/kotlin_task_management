@@ -2,15 +2,14 @@ import SwiftUI
 import sharedKit
 
 struct ContentView: View {
-
-    let greeting = Greeting().greet()
-
     var body: some View {
         VStack(spacing: 20) {
-            Text("🚀 KMP iOS App")
+            Text("Task Management iOS")
                 .font(.title)
 
-            Text(greeting)
+            Text("sharedKit linked successfully")
+                .foregroundColor(.secondary)
         }
+        .padding()
     }
 }
