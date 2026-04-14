@@ -3,15 +3,21 @@ import sharedKit
 
 struct ContentView: View {
     var body: some View {
-        ZStack {
-            Color(.systemBackground)
-
-            NavigationView {
-                SettingsScene()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color(.systemBackground))
+        TabView {
+            Tab("Home", systemImage: "house.fill") {
+                HomeScreen()
             }
-            .navigationViewStyle(.stack)
+            
+            Tab("Settings", systemImage: "gearshape.fill") {
+                SettingsScene()
+            }
+            
+            // Tách nút Search ra khỏi cụm chính bằng role: .search
+            Tab("Search", systemImage: "magnifyingglass", role: .search) {
+                SearchScreen()
+            }
         }
+        // Kích hoạt giao diện thanh tab lơ lửng, hỗ trợ hiệu ứng kính mờ
+        .tabViewStyle(.sidebarAdaptable)
     }
 }

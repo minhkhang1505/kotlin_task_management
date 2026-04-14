@@ -40,7 +40,7 @@
 		087C436CE59FEB9606521C12 /* SettingsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsState.swift; sourceTree = "<group>"; };
 		25FBCD730CF86B59875EB8BD /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		319AA89ABA936031E323FB36 /* SettingsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModels.swift; sourceTree = "<group>"; };
-		3C6364ABA26C0CCEB207DFCD /* TaskManagement.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TaskManagement.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C6364ABA26C0CCEB207DFCD /* TaskManagement.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskManagement.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CE5D18E9739675EB43C4D9B /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
 		556EC06C2F8E07D8003493CB /* LanguageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageScreen.swift; sourceTree = "<group>"; };
 		556EC06E2F8E0CA9003493CB /* ThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeScreen.swift; sourceTree = "<group>"; };
@@ -51,6 +51,24 @@
 		B018420C24F61128D8DA486A /* sharedKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = sharedKit.xcframework; path = ../../shared/build/XCFrameworks/release/sharedKit.xcframework; sourceTree = "<group>"; };
 		D60B2D4E3E0A089628704213 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		556EC0722F8E267A003493CB /* Search */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Search;
+			sourceTree = "<group>";
+		};
+		556EC0732F8E273A003493CB /* Home */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Home;
+			sourceTree = "<group>";
+		};
+		556EC07E2F8E2CD7003493CB /* TaskDetail */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = TaskDetail;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		007C3C8CC466935C385ED3F9 /* Frameworks */ = {
@@ -103,6 +121,9 @@
 		7904BA12C1C6C572342C6E91 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				556EC07E2F8E2CD7003493CB /* TaskDetail */,
+				556EC0732F8E273A003493CB /* Home */,
+				556EC0722F8E267A003493CB /* Search */,
 				3688F1B5D34A0037205B847A /* Settings */,
 			);
 			path = Features;
@@ -169,6 +190,11 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				556EC0722F8E267A003493CB /* Search */,
+				556EC0732F8E273A003493CB /* Home */,
+				556EC07E2F8E2CD7003493CB /* TaskDetail */,
 			);
 			name = TaskManagement;
 			packageProductDependencies = (
@@ -355,7 +381,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -377,7 +403,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

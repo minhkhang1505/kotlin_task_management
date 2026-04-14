@@ -6,65 +6,67 @@ struct SettingsScreen: View {
     let onScreenShow: () -> Void
 
     var body: some View {
-        ZStack {
-            Color(.systemBackground)
-                .ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color(.systemBackground)
+                    .ignoresSafeArea()
 
-            VStack(spacing: 16) {
-                Text("Account")
-                    .font(.title2)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(spacing: 16) {
+                    Text("Account")
+                        .font(.title2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-                AvatarView(
-                    imageURL: state.profile.avatarURL,
-                    initials: state.profile.email ?? "NA"
-                )
+                    AvatarView(
+                        imageURL: state.profile.avatarURL,
+                        initials: state.profile.email ?? "NA"
+                    )
 
-                Text(state.profile.email ?? "No email")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    Text(state.profile.email ?? "No email")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
 
-                VStack(spacing: 8) {
-                    SettingsItemRow(option: .theme) { onEvent(.navigateTheme) }
-                    SettingsItemRow(option: .language) { onEvent(.navigateLanguage) }
-                    SettingsItemRow(option: .fontStyle) { onEvent(.navigateFontStyle) }
-                    SettingsItemRow(option: .deleteAccount) { onEvent(.deleteAccount) }
-                    SettingsItemRow(option: .aboutApp) { onEvent(.openAbout) }
-                    SettingsItemRow(option: .logout) { onEvent(.showLogoutDialog) }
-                }
-
-                Spacer()
-
-                HStack(spacing: 4) {
-                    Text("Version")
-                        .fontWeight(.semibold)
-                    Text(state.appVersion)
-                }
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            }
-            .padding(16)
-        }
-        .confirmationDialog(
-            "Are you sure you want to logout?",
-            isPresented: Binding(
-                get: { state.isLogoutDialogVisible },
-                set: { isVisible in
-                    if !isVisible {
-                        onEvent(.dismissLogoutDialog)
+                    VStack(spacing: 8) {
+                        SettingsItemRow(option: .theme) { onEvent(.navigateTheme) }
+                        SettingsItemRow(option: .language) { onEvent(.navigateLanguage) }
+                        SettingsItemRow(option: .fontStyle) { onEvent(.navigateFontStyle) }
+                        SettingsItemRow(option: .deleteAccount) { onEvent(.deleteAccount) }
+                        SettingsItemRow(option: .aboutApp) { onEvent(.openAbout) }
+                        SettingsItemRow(option: .logout) { onEvent(.showLogoutDialog) }
                     }
+
+                    Spacer()
+
+                    HStack(spacing: 4) {
+                        Text("Version")
+                            .fontWeight(.semibold)
+                        Text(state.appVersion)
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
                 }
-            ),
-            titleVisibility: .visible
-        ) {
-            Button("Cancel", role: .cancel) {
-                onEvent(.dismissLogoutDialog)
+                .padding(16)
             }
-            Button("Logout", role: .destructive) {
-                onEvent(.confirmLogout)
+            .confirmationDialog(
+                "Are you sure you want to logout?",
+                isPresented: Binding(
+                    get: { state.isLogoutDialogVisible },
+                    set: { isVisible in
+                        if !isVisible {
+                            onEvent(.dismissLogoutDialog)
+                        }
+                    }
+                ),
+                titleVisibility: .visible
+            ) {
+                Button("Cancel", role: .cancel) {
+                    onEvent(.dismissLogoutDialog)
+                }
+                Button("Logout", role: .destructive) {
+                    onEvent(.confirmLogout)
+                }
             }
+            .onAppear(perform: onScreenShow)
         }
-        .onAppear(perform: onScreenShow)
     }
 }
 
