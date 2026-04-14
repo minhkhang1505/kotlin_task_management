@@ -8,5 +8,15 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.nguyenminhkhang.taskmanagement
         IPHONEOS_DEPLOYMENT_TARGET: 15.0
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
     dependencies:
       - framework: ../../shared/build/XCFrameworks/release/sharedKit.xcframework
+
+schemes:
+  TaskManagement:
+    build:
+      targets:
+        TaskManagement: all
+    run:
+      config: Debug

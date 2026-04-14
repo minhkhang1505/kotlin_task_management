@@ -3,13 +3,15 @@ import sharedKit
 
 struct ContentView: View {
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Task Management iOS")
-                .font(.title)
+        ZStack {
+            Color(.systemBackground)
 
-            Text("sharedKit linked successfully")
-                .foregroundColor(.secondary)
+            NavigationView {
+                SettingsScene()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color(.systemBackground))
+            }
+            .navigationViewStyle(.stack)
         }
-        .padding()
     }
 }

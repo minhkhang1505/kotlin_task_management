@@ -7,10 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F01A01BC24A6145250F51B6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FA2FB42750F084117950A47 /* ContentView.swift */; };
+		27C9AA2C900AA917447ED026 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25FBCD730CF86B59875EB8BD /* SettingsScreen.swift */; };
+		556EC06D2F8E07E1003493CB /* LanguageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EC06C2F8E07D8003493CB /* LanguageScreen.swift */; };
+		556EC06F2F8E0CAD003493CB /* ThemeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EC06E2F8E0CA9003493CB /* ThemeScreen.swift */; };
+		556EC0712F8E0FF3003493CB /* FontStyleScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 556EC0702F8E0FE8003493CB /* FontStyleScreen.swift */; };
+		5B880D8744B29A9C5D9A5AF3 /* SettingsItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ED67BEA40273D1232AADCF1 /* SettingsItemRow.swift */; };
 		6D0A0A16EC7539B0C461AE51 /* sharedKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = B018420C24F61128D8DA486A /* sharedKit.xcframework */; };
-		7C11C1A12F8D0A0100816714 /* TaskManagementApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DE70E92F8D098A00816714 /* TaskManagementApp.swift */; };
-		7C11C1A22F8D0A0100816714 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DE70EA2F8D09A600816714 /* ContentView.swift */; };
+		899E0557AF85326F1E3F07B4 /* SettingsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319AA89ABA936031E323FB36 /* SettingsModels.swift */; };
+		8F45349B7AFD411A634FE94D /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE5D18E9739675EB43C4D9B /* AvatarView.swift */; };
+		986DE36224F2F5DD62E044F6 /* TaskManagementApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933BE6E5C4C2E742C71B36C /* TaskManagementApp.swift */; };
 		AA607DBEBD0A5924B0E54CB3 /* sharedKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B018420C24F61128D8DA486A /* sharedKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		C6988999B8009555BF7DAC20 /* SettingsState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087C436CE59FEB9606521C12 /* SettingsState.swift */; };
+		EB1505A19DF1FAA766F3AD2C /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D60B2D4E3E0A089628704213 /* SettingsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -28,10 +37,19 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		3C6364ABA26C0CCEB207DFCD /* TaskManagement.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskManagement.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		55DE70E92F8D098A00816714 /* TaskManagementApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManagementApp.swift; sourceTree = "<group>"; };
-		55DE70EA2F8D09A600816714 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		087C436CE59FEB9606521C12 /* SettingsState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsState.swift; sourceTree = "<group>"; };
+		25FBCD730CF86B59875EB8BD /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		319AA89ABA936031E323FB36 /* SettingsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModels.swift; sourceTree = "<group>"; };
+		3C6364ABA26C0CCEB207DFCD /* TaskManagement.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TaskManagement.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4CE5D18E9739675EB43C4D9B /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
+		556EC06C2F8E07D8003493CB /* LanguageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageScreen.swift; sourceTree = "<group>"; };
+		556EC06E2F8E0CA9003493CB /* ThemeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeScreen.swift; sourceTree = "<group>"; };
+		556EC0702F8E0FE8003493CB /* FontStyleScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontStyleScreen.swift; sourceTree = "<group>"; };
+		8933BE6E5C4C2E742C71B36C /* TaskManagementApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManagementApp.swift; sourceTree = "<group>"; };
+		8ED67BEA40273D1232AADCF1 /* SettingsItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsItemRow.swift; sourceTree = "<group>"; };
+		8FA2FB42750F084117950A47 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B018420C24F61128D8DA486A /* sharedKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = sharedKit.xcframework; path = ../../shared/build/XCFrameworks/release/sharedKit.xcframework; sourceTree = "<group>"; };
+		D60B2D4E3E0A089628704213 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,10 +75,20 @@
 		0C67D8CE2E8EED4F3A6A322E /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				55DE70EA2F8D09A600816714 /* ContentView.swift */,
-				55DE70E92F8D098A00816714 /* TaskManagementApp.swift */,
+				8FA2FB42750F084117950A47 /* ContentView.swift */,
+				8933BE6E5C4C2E742C71B36C /* TaskManagementApp.swift */,
+				7904BA12C1C6C572342C6E91 /* Features */,
 			);
 			path = Sources;
+			sourceTree = "<group>";
+		};
+		3688F1B5D34A0037205B847A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				E808114DE4B337F44DBF06D1 /* Domain */,
+				7F1764DC07A884C84A51E768 /* Presentation */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		759C6EAC1A3A60A926BA97F3 = {
@@ -72,12 +100,59 @@
 			);
 			sourceTree = "<group>";
 		};
+		7904BA12C1C6C572342C6E91 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				3688F1B5D34A0037205B847A /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		7F1764DC07A884C84A51E768 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				087C436CE59FEB9606521C12 /* SettingsState.swift */,
+				D60B2D4E3E0A089628704213 /* SettingsViewModel.swift */,
+				D86D94772E20C703861BC2C3 /* Components */,
+				8F2AEA070AEC562031761B85 /* Views */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		8F2AEA070AEC562031761B85 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				556EC0702F8E0FE8003493CB /* FontStyleScreen.swift */,
+				556EC06E2F8E0CA9003493CB /* ThemeScreen.swift */,
+				556EC06C2F8E07D8003493CB /* LanguageScreen.swift */,
+				25FBCD730CF86B59875EB8BD /* SettingsScreen.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		AD86E67EACF62C16DEE78995 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				3C6364ABA26C0CCEB207DFCD /* TaskManagement.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		D86D94772E20C703861BC2C3 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				4CE5D18E9739675EB43C4D9B /* AvatarView.swift */,
+				8ED67BEA40273D1232AADCF1 /* SettingsItemRow.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E808114DE4B337F44DBF06D1 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				319AA89ABA936031E323FB36 /* SettingsModels.swift */,
+			);
+			path = Domain;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -135,8 +210,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C11C1A22F8D0A0100816714 /* ContentView.swift in Sources */,
-				7C11C1A12F8D0A0100816714 /* TaskManagementApp.swift in Sources */,
+				8F45349B7AFD411A634FE94D /* AvatarView.swift in Sources */,
+				556EC0712F8E0FF3003493CB /* FontStyleScreen.swift in Sources */,
+				0F01A01BC24A6145250F51B6 /* ContentView.swift in Sources */,
+				5B880D8744B29A9C5D9A5AF3 /* SettingsItemRow.swift in Sources */,
+				556EC06F2F8E0CAD003493CB /* ThemeScreen.swift in Sources */,
+				899E0557AF85326F1E3F07B4 /* SettingsModels.swift in Sources */,
+				556EC06D2F8E07E1003493CB /* LanguageScreen.swift in Sources */,
+				27C9AA2C900AA917447ED026 /* SettingsScreen.swift in Sources */,
+				C6988999B8009555BF7DAC20 /* SettingsState.swift in Sources */,
+				EB1505A19DF1FAA766F3AD2C /* SettingsViewModel.swift in Sources */,
+				986DE36224F2F5DD62E044F6 /* TaskManagementApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,7 +272,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -250,7 +333,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -272,12 +354,14 @@
 					"\"../../shared/build/XCFrameworks/release\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.nguyenminhkhang.taskmanagement;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -292,12 +376,14 @@
 					"\"../../shared/build/XCFrameworks/release\"",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.nguyenminhkhang.taskmanagement;
+				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
