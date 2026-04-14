@@ -19,3 +19,15 @@ local.properties
 build/
 *.klib
 *.log
+
+# Xcode
+DerivedData/
+.build/
+
+# User-specific
+*.xcuserstate
+xcuserdata/
+*.xcworkspace
+
+# Optional (tuỳ project)
+*.xcodeproj/project.xcworkspace/
