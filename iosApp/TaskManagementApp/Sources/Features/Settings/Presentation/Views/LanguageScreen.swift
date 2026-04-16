@@ -61,6 +61,7 @@ struct LanguageScreen: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

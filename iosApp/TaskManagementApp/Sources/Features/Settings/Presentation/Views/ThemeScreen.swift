@@ -112,6 +112,7 @@ struct ThemeScreen: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RepeatScreen : View {
+    let id: Int
     @Environment(\.dismiss) var dismiss
     
     @State private var repeatEvery = ""
@@ -137,12 +138,12 @@ struct RepeatScreen : View {
             }
         }
         .padding(.horizontal, 16)
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 
 #Preview {
     NavigationView {
-        RepeatScreen()
+        RepeatScreen(id: 12)
     }
-    
 }

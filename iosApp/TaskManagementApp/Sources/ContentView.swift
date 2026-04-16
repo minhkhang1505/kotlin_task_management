@@ -13,6 +13,8 @@ struct ContentView: View {
                             switch route {
                             case .taskDetail(let id):
                                 TaskDetailScreen(id: id)
+                            case .repeatScreen(let id):
+                                RepeatScreen(id: id)
                             // We can add other routes here when needed
                             default:
                                 Text("Destination not implemented")

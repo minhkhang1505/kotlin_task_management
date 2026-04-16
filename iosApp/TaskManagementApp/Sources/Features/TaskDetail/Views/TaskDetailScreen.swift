@@ -40,15 +40,10 @@ struct TaskDetailScreen : View {
     @State private var showCollectionSheet = false
     @State private var repeatSummaryText: String = "Does not repeat"
     
+    @State private var path: [Route] = []
+    
     var body: some View {
         ZStack {
-            // Setup a vibrant background so "Liquid Glass" effect is visible
-//            LinearGradient(
-//                colors: [Color.blue.opacity(0.15), Color.purple.opacity(0.15), Color.pink.opacity(0.1)],
-//                startPoint: .topLeading,
-//                endPoint: .bottomTrailing
-//            )
-//            .ignoresSafeArea()
             
             ScrollView {
                 VStack(spacing: 16) {
@@ -173,7 +168,7 @@ struct TaskDetailScreen : View {
                     .glassMaterial()
                     
                     // Repeat Row
-                    Button(action: { /* Navigate to Repeat */ }) {
+                    NavigationLink(value: Route.repeatScreen(id: id)) {
                         HStack {
                             Image(systemName: "repeat")
                                 .foregroundColor(.purple)
@@ -280,6 +275,7 @@ struct TaskDetailScreen : View {
             // Liquid Glass backing behind the button to ensure readability if scrolling beneath it
             .background(.ultraThinMaterial)
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 //

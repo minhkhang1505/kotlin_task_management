@@ -64,6 +64,7 @@ struct FontStyleScreen: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .tabBar)
     }
 }
 

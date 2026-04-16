@@ -13,4 +13,5 @@ enum Route : Hashable {
     case theme
     case language
     case font
+    case repeatScreen(id: Int)
 }
