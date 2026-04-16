@@ -53,6 +53,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		552F79D02F90A2B60045FEE7 /* Repeat */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Repeat;
+			sourceTree = "<group>";
+		};
+		552F79ED2F914E2D0045FEE7 /* Navigation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Navigation;
+			sourceTree = "<group>";
+		};
 		556EC0722F8E267A003493CB /* Search */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Search;
@@ -93,6 +103,7 @@
 		0C67D8CE2E8EED4F3A6A322E /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				552F79ED2F914E2D0045FEE7 /* Navigation */,
 				8FA2FB42750F084117950A47 /* ContentView.swift */,
 				8933BE6E5C4C2E742C71B36C /* TaskManagementApp.swift */,
 				7904BA12C1C6C572342C6E91 /* Features */,
@@ -121,6 +132,7 @@
 		7904BA12C1C6C572342C6E91 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				552F79D02F90A2B60045FEE7 /* Repeat */,
 				556EC07E2F8E2CD7003493CB /* TaskDetail */,
 				556EC0732F8E273A003493CB /* Home */,
 				556EC0722F8E267A003493CB /* Search */,
@@ -192,6 +204,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				552F79D02F90A2B60045FEE7 /* Repeat */,
+				552F79ED2F914E2D0045FEE7 /* Navigation */,
 				556EC0722F8E267A003493CB /* Search */,
 				556EC0732F8E273A003493CB /* Home */,
 				556EC07E2F8E2CD7003493CB /* TaskDetail */,

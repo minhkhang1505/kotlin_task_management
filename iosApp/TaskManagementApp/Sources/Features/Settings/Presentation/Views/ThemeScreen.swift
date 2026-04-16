@@ -30,23 +30,6 @@ struct ThemeScreen: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Top Bar
-            HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 24))
-                        .foregroundColor(.primary)
-                }
-                
-                Text("Theme")
-                    .font(.title2)
-                    .padding(.leading, 8)
-                Spacer()
-            }
-            .frame(height: 56)
-            .padding(.horizontal, 16)
             
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
@@ -115,7 +98,20 @@ struct ThemeScreen: View {
                 .padding(.top, 16)
             }
         }
-        .navigationBarHidden(true)
+        .navigationTitle(Text("Theme")
+            .font(.title2))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .fontWeight(.semibold)
+                }
+            }
+        }
     }
 }
 

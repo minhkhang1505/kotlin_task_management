@@ -44,7 +44,40 @@ struct HomeScreen: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 8)
                 
-                // Task list area (Left blank as requested)
+                // Task list area
+                ScrollView {
+                    VStack(spacing: 12) {
+                        NavigationLink(value: Route.taskDetail(id: 1)) {
+                            HStack {
+                                Image(systemName: "circle")
+                                    .foregroundColor(.gray)
+                                    .font(.title3)
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Mock Task")
+                                        .font(.headline)
+                                        .foregroundColor(.primary)
+                                    Text("Tap me to open Task Detail")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .background(Color(.secondarySystemGroupedBackground))
+                            .cornerRadius(12)
+                            // Thêm shadow nhẹ giống phong cách thẻ 
+                            .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
+                            .padding(.horizontal, 16)
+                        }
+                    }
+                    .padding(.top, 16)
+                }
+                
                 Spacer()
             }
         }

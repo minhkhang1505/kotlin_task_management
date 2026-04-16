@@ -4,16 +4,19 @@ struct SettingsScreen: View {
     let state: SettingsViewState
     let onEvent: (SettingsEvent) -> Void
     let onScreenShow: () -> Void
+    
+    @State private var path: [Route] = []
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ZStack {
                 Color(.systemBackground)
                     .ignoresSafeArea()
 
                 VStack(spacing: 16) {
-                    Text("Account")
+                    Text("Settings")
                         .font(.title2)
+                        .fontWeight(.bold)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     AvatarView(
@@ -26,9 +29,9 @@ struct SettingsScreen: View {
                         .foregroundStyle(.secondary)
 
                     VStack(spacing: 8) {
-                        SettingsItemRow(option: .theme) { onEvent(.navigateTheme) }
-                        SettingsItemRow(option: .language) { onEvent(.navigateLanguage) }
-                        SettingsItemRow(option: .fontStyle) { onEvent(.navigateFontStyle) }
+                        SettingsItemRow(option: .theme) { path.append(.theme) }
+                        SettingsItemRow(option: .language) { path.append(.language) }
+                        SettingsItemRow(option: .fontStyle) { path.append(.font) }
                         SettingsItemRow(option: .deleteAccount) { onEvent(.deleteAccount) }
                         SettingsItemRow(option: .aboutApp) { onEvent(.openAbout) }
                         SettingsItemRow(option: .logout) { onEvent(.showLogoutDialog) }
@@ -66,6 +69,18 @@ struct SettingsScreen: View {
                 }
             }
             .onAppear(perform: onScreenShow)
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .theme:
+                    ThemeScreen()
+                case .language:
+                    LanguageScreen()
+                case .font:
+                    FontStyleScreen()
+                default:
+                    EmptyView()
+                }
+            }
         }
     }
 }

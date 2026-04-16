@@ -23,23 +23,6 @@ struct FontStyleScreen: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Top Bar
-            HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 24))
-                        .foregroundColor(.primary)
-                }
-                
-                Text("Font Style")
-                    .font(.title2)
-                    .padding(.leading, 8)
-                Spacer()
-            }
-            .frame(height: 56)
-            .padding(.horizontal, 16)
             
             // Options
             VStack(spacing: 0) {
@@ -67,7 +50,20 @@ struct FontStyleScreen: View {
             
             Spacer()
         }
-        .navigationBarHidden(true)
+        .navigationTitle(Text("Font Style")
+            .font(.title2))
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .fontWeight(.semibold)
+                }
+            }
+        }
     }
 }
 
