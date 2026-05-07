@@ -11,11 +11,14 @@ Your priorities:
 ---
 
 ## Tech Stack
-- Kotlin Multiplatform (KMP)
-- Android: Jetpack Compose
-- iOS: Swift + SwiftUI (native only, DO NOT use Compose Multiplatform for UI)
-- Architecture: Clean Architecture + MVVM
-- DI: Koin Multiplatform
+- **Core:** Kotlin Multiplatform (KMP)
+- **Android UI:** Jetpack Compose
+- **iOS UI:** Swift + SwiftUI (native only, DO NOT use Compose Multiplatform for UI)
+- **Architecture:** Clean Architecture + MVVM
+- **Dependency Injection:** Koin Multiplatform
+- **Concurrency:** Kotlin Coroutines & Flows
+- **Local Storage:** Room (Migrating to KMP) / DataStore
+- **Backend/Services:** Firebase (Auth, Firestore, Crashlytics, Analytics)
 
 ---
 
@@ -47,11 +50,12 @@ Your priorities:
 ---
 
 ## Migration Strategy
-1. Identify Domain & Data → move to `commonMain`.
-2. Extract interfaces before implementation.
-3. Implement platform-specific only after abstraction.
-4. Use Koin for dependency injection.
-5. Re-evaluate and minimize `expect/actual`.
+1. **Decouple Business Logic:** Identify Domain & Data logic coupled with Android frameworks and extract them into pure Kotlin `commonMain`.
+2. **Interface Abstraction:** Extract interfaces for platform-specific dependencies (e.g., Room, Firebase, WorkManager) before implementing them.
+3. **Platform Implementations:** Provide actual implementations for abstracted interfaces in `androidMain` and `iosMain` only when a shared solution is unavailable.
+4. **Dependency Injection:** Use Koin Multiplatform to wire dependencies across shared and platform-specific modules.
+5. **Minimize `expect/actual`:** Favor interface injection over `expect/actual` to maintain flexibility, using it primarily for core platform types or simple utilities.
+6. **Testing:** Ensure unit tests (using MockK) are updated and run successfully against the refactored `commonMain` code to improve testability.
 
 ---
 

@@ -8,6 +8,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
@@ -26,6 +30,10 @@ import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguageRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.FontStyleRoute
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailRoute
+import com.nguyenminhkhang.shared.core.network.NetworkConnectivityObserver
+import com.nguyenminhkhang.shared.core.network.NetworkStatus
+import org.koin.compose.koinInject
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import timber.log.Timber
 import kotlin.let
 
@@ -47,8 +55,31 @@ fun TaskAppNavHost(
         Timber.d("Current destination: ${navController.currentDestination}")
     }
 
+    val networkObserver = koinInject<NetworkConnectivityObserver>()
+    val networkStatus by networkObserver.status.collectAsStateWithLifecycle(initialValue = NetworkStatus.CONNECTED)
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(networkStatus) {
+        when (networkStatus) {
+            NetworkStatus.DISCONNECTED -> {
+                snackbarHostState.showSnackbar(
+                    message = "No internet",
+                    duration = SnackbarDuration.Indefinite
+                )
+            }
+            NetworkStatus.CONNECTED -> {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(
+                    message = "Internet is connected",
+                    duration = SnackbarDuration.Short
+                )
+            }
+        }
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             if (showBottomBar) {
                 NavigationBottomBar(navController)

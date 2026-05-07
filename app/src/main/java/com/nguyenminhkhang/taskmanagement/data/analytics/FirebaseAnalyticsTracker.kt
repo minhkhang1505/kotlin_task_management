@@ -5,7 +5,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.nguyenminhkhang.shared.analytics.AnalyticsEvent
 import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
 
-
 class FirebaseAnalyticsTracker (
     private val firebaseAnalytics: FirebaseAnalytics
 ) : AnalyticsTracker {

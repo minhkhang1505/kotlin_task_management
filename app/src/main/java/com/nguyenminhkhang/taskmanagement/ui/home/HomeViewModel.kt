@@ -8,7 +8,7 @@ import com.nguyenminhkhang.shared.analytics.AnalyticsTracker
 import com.nguyenminhkhang.shared.model.SortedType
 import com.nguyenminhkhang.shared.model.Task
 import com.nguyenminhkhang.shared.model.TaskGroup
-import com.nguyenminhkhang.taskmanagement.notification.TaskScheduler
+import com.nguyenminhkhang.shared.notification.TaskScheduler
 import com.nguyenminhkhang.shared.usecase.AddTaskUseCase
 import com.nguyenminhkhang.shared.usecase.DeleteTaskUseCase
 import com.nguyenminhkhang.shared.usecase.GetTaskGroupsUseCase
@@ -152,7 +152,7 @@ class HomeViewModel(
                 if (taskToSave.newTask.reminderTimeMillis != null) {
                     scheduler.schedule(task)
                 } else {
-                    scheduler.cancel(task)
+//                    scheduler.cancel(task)
                 }
                 task.id?.let { taskId ->
                     analyticsTracker.trackEvent(

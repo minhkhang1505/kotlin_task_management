@@ -15,5 +15,6 @@ val appKoinModules = listOf(
     stringProviderModule,
     taskSchedulerModule,
     viewModelModule,
-    useCaseModule
+    useCaseModule,
+    networkModule
 )

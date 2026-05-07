@@ -389,6 +389,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 8835LH3322;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"../../shared/build/XCFrameworks/release\"",
@@ -411,6 +412,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 8835LH3322;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"../../shared/build/XCFrameworks/release\"",
