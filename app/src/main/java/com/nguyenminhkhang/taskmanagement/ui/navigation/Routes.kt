@@ -22,3 +22,6 @@ data object SignInRoute
 data class TaskDetailRoute(val taskId: Long)
 @Serializable
 data object ThemeRoute
+
+@Serializable
+data object SplashRoute

@@ -5,6 +5,7 @@ import com.nguyenminhkhang.taskmanagement.ui.auth.signin.SignInViewModel
 import com.nguyenminhkhang.taskmanagement.ui.home.HomeViewModel
 import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatViewModel
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchViewModel
+import com.nguyenminhkhang.taskmanagement.ui.splash.SplashScreenViewModel
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
 import com.nguyenminhkhang.taskmanagement.ui.taskdetail.TaskDetailViewModel
 import org.koin.core.module.dsl.viewModel
@@ -58,6 +59,8 @@ val viewModelModule = module {
     }
 
     viewModelOf(::HomeViewModel)
+
+    viewModelOf(::SplashScreenViewModel)
 
     viewModel {
         RegisterViewModel(

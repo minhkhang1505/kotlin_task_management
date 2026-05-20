@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,6 +27,7 @@ import com.nguyenminhkhang.taskmanagement.ui.repeat.RepeatRoute
 import com.nguyenminhkhang.taskmanagement.ui.search.SearchRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.settings.SettingViewModel
+import com.nguyenminhkhang.taskmanagement.ui.splash.SplashRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.LanguageRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.ThemeRoute
 import com.nguyenminhkhang.taskmanagement.ui.settings.appearance.FontStyleRoute
@@ -91,17 +93,41 @@ fun TaskAppNavHost(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            startDestination = SignInRoute
+            startDestination = SplashRoute
         ) {
 
             composable<SignInRoute> {
                 SignInRoute(onNavigateToRegister = {
-                    Timber.d("Before navigate to Home Route")
+                    Timber.d("Before navigate to Register Route")
                     navController.navigate(RegisterRoute)
-                    Timber.d("Navigate to Home Route success")
-                    Timber.d("Navigate to Home Route success")
+                    Timber.d("Navigate to Register Route success")
                 },
-                    onNavigateToHome = {navController.navigate(HomeRoute)}
+                    onNavigateToHome = {
+                        navController.navigate(HomeRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
+            }
+
+            composable<SplashRoute> {
+                SplashRoute(
+                    onNavigateToHome = {
+                        navController.navigate(HomeRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                        }
+                    },
+                    onNavigateToSignIn = {
+                        navController.navigate(SignInRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 )
             }
 
